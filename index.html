@@ -1,2002 +1,999 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منظومة الحسابات السحابية المركزية المعتمدة</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts (Tajawal) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- SheetJS for Excel Exports -->
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    <!-- Google Identity Services SDK (OAuth 2.0) -->
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>منظومة المحاسبة السحابية الذكية</title>
+  
+  <!-- خط تجوال العربي الاحترافي والأيقونات -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- مكتبات التصميم والتصدير -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
-    <style>
-        body {
-            font-family: 'Tajawal', sans-serif;
-            background-color: #f8fafc;
-            color: #0f172a;
-        }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #f1f5f9; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+  <!-- حزم Google Firebase الرسمية المعتمدة (v9 Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
-        @media print {
-            body * { visibility: hidden !important; }
-            .print-active-area, .print-active-area * { visibility: visible !important; }
-            .print-active-area {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100% !important;
-                margin: 0 !important;
-                padding: 15px !important;
-                background: white !important;
-                color: black !important;
-            }
-            .no-print { display: none !important; }
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Tajawal', 'sans-serif'] },
+          colors: {
+            brand: { 50: '#eef2ff', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 900: '#1e1b4b' }
+          }
         }
-    </style>
+      }
+    }
+  </script>
+
+  <style>
+    body { font-family: 'Tajawal', sans-serif; background-color: #0b0f19; color: #f3f4f6; }
+    .glass-card { background: rgba(17, 24, 39, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    .pulse-sync { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    @media print {
+      .no-print { display: none !important; }
+      body { background: white !important; color: black !important; }
+      .print-area { display: block !important; width: 100% !important; background: white !important; color: black !important; border: none !important; }
+    }
+  </style>
 </head>
-<body class="min-h-screen flex flex-col bg-slate-50 text-slate-800 antialiased selection:bg-emerald-600 selection:text-white">
+<body class="min-h-screen antialiased flex flex-col">
 
-    <!-- AUTH GATE OVERLAY -->
-    <div id="auth-gate-overlay" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-auto">
-            
-            <div class="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 text-white p-6 text-center border-b border-slate-800">
-                <div class="w-12 h-12 mx-auto mb-2.5 rounded-2xl bg-gradient-to-tr from-emerald-600 via-teal-500 to-cyan-500 flex items-center justify-center text-white shadow-xl shadow-emerald-950/50">
-                    <i class="fa-solid fa-cloud-bolt text-xl text-white"></i>
-                </div>
-                <h2 class="text-base font-black tracking-tight">منظومة الحسابات السحابية المركزية</h2>
-                <p class="text-xs text-slate-400 mt-1">مزامنة سحابية حقيقية 100% عبر Google Drive & Sheets</p>
-                
-                <!-- 2 Clean Tabs -->
-                <div class="grid grid-cols-2 gap-2 mt-4 p-1 bg-slate-800/90 rounded-2xl border border-slate-700/80">
-                    <button type="button" id="tab-btn-login" onclick="switchAuthTab('login')" class="py-2 text-xs font-black rounded-xl transition shadow bg-emerald-600 text-white flex items-center justify-center gap-1.5">
-                        <i class="fa-solid fa-right-to-bracket"></i>
-                        <span>تسجيل الدخول</span>
-                    </button>
-                    <button type="button" id="tab-btn-register" onclick="switchAuthTab('register')" class="py-2 text-xs font-bold rounded-xl transition text-slate-300 hover:text-white flex items-center justify-center gap-1.5">
-                        <i class="fa-solid fa-building-user"></i>
-                        <span>تأسيس جديد للمدير</span>
-                    </button>
-                </div>
-            </div>
+  <!-- ========================================== -->
+  <!-- 1. شاشة تسجيل الدخول والربط بحساب Google -->
+  <!-- ========================================== -->
+  <div id="authGate" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#070a12]/95 backdrop-blur-md">
+    <div class="glass-card w-full max-w-md rounded-2xl p-6 md:p-8 shadow-2xl border border-indigo-500/20 text-center">
+      
+      <!-- شعار المنظومة -->
+      <div class="w-16 h-16 bg-gradient-to-tr from-indigo-600 to-indigo-400 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-indigo-500/30">
+        <i class="fa-solid fa-cloud text-2xl text-white"></i>
+      </div>
+      
+      <h1 class="text-2xl font-black text-white mb-1">منظومة المحاسبة السحابية</h1>
+      <p class="text-sm text-slate-400 mb-6">مزامنة سحابية فورية وموثقة عبر خوادم Google</p>
 
-            <div class="p-5">
-                <!-- BOX 1: LOGIN (EMPLOYEES & RETURNING USERS) -->
-                <div id="view-login-box" class="space-y-3.5">
-                    <form onsubmit="handleUserLogin(event)" class="space-y-3">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">اسم المستخدم أو بريد المدير:</label>
-                            <input type="text" id="input-login-username" required placeholder="أدخل اسم المستخدم..." class="w-full border border-slate-300 rounded-xl p-2.5 text-xs sm:text-sm font-bold focus:ring-2 focus:ring-emerald-500 bg-white">
-                        </div>
+      <!-- تبويبات اختيار نوع الدخول -->
+      <div class="flex border-b border-slate-700/60 mb-6">
+        <button id="tabManagerBtn" onclick="switchAuthTab('manager')" class="flex-1 py-2.5 font-bold text-sm border-b-2 border-indigo-500 text-indigo-400 transition-all">
+          <i class="fa-brands fa-google ml-1.5"></i> دخول المدير (Google)
+        </button>
+        <button id="tabEmployeeBtn" onclick="switchAuthTab('employee')" class="flex-1 py-2.5 font-bold text-sm border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition-all">
+          <i class="fa-solid fa-users ml-1.5"></i> دخول الموظفين
+        </button>
+      </div>
 
-                        <div>
-                            <div class="flex justify-between items-center mb-1">
-                                <label class="block text-xs font-bold text-slate-700">كلمة المرور:</label>
-                                <button type="button" onclick="showForgotPasswordView()" class="text-[11px] text-blue-600 hover:underline">نسيت كلمة المرور؟</button>
-                            </div>
-                            <input type="password" id="input-login-password" required placeholder="••••••••" class="w-full border border-slate-300 rounded-xl p-2.5 text-xs sm:text-sm font-mono focus:ring-2 focus:ring-emerald-500">
-                        </div>
+      <!-- محتوى دخول المدير عبر Google -->
+      <div id="managerAuthView" class="space-y-4">
+        <p class="text-xs text-slate-300 leading-relaxed bg-indigo-950/40 border border-indigo-800/40 p-3 rounded-xl text-right">
+          <i class="fa-solid fa-circle-check text-emerald-400 ml-1"></i>
+          يتيح الدخول بحساب Google الرسمي تأسيس قاعدة بيانات سحابية مشفرة فورياً بدون أي إعدادات يدوية.
+        </p>
 
-                        <div class="flex items-center justify-between pt-1">
-                            <label class="flex items-center gap-2 cursor-pointer text-xs text-slate-600 font-bold">
-                                <input type="checkbox" id="chk-remember-me" checked class="w-4 h-4 rounded text-emerald-600">
-                                <span>تذكر الحساب على هذا الجهاز</span>
-                            </label>
-                        </div>
+        <button id="googleSignInBtn" onclick="loginWithGoogle()" class="w-full flex items-center justify-center gap-3 bg-white hover:bg-slate-100 text-slate-800 font-bold py-3.5 px-4 rounded-xl transition duration-200 shadow-md">
+          <svg class="w-5 h-5" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+          </svg>
+          <span>المتابعة باستخدام Google</span>
+        </button>
 
-                        <button type="submit" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-black rounded-xl shadow transition flex items-center justify-center gap-2 mt-2">
-                            <i class="fa-solid fa-right-to-bracket"></i>
-                            <span>تسجيل الدخول وفتح المنظومة</span>
-                        </button>
-                    </form>
-
-                    <!-- Google Direct Sync Reconnect Button -->
-                    <div class="pt-2 border-t text-center">
-                        <button type="button" onclick="requestGoogleLoginForManager()" class="w-full py-2 border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-bold rounded-xl flex items-center justify-center gap-2 transition">
-                            <svg class="w-4 h-4" viewBox="0 0 24 24">
-                                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-                                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-                            </svg>
-                            <span>تسجيل الدخول المباشر بحساب Google</span>
-                        </button>
-                    </div>
-                </div>
-                <!-- BOX 2: REGISTER NEW ORGANIZATION (MANAGER WITH GOOGLE) -->
-                <div id="view-register-box" class="hidden space-y-3">
-                    <form onsubmit="handleManagerRegistrationInit(event)" class="space-y-2.5">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">اسم الشركة أو المؤسسة *</label>
-                            <input type="text" id="reg-org-name" required placeholder="مثال: شركة الأمل للتجارة العامة" class="w-full border border-slate-300 rounded-xl p-2 text-xs font-bold focus:ring-2 focus:ring-blue-500">
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">اسم المدير العام المسؤول *</label>
-                            <input type="text" id="reg-manager-name" required placeholder="مثال: أحمد" class="w-full border border-slate-300 rounded-xl p-2 text-xs font-bold focus:ring-2 focus:ring-blue-500">
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">كلمة مرور حساب المدير للمنظومة *</label>
-                            <input type="password" id="reg-manager-password" required placeholder="••••••••" class="w-full border border-slate-300 rounded-xl p-2 text-xs font-mono focus:ring-2 focus:ring-blue-500">
-                        </div>
-
-                        <div class="p-3 bg-blue-50 rounded-2xl border border-blue-200 text-[11px] text-blue-900 leading-relaxed space-y-1">
-                            <div class="font-bold flex items-center gap-1">
-                                <i class="fa-brands fa-google text-blue-600"></i>
-                                <span>الربط الرسمي المباشر بـ Google Drive:</span>
-                            </div>
-                            <p class="text-slate-600">سيطلب منك المتصفح الإذن لمرة واحدة لإنشاء وتعديل ملف جدول البيانات داخل Google Drive الخاص بك تلقائياً.</p>
-                        </div>
-
-                        <button type="submit" id="btn-submit-register" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-black rounded-xl shadow transition flex items-center justify-center gap-2 mt-2">
-                            <i class="fa-solid fa-cloud-arrow-up"></i>
-                            <span>منح صلاحيات Google وإنشاء الشيت فوراً</span>
-                        </button>
-                    </form>
-                </div>
-
-                <!-- BOX 3: FORGOT PASSWORD -->
-                <div id="view-forgot-box" class="hidden space-y-3">
-                    <div class="p-3 bg-slate-50 border rounded-xl text-xs text-slate-600">
-                        إذا نسيت كلمة المرور، يمكنك كمدير الدخول مباشرة بحساب Google المسجل لتغييرها، أو مراجعة المدير العام إذا كنت موظفاً.
-                    </div>
-                    <button type="button" onclick="requestGoogleLoginForManager()" class="w-full py-2 bg-blue-600 text-white text-xs font-bold rounded-xl shadow">
-                        التحقق والدخول عبر Google
-                    </button>
-                    <div class="text-center pt-1">
-                        <button type="button" onclick="switchAuthTab('login')" class="text-xs text-slate-500 hover:underline">العودة لشاشة الدخول</button>
-                    </div>
-                </div>
-
-            </div>
+        <!-- تنبيه حالة الإعداد التقني -->
+        <div id="firebaseSetupNotice" class="hidden text-xs text-amber-400/90 bg-amber-950/30 border border-amber-800/40 p-3 rounded-xl text-right">
+          <i class="fa-solid fa-triangle-exclamation ml-1"></i>
+          بانتظار لصق مفاتيح Firebase السحابية في الكود لتفعيل المزامنة المباشرة.
         </div>
+      </div>
+
+      <!-- محتوى دخول الموظف -->
+      <div id="employeeAuthView" class="hidden space-y-4 text-right">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">رمز السحابة / بريد المؤسسة:</label>
+          <input type="text" id="empCompanyKey" placeholder="مثال: ahmad@gmail.com" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">اسم المستخدم:</label>
+          <input type="text" id="empUsername" placeholder="اسم الموظف المسجل" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">كلمة المرور:</label>
+          <input type="password" id="empPassword" placeholder="••••••••" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500">
+        </div>
+        <button onclick="loginAsEmployee()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 px-4 rounded-xl transition duration-200 text-sm shadow-lg shadow-indigo-600/30">
+          تسجيل دخول الموظف
+        </button>
+      </div>
+
     </div>
-    <!-- APP MAIN HEADER -->
-    <header class="no-print bg-slate-950 text-white shadow-xl sticky top-0 z-30 border-b border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5">
-            <div class="flex flex-col lg:flex-row items-center justify-between gap-3">
-                <div class="flex items-center space-x-3 space-x-reverse">
-                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 via-teal-500 to-cyan-500 flex items-center justify-center text-white shadow-md">
-                        <i class="fa-solid fa-cloud-bolt text-lg text-white"></i>
-                    </div>
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <h1 class="text-base sm:text-lg font-black tracking-tight" id="header-org-title">منظومة الحسابات السحابية</h1>
-                            <span id="cloud-sync-badge" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-950 text-emerald-400 border border-emerald-700/60 flex items-center gap-1.5 cursor-pointer" onclick="openCloudConfigModal()" title="إعدادات الربط السحابي">
-                                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" id="sync-dot"></span>
-                                <span id="sync-status-text">متصل بـ Google Drive</span>
-                            </span>
-                        </div>
-                        <p class="text-[11px] text-slate-400" id="header-org-subtitle">
-                            تأسست: <span id="org-created-date-label">اليوم</span> • ملف الشيت: <span id="active-sheet-name-label" class="font-bold text-emerald-400">قاعدة_بيانات_المحاسبة</span>
-                        </p>
-                    </div>
-                </div>
+  </div>
 
-                <div class="flex flex-wrap items-center justify-center gap-2">
-                    <!-- Google Sheet Direct Link Button -->
-                    <a id="btn-open-google-sheet" href="#" target="_blank" class="hidden text-xs bg-emerald-900/60 hover:bg-emerald-800 border border-emerald-700 text-emerald-300 px-2.5 py-1.5 rounded-xl transition flex items-center gap-1.5" title="فتح ملف الشيت في Google Drive">
-                        <i class="fa-solid fa-table text-emerald-400"></i>
-                        <span>فتح الشيت بدرايف</span>
-                    </a>
-
-                    <!-- Export to Excel Button -->
-                    <button onclick="exportFullOrganizationToExcel()" class="text-xs bg-slate-900 hover:bg-slate-800 border border-slate-700 text-emerald-400 hover:text-white px-2.5 py-1.5 rounded-xl transition flex items-center gap-1.5" title="تصدير نسخة إكسل فورية">
-                        <i class="fa-solid fa-file-excel text-emerald-400"></i>
-                        <span>تصدير Excel</span>
-                    </button>
-
-                    <!-- Notification Bell -->
-                    <div class="relative" id="notifications-wrapper">
-                        <button onclick="toggleNotificationsDropdown()" id="btn-notifications-bell" class="relative p-2 bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700 rounded-xl transition shadow-sm" title="مركز التنبيهات الحية">
-                            <i class="fa-solid fa-bell text-amber-400 text-sm"></i>
-                            <span id="notifications-count-badge" class="hidden absolute -top-1 -right-1 w-4 h-4 bg-rose-600 text-white text-[9px] font-black rounded-full flex items-center justify-center">0</span>
-                        </button>
-                        <div id="notifications-dropdown" class="hidden absolute left-0 sm:right-auto mt-2 w-80 bg-white text-slate-800 rounded-2xl shadow-2xl border border-slate-200 z-50 overflow-hidden">
-                            <div class="bg-slate-950 text-white p-3 flex items-center justify-between border-b border-slate-800">
-                                <span class="text-xs font-bold"><i class="fa-solid fa-bell text-amber-400 ml-1"></i> التنبيهات الحية للعمليات</span>
-                                <button onclick="clearAllNotifications()" class="text-[10px] text-slate-400 hover:text-rose-400">مسح الكل</button>
-                            </div>
-                            <div id="notifications-list" class="max-h-64 overflow-y-auto divide-y divide-slate-100 text-xs p-1">
-                                <div class="p-4 text-center text-slate-400 text-xs font-semibold">لا توجد إشعارات جديدة</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- User Session Pill -->
-                    <div class="flex items-center bg-slate-900/90 border border-slate-700/80 rounded-xl px-3 py-1.5">
-                        <div class="text-right ml-2">
-                            <div class="text-xs font-bold text-slate-100 flex items-center gap-1">
-                                <span id="current-user-name-display">المدير العام</span>
-                                <span id="current-user-role-badge" class="px-1.5 py-0.2 rounded text-[9px] font-extrabold bg-emerald-900/80 text-emerald-300">مدير عام</span>
-                            </div>
-                        </div>
-                        <button onclick="openChangePasswordModal()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded-lg border border-slate-700 ml-1" title="تغيير كلمة المرور"><i class="fa-solid fa-key text-amber-400"></i></button>
-                        <button onclick="logoutSession()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded-lg border border-slate-700" title="تسجيل الخروج"><i class="fa-solid fa-power-off text-rose-400"></i></button>
-                    </div>
-
-                    <button onclick="openModal('add-transaction-modal')" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-bold rounded-xl shadow transition flex items-center gap-1.5">
-                        <i class="fa-solid fa-plus-circle"></i>
-                        <span>حركة جديدة</span>
-                    </button>
-                </div>
-            </div>
-            <!-- Tabs Navigation -->
-            <div class="flex border-t border-slate-800/80 mt-2.5 pt-1.5 gap-2 overflow-x-auto text-xs sm:text-sm font-medium">
-                <button onclick="switchTab('dashboard-view')" id="tab-dashboard-view" class="tab-btn active px-3 py-2 text-white border-b-2 border-emerald-500 flex items-center gap-1.5 whitespace-nowrap">
-                    <i class="fa-solid fa-chart-pie text-emerald-400"></i> لوحة المؤشرات
-                </button>
-                <button onclick="switchTab('statement-view')" id="tab-statement-view" class="tab-btn px-3 py-2 text-slate-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap">
-                    <i class="fa-solid fa-file-invoice-dollar text-teal-400"></i> كشف الحساب والطباعة
-                </button>
-                <button onclick="switchTab('advances-view')" id="tab-advances-view" class="tab-btn px-3 py-2 text-slate-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap">
-                    <i class="fa-solid fa-hand-holding-dollar text-emerald-400"></i> الدفعات والسلف (<span id="tab-advances-count">0</span>)
-                </button>
-                <button onclick="switchTab('transactions-view')" id="tab-transactions-view" class="tab-btn px-3 py-2 text-slate-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap">
-                    <i class="fa-solid fa-book-journal-whills text-blue-400"></i> دفتر اليومية
-                </button>
-                <button onclick="switchTab('unpriced-view')" id="tab-unpriced-view" class="tab-btn px-3 py-2 text-slate-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap">
-                    <i class="fa-solid fa-clock-rotate-left text-amber-400"></i> بضائع معلقة (<span id="tab-unpriced-count">0</span>)
-                </button>
-                <button onclick="switchTab('parties-view')" id="tab-parties-view" class="tab-btn px-3 py-2 text-slate-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap">
-                    <i class="fa-solid fa-users-gear text-purple-400"></i> دليل الحسابات
-                </button>
-                <button onclick="switchTab('users-management-view')" id="tab-users-management-view" class="tab-btn px-3 py-2 text-slate-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap">
-                    <i class="fa-solid fa-id-badge text-rose-400"></i> إدارة الموظفين
-                </button>
-            </div>
+  <!-- ========================================== -->
+  <!-- 2. واجهة البرنامج الرئيسية للعمل اليومي -->
+  <!-- ========================================== -->
+  <div id="mainApp" class="flex-1 flex flex-col hidden">
+    
+    <!-- الشريط العلوي الاحترافي -->
+    <header class="no-print glass-card border-b border-slate-800 sticky top-0 z-40 px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-indigo-600/30 border border-indigo-500/40 rounded-xl flex items-center justify-center text-indigo-400">
+          <i class="fa-solid fa-building-columns"></i>
         </div>
+        <div>
+          <h2 id="displayOrgName" class="text-sm md:text-base font-black text-white">المؤسسة العامة للتجارة</h2>
+          <div class="flex items-center gap-2 text-xs">
+            <span id="syncStatusBadge" class="flex items-center gap-1.5 text-emerald-400">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 pulse-sync"></span>
+              متصل بالسحابة (لحظي)
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 md:gap-3">
+        <!-- زر إضافة قيد / فاتورة -->
+        <button onclick="openModal('txModal')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3.5 py-2 rounded-xl text-xs md:text-sm flex items-center gap-1.5 shadow-md shadow-emerald-600/20">
+          <i class="fa-solid fa-plus"></i>
+          <span>حركة / دفعة</span>
+        </button>
+
+        <!-- زر تصدير إكسل الرسمي المعتمد -->
+        <button onclick="exportToExcel()" class="bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/30 font-bold px-3 py-2 rounded-xl text-xs md:text-sm flex items-center gap-1.5">
+          <i class="fa-solid fa-file-excel"></i>
+          <span class="hidden md:inline">تصدير إكسل</span>
+        </button>
+
+        <!-- معلومات المستخدم المسجل وخروج -->
+        <div class="flex items-center gap-2 bg-slate-800/80 px-2.5 py-1.5 rounded-xl border border-slate-700 text-xs">
+          <i class="fa-solid fa-user-circle text-indigo-400 text-base"></i>
+          <span id="currentUserLabel" class="font-bold text-slate-200">المدير العام</span>
+          <button onclick="logout()" title="تسجيل الخروج" class="text-rose-400 hover:text-rose-300 mr-1">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          </button>
+        </div>
+      </div>
     </header>
 
-    <!-- MAIN APP CONTAINER -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex-1 w-full space-y-6">
+    <!-- شريط التبويبات الرئيسي -->
+    <nav class="no-print bg-slate-900/60 border-b border-slate-800/80 px-4 flex gap-2 md:gap-6 overflow-x-auto text-xs md:text-sm font-bold">
+      <button onclick="switchView('dashboard')" id="nav-dashboard" class="py-3 px-2 border-b-2 border-indigo-500 text-indigo-400 flex items-center gap-2 whitespace-nowrap">
+        <i class="fa-solid fa-chart-pie"></i> لوحة المؤشرات
+      </button>
+      <button onclick="switchView('ledger')" id="nav-ledger" class="py-3 px-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 whitespace-nowrap">
+        <i class="fa-solid fa-book"></i> دفتر اليومية
+      </button>
+      <button onclick="switchView('pending')" id="nav-pending" class="py-3 px-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 whitespace-nowrap">
+        <i class="fa-solid fa-clock-rotate-left"></i> بضائع غير مسعرة (<span id="pendingCountBadge">0</span>)
+      </button>
+      <button onclick="switchView('advances')" id="nav-advances" class="py-3 px-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 whitespace-nowrap">
+        <i class="fa-solid fa-hand-holding-dollar"></i> سجل السلف والدفعات
+      </button>
+      <button onclick="switchView('statement')" id="nav-statement" class="py-3 px-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 whitespace-nowrap">
+        <i class="fa-solid fa-file-invoice-dollar"></i> كشف الحساب والطباعة
+      </button>
+      <button onclick="switchView('users')" id="nav-users" class="py-3 px-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 whitespace-nowrap">
+        <i class="fa-solid fa-users-gear"></i> إدارة الموظفين
+      </button>
+    </nav>
 
-        <!-- TAB 1: DASHBOARD -->
-        <section id="dashboard-view" class="tab-content space-y-5">
-            <!-- Unpriced Alert Banner -->
-            <div id="dash-unpriced-alert" class="hidden bg-amber-50 border border-amber-300 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center font-black"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                    <div>
-                        <h3 class="font-bold text-amber-900 text-xs sm:text-sm">تنبيه: بضائع استُلمت ولم يتفق على سعرها بعد!</h3>
-                        <p class="text-[11px] text-amber-800">أثبتت الكميات في المستودع وعُزلت مالياً لحين تحديد السعر والاتفاق عليه.</p>
-                    </div>
-                </div>
-                <button onclick="switchTab('unpriced-view')" class="px-3 py-1.5 bg-amber-600 text-white rounded-lg text-xs font-bold hover:bg-amber-700 transition">عرض المعلقات (<span id="dash-unpriced-count-badge">0</span>)</button>
-            </div>
+    <!-- منطقة المحتوى التفاعلي -->
+    <main class="flex-1 p-4 md:p-6 max-w-7xl mx-auto w-full space-y-6">
+      
+      <!-- 1. لوحة المؤشرات والأرصدة -->
+      <section id="view-dashboard" class="space-y-6">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="glass-card p-4 rounded-2xl border border-slate-800">
+            <span class="text-xs text-slate-400 block mb-1">إجمالي الوارد (مشتريات)</span>
+            <span id="statTotalIn" class="text-lg md:text-xl font-black text-emerald-400">$ 0.00</span>
+          </div>
+          <div class="glass-card p-4 rounded-2xl border border-slate-800">
+            <span class="text-xs text-slate-400 block mb-1">إجمالي الصادر (مبيعات)</span>
+            <span id="statTotalOut" class="text-lg md:text-xl font-black text-indigo-400">$ 0.00</span>
+          </div>
+          <div class="glass-card p-4 rounded-2xl border border-slate-800">
+            <span class="text-xs text-slate-400 block mb-1">مستحق لنا (ذمم مدينة)</span>
+            <span id="statReceivable" class="text-lg md:text-xl font-black text-amber-400">$ 0.00</span>
+          </div>
+          <div class="glass-card p-4 rounded-2xl border border-slate-800">
+            <span class="text-xs text-slate-400 block mb-1">مستحق علينا (ذمم دائنة)</span>
+            <span id="statPayable" class="text-lg md:text-xl font-black text-rose-400">$ 0.00</span>
+          </div>
+        </div>
 
-            <!-- Currency & Status Bar -->
-            <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-3">
-                <div class="flex items-center gap-2">
-                    <span class="text-xs font-black text-slate-700"><i class="fa-solid fa-coins text-amber-500 mr-1"></i> عملة الإحصائيات:</span>
-                    <select id="dash-currency-filter" onchange="renderDashboard()" class="border border-slate-300 rounded-xl px-3 py-1.5 text-xs font-bold bg-slate-50">
-                        <option value="USD">الدولار ($ - USD)</option>
-                        <option value="SYP">الليرة السورية (SYP)</option>
-                        <option value="SAR">الريال السعودي (SAR)</option>
-                        <option value="TRY">الليرة التركية (TRY)</option>
-                    </select>
-                </div>
-                <div id="connection-real-status-label" class="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-xl border border-emerald-200 flex items-center gap-1.5">
-                    <i class="fa-brands fa-google-drive text-emerald-600"></i>
-                    <span id="label-sync-desc">سحابة Google Drive و Sheets متصلة وحية</span>
-                </div>
-            </div>
-            <!-- Metric Cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                    <span class="text-[11px] font-bold text-slate-500">إجمالي الوارد (مشتريات وبضائع)</span>
-                    <div class="mt-2 flex items-baseline gap-1.5">
-                        <span id="dash-total-inbound" class="text-2xl font-black text-blue-700">0.00</span>
-                        <span class="dash-curr-label text-xs font-bold text-slate-600">USD</span>
-                    </div>
-                </div>
-                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                    <span class="text-[11px] font-bold text-slate-500">إجمالي الصادر (مبيعات)</span>
-                    <div class="mt-2 flex items-baseline gap-1.5">
-                        <span id="dash-total-outbound" class="text-2xl font-black text-amber-700">0.00</span>
-                        <span class="dash-curr-label text-xs font-bold text-slate-600">USD</span>
-                    </div>
-                </div>
-                <div class="bg-white p-4 rounded-2xl border border-emerald-200 bg-gradient-to-br from-white to-emerald-50/50 shadow-sm">
-                    <span class="text-[11px] font-bold text-emerald-800">مستحق لنا (بذمة العملاء)</span>
-                    <div class="mt-2 flex items-baseline gap-1.5">
-                        <span id="dash-receivables" class="text-2xl font-black text-emerald-700">0.00</span>
-                        <span class="dash-curr-label text-xs font-bold text-emerald-800">USD</span>
-                    </div>
-                </div>
-                <div class="bg-white p-4 rounded-2xl border border-rose-200 bg-gradient-to-br from-white to-rose-50/50 shadow-sm">
-                    <span class="text-[11px] font-bold text-rose-800">مستحق علينا (للموردين)</span>
-                    <div class="mt-2 flex items-baseline gap-1.5">
-                        <span id="dash-payables" class="text-2xl font-black text-rose-700">0.00</span>
-                        <span class="dash-curr-label text-xs font-bold text-rose-800">USD</span>
-                    </div>
-                </div>
-            </div>
+        <!-- جدول الحسابات الإجمالية -->
+        <div class="glass-card rounded-2xl p-4 md:p-6 border border-slate-800">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold text-base text-white flex items-center gap-2">
+              <i class="fa-solid fa-address-book text-indigo-400"></i> دليل الحسابات والأرصدة الحالية
+            </h3>
+            <button onclick="openModal('accountModal')" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg">
+              + إضافة حساب جديد
+            </button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-right text-xs md:text-sm">
+              <thead class="text-slate-400 border-b border-slate-800">
+                <tr>
+                  <th class="py-2.5 px-3">اسم الحساب</th>
+                  <th class="py-2.5 px-3">الصفة</th>
+                  <th class="py-2.5 px-3">الهاتف</th>
+                  <th class="py-2.5 px-3">الرصيد بالدولار ($)</th>
+                  <th class="py-2.5 px-3">بضائع معلقة</th>
+                  <th class="py-2.5 px-3 text-center">إجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="accountsTableBody" class="divide-y divide-slate-800/60"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
 
-            <!-- Accounts Balances Table -->
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                <div class="p-4 border-b border-slate-100 flex justify-between items-center">
-                    <h2 class="text-sm font-bold text-slate-800">أرصدة الحسابات الإجمالية للموردين والعملاء</h2>
-                    <button onclick="checkAdminAndOpenPartyModal()" class="px-3 py-1.5 bg-slate-900 hover:bg-black text-white text-xs font-bold rounded-lg transition"><i class="fa-solid fa-user-plus ml-1"></i> حساب جديد</button>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-right text-xs sm:text-sm">
-                        <thead class="bg-slate-50 text-slate-600 font-bold border-b border-slate-200">
-                            <tr>
-                                <th class="p-3">اسم الشخص / الشركة</th>
-                                <th class="p-3">الصفة</th>
-                                <th class="p-3">الهاتف</th>
-                                <th class="p-3">الرصيد بالدولار ($)</th>
-                                <th class="p-3">الرصيد بالليرة</th>
-                                <th class="p-3 text-center">بضائع معلقة</th>
-                                <th class="p-3 text-center">كشف الحساب</th>
-                            </tr>
-                        </thead>
-                        <tbody id="dash-accounts-tbody" class="divide-y divide-slate-100"></tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-        <!-- TAB 2: STATEMENT VIEW -->
-        <section id="statement-view" class="tab-content hidden space-y-5">
-            <div class="no-print bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b pb-3">
-                    <div class="flex items-center gap-2">
-                        <i class="fa-solid fa-file-invoice-dollar text-teal-600 text-lg"></i>
-                        <h2 class="font-bold text-sm text-slate-800">كشف الحساب المالي المعتمد</h2>
-                    </div>
-                    <div class="flex gap-2">
-                        <button onclick="printStatement()" class="px-3 py-1.5 bg-slate-900 text-white text-xs font-bold rounded-xl hover:bg-black transition"><i class="fa-solid fa-print ml-1"></i> طباعة / PDF</button>
-                        <button onclick="exportStatementToExcel()" class="px-3 py-1.5 bg-emerald-700 text-white text-xs font-bold rounded-xl hover:bg-emerald-800 transition"><i class="fa-solid fa-file-excel ml-1"></i> تصدير Excel</button>
-                    </div>
-                </div>
+      <!-- 2. دفتر اليومية العام -->
+      <section id="view-ledger" class="hidden glass-card rounded-2xl p-4 md:p-6 border border-slate-800">
+        <h3 class="font-bold text-base text-white mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-book-open text-indigo-400"></i> سجل القيود والحركات المحاسبية المتسلسلة
+        </h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-right text-xs md:text-sm">
+            <thead class="text-slate-400 border-b border-slate-800">
+              <tr>
+                <th class="py-2.5 px-2">رقم القيد</th>
+                <th class="py-2.5 px-2">تاريخ البضاعة</th>
+                <th class="py-2.5 px-2">تاريخ التوثيق</th>
+                <th class="py-2.5 px-2">الحساب</th>
+                <th class="py-2.5 px-2">النوع</th>
+                <th class="py-2.5 px-2">البيان</th>
+                <th class="py-2.5 px-2">المبلغ ($)</th>
+                <th class="py-2.5 px-2">المستخدم</th>
+                <th class="py-2.5 px-2 text-center">حذف</th>
+              </tr>
+            </thead>
+            <tbody id="ledgerTableBody" class="divide-y divide-slate-800/60"></tbody>
+          </table>
+        </div>
+      </section>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">اسم الحساب / المورد:</label>
-                        <select id="stmt-party-select" onchange="runStatementFilter()" class="w-full border rounded-xl p-2 text-xs font-bold bg-white"></select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">العملة:</label>
-                        <select id="stmt-currency-select" onchange="runStatementFilter()" class="w-full border rounded-xl p-2 text-xs font-bold bg-white">
-                            <option value="USD">دولار ($ - USD)</option>
-                            <option value="SYP">ليرة سورية (SYP)</option>
-                            <option value="SAR">ريال سعودي (SAR)</option>
-                            <option value="TRY">ليرة تركية (TRY)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">من تاريخ البضاعة الفعلي:</label>
-                        <input type="date" id="stmt-date-from" onchange="runStatementFilter()" class="w-full border rounded-xl p-1.5 text-xs bg-white">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">إلى تاريخ البضاعة الفعلي:</label>
-                        <input type="date" id="stmt-date-to" onchange="runStatementFilter()" class="w-full border rounded-xl p-1.5 text-xs bg-white">
-                    </div>
-                </div>
-            </div>
+      <!-- 3. البضائع غير المسعرة -->
+      <section id="view-pending" class="hidden glass-card rounded-2xl p-4 md:p-6 border border-slate-800">
+        <div class="bg-amber-950/20 border border-amber-800/30 p-3 rounded-xl mb-4 text-xs text-amber-300">
+          <i class="fa-solid fa-info-circle ml-1"></i> بضائع وردت أو صدرت دون تسعير نهائي؛ قم بتثبيت سعرها لاحقاً ليدخل قيمتها في الحساب والأرصدة فورياً.
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-right text-xs md:text-sm">
+            <thead class="text-slate-400 border-b border-slate-800">
+              <tr>
+                <th class="py-2.5 px-2">التاريخ</th>
+                <th class="py-2.5 px-2">الحساب</th>
+                <th class="py-2.5 px-2">النوع</th>
+                <th class="py-2.5 px-2">البيان والكمية</th>
+                <th class="py-2.5 px-2 text-center">تثبيت السعر النهائي</th>
+              </tr>
+            </thead>
+            <tbody id="pendingTableBody" class="divide-y divide-slate-800/60"></tbody>
+          </table>
+        </div>
+      </section>
 
-            <!-- Printable Area -->
-            <div id="printable-statement-area" class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-md">
-                <div class="border-b-2 border-slate-800 pb-3 mb-4">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <span class="text-xl font-black text-slate-900">كشف حساب مالي تفصيلي</span>
-                            <span id="stmt-badge-curr" class="px-2 py-0.5 rounded text-xs font-black bg-slate-900 text-white mr-2">USD</span>
-                        </div>
-                        <div class="text-left font-mono text-xs text-slate-600">
-                            <div><span class="font-bold">تاريخ الإصدار:</span> <span id="stmt-print-date"></span></div>
-                            <div><span class="font-bold">المستخرج:</span> <span id="stmt-print-by-user">المدير العام</span></div>
-                        </div>
-                    </div>
-                    <div class="mt-3 bg-slate-50 p-3 rounded-xl border grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
-                        <div><span class="text-slate-500">اسم الحساب:</span> <span id="stmt-party-name" class="font-black text-slate-900 text-sm">---</span></div>
-                        <div><span class="text-slate-500">الصفة:</span> <span id="stmt-party-type" class="font-bold">---</span></div>
-                        <div><span class="text-slate-500">الهاتف:</span> <span id="stmt-party-contact" class="font-bold">---</span></div>
-                    </div>
-                </div>
+      <!-- 4. سجل السلف والدفعات النقدية -->
+      <section id="view-advances" class="hidden glass-card rounded-2xl p-4 md:p-6 border border-slate-800">
+        <h3 class="font-bold text-base text-white mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-money-bill-transfer text-emerald-400"></i> كشف السلف والدفعات النقدية المقبوضة والمدفوعة
+        </h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-right text-xs md:text-sm">
+            <thead class="text-slate-400 border-b border-slate-800">
+              <tr>
+                <th class="py-2.5 px-3">التاريخ</th>
+                <th class="py-2.5 px-3">الحساب</th>
+                <th class="py-2.5 px-3">نوع الدفعة</th>
+                <th class="py-2.5 px-3">البيان</th>
+                <th class="py-2.5 px-3">المبلغ ($)</th>
+              </tr>
+            </thead>
+            <tbody id="advancesTableBody" class="divide-y divide-slate-800/60"></tbody>
+          </table>
+        </div>
+      </section>
 
-                <div class="overflow-x-auto">
-                    <table class="w-full text-right text-xs border-collapse">
-                        <thead>
-                            <tr class="bg-slate-100 border-y border-slate-300 font-bold">
-                                <th class="p-2 w-8 text-center">#</th>
-                                <th class="p-2 w-24">تاريخ البضاعة</th>
-                                <th class="p-2 w-20">رقم الفاتورة</th>
-                                <th class="p-2">البيان والتفاصيل</th>
-                                <th class="p-2 w-14 text-center">الكمية</th>
-                                <th class="p-2 w-16 text-center">السعر</th>
-                                <th class="p-2 w-20 text-center">الحالة</th>
-                                <th class="p-2 w-24 text-emerald-800 bg-emerald-50/50">له (دائن)</th>
-                                <th class="p-2 w-24 text-rose-800 bg-rose-50/50">عليه (مدين)</th>
-                                <th class="p-2 w-28 bg-slate-200 text-slate-900 font-extrabold text-left pl-2">الرصيد المتبقي</th>
-                                <th class="p-2 w-20 text-center">المُدخل</th>
-                            </tr>
-                        </thead>
-                        <tbody id="stmt-tbody" class="divide-y divide-slate-200"></tbody>
-                        <tfoot class="border-t-2 border-slate-800 bg-slate-50 font-bold text-slate-900">
-                            <tr>
-                                <td colspan="7" class="p-2.5 text-left font-black">المجموع العام:</td>
-                                <td id="stmt-total-credit" class="p-2.5 text-emerald-700 font-black">0.00</td>
-                                <td id="stmt-total-debit" class="p-2.5 text-rose-700 font-black">0.00</td>
-                                <td id="stmt-final-balance" class="p-2.5 text-left pl-2 font-black bg-slate-200">0.00</td>
-                                <td></td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
+      <!-- 5. كشف الحساب والطباعة المعتمدة -->
+      <section id="view-statement" class="hidden space-y-4">
+        <div class="no-print glass-card p-4 rounded-2xl border border-slate-800 flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <label class="text-xs font-bold text-slate-300">اختر الحساب:</label>
+            <select id="statementAccountSelect" onchange="generateStatement()" class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none">
+              <!-- تعبئة تلقائية -->
+            </select>
+          </div>
+          <button onclick="window.print()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-4 py-2 rounded-xl text-sm flex items-center gap-2">
+            <i class="fa-solid fa-print"></i> طباعة كشف الحساب المعتمد
+          </button>
+        </div>
 
-                <div class="mt-4 pt-3 border-t flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-                    <div id="stmt-balance-summary-text" class="font-bold p-2.5 rounded-xl border bg-slate-50 border-slate-200">الرصيد: 0.00</div>
-                    <div class="grid grid-cols-2 gap-8 text-center font-semibold text-slate-600 min-w-[260px]">
-                        <div>توقيع المحاسب المسئول: __________</div>
-                        <div>توقيع الطرف الثاني للمصادقة: __________</div>
-                    </div>
-                </div>
+        <!-- ورقة كشف الحساب المجهزة للطباعة -->
+        <div id="printSheet" class="print-area glass-card p-6 md:p-8 rounded-2xl border border-slate-800 bg-white text-slate-900">
+          <div class="border-b-2 border-slate-900 pb-4 mb-4 flex justify-between items-center">
+            <div>
+              <h2 id="printOrgTitle" class="text-xl font-black text-slate-900">المؤسسة العامة للتجارة</h2>
+              <p class="text-xs text-slate-600">كشف حساب مالي تفصيلي موثق</p>
             </div>
-        </section>
-        <!-- TAB 3: ADVANCES VIEW -->
-        <section id="advances-view" class="tab-content hidden space-y-4">
-            <div class="bg-emerald-50 border border-emerald-300 p-4 rounded-2xl flex justify-between items-center">
-                <div>
-                    <h2 class="text-xs sm:text-sm font-black text-emerald-950"><i class="fa-solid fa-hand-holding-dollar ml-1 text-emerald-600"></i> سجل الدفعات والسلف الواصلة</h2>
-                    <p class="text-[11px] text-emerald-800">متابعة دفعات وسلف العمل النقدية لمعرفة كم وصل للشخص دون إجراء محاسبة نهائية.</p>
-                </div>
-                <button onclick="openModal('add-transaction-modal', 'advance_payment')" class="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold shadow transition">+ سلفة / دفعة نقدية</button>
+            <div class="text-left text-xs text-slate-600">
+              <p>تاريخ الاستخراج: <span id="printDate"></span></p>
+              <p>الرقم المرجعي: <span id="printRef">#ST-990</span></p>
             </div>
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                <table class="w-full text-right text-xs">
-                    <thead class="bg-slate-100 text-slate-700 font-bold border-b">
-                        <tr>
-                            <th class="p-3 text-center">#</th>
-                            <th class="p-3">التاريخ الفعلي</th>
-                            <th class="p-3">المستلم / الحساب</th>
-                            <th class="p-3">رقم السند</th>
-                            <th class="p-3">السبب والغرض</th>
-                            <th class="p-3 text-left">المبلغ الواصل</th>
-                            <th class="p-3 text-center">العملة</th>
-                            <th class="p-3 text-center">المُدخل</th>
-                        </tr>
-                    </thead>
-                    <tbody id="advances-tbody" class="divide-y divide-slate-100"></tbody>
-                </table>
-            </div>
-        </section>
+          </div>
 
-        <!-- TAB 4: MASTER JOURNAL -->
-        <section id="transactions-view" class="tab-content hidden space-y-4">
-            <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm flex flex-wrap justify-between items-center gap-2">
-                <input type="text" id="master-search-input" oninput="renderMasterTable()" placeholder="بحث في الحركات..." class="p-2 text-xs border rounded-xl w-56">
-                <div class="flex gap-2">
-                    <button onclick="printStatement()" class="px-3 py-1.5 bg-slate-900 hover:bg-black text-white text-xs font-bold rounded-xl transition"><i class="fa-solid fa-print ml-1"></i> طباعة</button>
-                    <button onclick="exportAllMasterToExcel()" class="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl transition"><i class="fa-solid fa-file-excel ml-1"></i> إكسل</button>
-                    <button onclick="openModal('add-transaction-modal')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition">+ حركة</button>
-                </div>
-            </div>
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                <table class="w-full text-right text-xs">
-                    <thead class="bg-slate-100 text-slate-700 font-bold border-b">
-                        <tr>
-                            <th class="p-2.5 text-center">#</th>
-                            <th class="p-2.5">تاريخ البضاعة</th>
-                            <th class="p-2.5">الحساب</th>
-                            <th class="p-2.5">نوع الحركة</th>
-                            <th class="p-2.5">الفاتورة</th>
-                            <th class="p-2.5">البيان</th>
-                            <th class="p-2.5 text-center">الكمية</th>
-                            <th class="p-2.5 text-center">السعر</th>
-                            <th class="p-2.5 text-left">المبلغ</th>
-                            <th class="p-2.5 text-center">العملة</th>
-                            <th class="p-2.5 text-center">الحالة</th>
-                            <th class="p-2.5 text-center">المُدخل</th>
-                            <th class="p-2.5 text-center">إجراء</th>
-                        </tr>
-                    </thead>
-                    <tbody id="master-tbody" class="divide-y divide-slate-100"></tbody>
-                </table>
-            </div>
-        </section>
-        <!-- TAB 5: UNPRICED GOODS -->
-        <section id="unpriced-view" class="tab-content hidden space-y-4">
-            <div class="bg-amber-50 border border-amber-300 p-4 rounded-2xl flex justify-between items-center">
-                <div>
-                    <h2 class="text-xs sm:text-sm font-black text-amber-900"><i class="fa-solid fa-boxes-packing ml-1 text-amber-600"></i> بضائع بدون تسعير (معلقة قيد الاتفاق)</h2>
-                    <p class="text-[11px] text-amber-800">بضائع استُلمت كمياتها في المستودع دون سعر؛ لا تؤثر على الرصيد حتى تثبيت السعر.</p>
-                </div>
-                <button onclick="openModal('add-transaction-modal')" class="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold shadow transition">+ إضافة بضاعة معلقة</button>
-            </div>
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                <table class="w-full text-right text-xs">
-                    <thead class="bg-slate-100 text-slate-700 font-bold border-b">
-                        <tr>
-                            <th class="p-3 text-center">#</th>
-                            <th class="p-3">تاريخ الاستلام</th>
-                            <th class="p-3">الحساب</th>
-                            <th class="p-3">رقم الإذن</th>
-                            <th class="p-3">البيان والصنف</th>
-                            <th class="p-3 text-center">الكمية</th>
-                            <th class="p-3 text-center">العملة</th>
-                            <th class="p-3 text-center">المُدخل</th>
-                            <th class="p-3 text-center">تثبيت السعر</th>
-                        </tr>
-                    </thead>
-                    <tbody id="unpriced-tbody" class="divide-y divide-slate-100"></tbody>
-                </table>
-            </div>
-        </section>
+          <div class="grid grid-cols-2 gap-4 mb-6 bg-slate-100 p-3 rounded-lg text-xs">
+            <p><strong>اسم الحساب:</strong> <span id="printClientName">-</span></p>
+            <p><strong>الصفة / الهاتف:</strong> <span id="printClientPhone">-</span></p>
+          </div>
 
-        <!-- TAB 6: PARTIES -->
-        <section id="parties-view" class="tab-content hidden space-y-4">
-            <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm flex justify-between items-center">
-                <h2 class="font-bold text-slate-800 text-xs sm:text-sm">دليل الحسابات والموردين والعملاء</h2>
-                <button onclick="checkAdminAndOpenPartyModal()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow transition">+ حساب جديد</button>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5" id="parties-grid"></div>
-        </section>
+          <table class="w-full text-right text-xs border border-slate-300 mb-6">
+            <thead class="bg-slate-200 text-slate-800 font-bold border-b border-slate-300">
+              <tr>
+                <th class="p-2 border-l border-slate-300">رقم الحركة</th>
+                <th class="p-2 border-l border-slate-300">التاريخ</th>
+                <th class="p-2 border-l border-slate-300">البيان</th>
+                <th class="p-2 border-l border-slate-300">لنا (مدين)</th>
+                <th class="p-2 border-l border-slate-300">علينا (دائن)</th>
+                <th class="p-2">الرصيد التراكمي</th>
+              </tr>
+            </thead>
+            <tbody id="statementTableBody" class="divide-y divide-slate-300"></tbody>
+          </table>
 
-        <!-- TAB 7: USERS MANAGEMENT -->
-        <section id="users-management-view" class="tab-content hidden space-y-4">
-            <div class="bg-slate-900 text-white p-4 rounded-3xl border border-slate-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                <div>
-                    <h2 class="font-black text-sm sm:text-base">إدارة حسابات الموظفين والمستخدمين</h2>
-                    <p class="text-xs text-slate-300">يضيف المدير الموظف بكلمة سره، ويفتح الموظف الصفحة ليدخل مباشرة باسمه وكلمة سره على نفس السحابة.</p>
-                </div>
-                <div class="flex gap-2">
-                    <button onclick="downloadEmployeePackage()" class="px-3.5 py-2 bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-bold rounded-xl shadow transition flex items-center gap-1.5">
-                        <i class="fa-solid fa-file-arrow-down"></i>
-                        <span>تنزيل نسخة الموظفين الجاهزة</span>
-                    </button>
-                    <button onclick="checkAdminAndOpenUserModal()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl shadow transition">+ موظف جديد</button>
-                </div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5" id="users-grid"></div>
-        </section>
+          <div class="flex justify-between items-center text-xs font-bold pt-4 border-t border-slate-300">
+            <div>توقيع وختم المحاسب: _______________</div>
+            <div>توقيع المستلم / العميل: _______________</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. إدارة الموظفين والصلاحيات -->
+      <section id="view-users" class="hidden glass-card rounded-2xl p-4 md:p-6 border border-slate-800">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-bold text-base text-white flex items-center gap-2">
+            <i class="fa-solid fa-user-shield text-indigo-400"></i> الموظفون المصرح لهم بالدخول
+          </h3>
+          <button onclick="openModal('userModal')" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg">
+            + إضافة موظف جديد
+          </button>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-right text-xs md:text-sm">
+            <thead class="text-slate-400 border-b border-slate-800">
+              <tr>
+                <th class="py-2 px-3">اسم الموظف</th>
+                <th class="py-2 px-3">اسم المستخدم</th>
+                <th class="py-2 px-3">كلمة المرور</th>
+                <th class="py-2 px-3">المسمى الوظيفي</th>
+                <th class="py-2 px-3 text-center">إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="usersTableBody" class="divide-y divide-slate-800/60"></tbody>
+          </table>
+        </div>
+      </section>
+
     </main>
-    <!-- MODAL: ADD TRANSACTION -->
-    <div id="add-transaction-modal" class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm hidden flex items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl border overflow-hidden my-4">
-            <div class="bg-slate-950 text-white p-3.5 px-4 flex justify-between items-center">
-                <h3 class="font-bold text-xs sm:text-sm"><i class="fa-solid fa-file-invoice text-emerald-400 ml-1"></i> حركة / دفعة جديدة</h3>
-                <button onclick="closeModal('add-transaction-modal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <form onsubmit="saveNewTransaction(event)" class="p-4 space-y-3 text-xs">
-                <div class="grid grid-cols-2 gap-2.5">
-                    <div>
-                        <label class="block font-bold mb-1">الحساب / الطرف *</label>
-                        <select id="tx-party-id" required class="w-full border rounded-xl p-2 font-bold"></select>
-                    </div>
-                    <div>
-                        <label class="block font-bold mb-1">نوع الحركة *</label>
-                        <select id="tx-type" onchange="handleTxTypeChange()" class="w-full border rounded-xl p-2 font-bold">
-                            <option value="goods_in">توريد بضاعة (له - دائن)</option>
-                            <option value="advance_payment">سلفة / دفعة تحت الحساب (عليه - مدين)</option>
-                            <option value="payment_out">دفعة مسددة لمورد (عليه - مدين)</option>
-                            <option value="goods_out">بضاعة صادرة / مبيعات (عليه - مدين)</option>
-                            <option value="payment_in">دفعة مقبوضة من عميل (له - دائن)</option>
-                            <option value="expense">مصروف عام (عليه - مدين)</option>
-                        </select>
-                    </div>
-                </div>
+  </div>
 
-                <div class="grid grid-cols-2 gap-2.5">
-                    <div>
-                        <label class="block font-bold mb-1">تاريخ وصول البضاعة الفعلي *</label>
-                        <input type="date" id="tx-goods-date" required class="w-full border rounded-xl p-2 font-mono">
-                    </div>
-                    <div>
-                        <label class="block font-bold mb-1">رقم الفاتورة / السند</label>
-                        <input type="text" id="tx-inv-num" placeholder="تلقائي (INV-1001)" class="w-full border rounded-xl p-2 font-mono">
-                    </div>
-                </div>
+  <!-- ========================================== -->
+  <!-- 3. النوافذ المنبثقة (Modals) -->
+  <!-- ========================================== -->
 
-                <div>
-                    <label class="block font-bold mb-1">البيان والشرح *</label>
-                    <input type="text" id="tx-desc" required placeholder="مثال: توريد 50 كرتونة، سلفة دفعة أولى..." class="w-full border rounded-xl p-2">
-                </div>
+  <!-- نافذة إضافة حركة / دفعة جديدة -->
+  <div id="txModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="glass-card w-full max-w-lg rounded-2xl p-6 border border-slate-700 text-right space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-700/60 pb-3">
+        <h4 class="font-bold text-base text-white">تسجيل حركة محاسبية جديدة</h4>
+        <button onclick="closeModal('txModal')" class="text-slate-400 hover:text-white">&times;</button>
+      </div>
 
-                <div class="grid grid-cols-3 gap-2 bg-slate-50 p-2.5 rounded-xl border">
-                    <div>
-                        <label class="block font-bold mb-1">الكمية</label>
-                        <input type="number" step="any" id="tx-qty" value="1" oninput="calculateTxTotal()" class="w-full border rounded-xl p-1.5 font-mono text-center">
-                    </div>
-                    <div>
-                        <label class="block font-bold mb-1">سعر الوحدة</label>
-                        <input type="number" step="any" id="tx-price" value="0" oninput="calculateTxTotal()" class="w-full border rounded-xl p-1.5 font-mono text-center">
-                    </div>
-                    <div>
-                        <label class="block font-bold mb-1">العملة</label>
-                        <select id="tx-currency" class="w-full border rounded-xl p-1.5 font-bold">
-                            <option value="USD">USD</option>
-                            <option value="SYP">SYP</option>
-                            <option value="SAR">SAR</option>
-                            <option value="TRY">TRY</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-2.5">
-                    <div>
-                        <label class="block font-bold mb-1">حالة السعر *</label>
-                        <select id="tx-pricing-status" onchange="handlePricingStatusChange()" class="w-full border border-amber-300 bg-amber-50 rounded-xl p-2 font-bold text-amber-950">
-                            <option value="مسعر">مسعر (تأثير مالي فوري)</option>
-                            <option value="لم يتفق عليه بعد">وصلت بدون سعر (أمانة معلقة)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block font-bold mb-1">المبلغ الناتج</label>
-                        <input type="number" step="any" id="tx-total" value="0" readonly class="w-full border border-emerald-300 bg-emerald-50 rounded-xl p-2 font-mono font-black text-emerald-800 text-center">
-                    </div>
-                </div>
-
-                <div class="flex justify-between items-center pt-2 border-t">
-                    <span class="text-[11px] text-slate-500">المُسجل: <strong class="active-user-name-indicator text-slate-800">المدير</strong></span>
-                    <div class="flex gap-2">
-                        <button type="button" onclick="closeModal('add-transaction-modal')" class="px-3 py-1.5 border rounded-xl hover:bg-slate-50">إلغاء</button>
-                        <button type="submit" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow">حفظ ومزامنة فورية</button>
-                    </div>
-                </div>
-            </form>
+      <div class="space-y-3 text-xs">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-300 mb-1">تاريخ وصول البضاعة الفعلي:</label>
+            <input type="date" id="txActualDate" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white">
+          </div>
+          <div>
+            <label class="block text-slate-300 mb-1">الحساب المعني:</label>
+            <select id="txAccountSelect" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white"></select>
+          </div>
         </div>
-    </div>
-    <!-- MODAL: RESOLVE PRICE -->
-    <div id="resolve-price-modal" class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl border p-4 space-y-3 text-xs">
-            <h3 class="font-bold text-sm text-amber-900 border-b pb-2"><i class="fa-solid fa-tag ml-1 text-amber-600"></i> تثبيت سعر البضاعة المعلقة</h3>
-            <input type="hidden" id="resolve-tx-id">
-            <div class="bg-slate-50 p-2 rounded-xl border text-[11px] space-y-1">
-                <div><span class="text-slate-500">الحساب:</span> <span id="resolve-party-name" class="font-bold"></span></div>
-                <div><span class="text-slate-500">الكمية:</span> <span id="resolve-qty" class="font-bold text-blue-700"></span></div>
-            </div>
-            <div>
-                <label class="block font-bold mb-1">سعر الوحدة المتفق عليه *</label>
-                <input type="number" step="any" id="resolve-unit-price" required oninput="calculateResolveTotal()" class="w-full border rounded-xl p-2 font-mono text-center font-bold">
-            </div>
-            <div>
-                <label class="block font-bold mb-1">المبلغ الإجمالي الناتج</label>
-                <input type="number" step="any" id="resolve-total-amount" readonly class="w-full border border-emerald-300 bg-emerald-50 text-emerald-900 rounded-xl p-2 font-mono text-center font-black">
-            </div>
-            <div class="flex justify-end gap-2 pt-2 border-t">
-                <button type="button" onclick="closeModal('resolve-price-modal')" class="px-3 py-1.5 border rounded-xl">إلغاء</button>
-                <button type="button" onclick="savePriceResolution(event)" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl">اعتماد السعر وتحديث الرصيد</button>
-            </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-300 mb-1">نوع الحركة:</label>
+            <select id="txTypeSelect" onchange="toggleTxInputs()" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white">
+              <option value="وارد">وارد (شراء بضاعة)</option>
+              <option value="صادر">صادر (بيع بضاعة)</option>
+              <option value="دفعة_لنا">دفعة مقبوضة نقدياً (لنا)</option>
+              <option value="دفعة_علينا">دفعة مدفوعة نقدياً (علينا / سلفة)</option>
+              <option value="معلق">بضاعة معلقة (غير مسعرة)</option>
+            </select>
+          </div>
+          <div id="amountBox">
+            <label class="block text-slate-300 mb-1">المبلغ الإجمالي ($):</label>
+            <input type="number" step="any" id="txAmount" placeholder="0.00" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white">
+          </div>
         </div>
-    </div>
 
-    <!-- MODAL: ADD PARTY -->
-    <div id="add-party-modal" class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl border p-4 space-y-3 text-xs">
-            <h3 class="font-bold text-sm text-slate-900 border-b pb-2"><i class="fa-solid fa-user-plus ml-1 text-emerald-600"></i> إضافة حساب / مورد جديد</h3>
-            <form onsubmit="saveNewParty(event)" class="space-y-2.5">
-                <div>
-                    <label class="block font-bold mb-1">اسم الشخص أو الشركة *</label>
-                    <input type="text" id="party-name" required placeholder="مثال: أبو غسان" class="w-full border rounded-xl p-2 font-bold">
-                </div>
-                <div>
-                    <label class="block font-bold mb-1">الصفة *</label>
-                    <select id="party-type" class="w-full border rounded-xl p-2 font-bold">
-                        <option value="مورد وعميل">مورد وعميل</option>
-                        <option value="مورد">مورد بضائع</option>
-                        <option value="عميل">عميل</option>
-                        <option value="عامل / فني">عامل / مقاول (سلف)</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block font-bold mb-1">الهاتف</label>
-                    <input type="text" id="party-phone" placeholder="0991234567" class="w-full border rounded-xl p-2 font-mono">
-                </div>
-                <div class="flex justify-end gap-2 pt-2 border-t">
-                    <button type="button" onclick="closeModal('add-party-modal')" class="px-3 py-1.5 border rounded-xl">إلغاء</button>
-                    <button type="submit" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl">حفظ الحساب</button>
-                </div>
-            </form>
+        <div>
+          <label class="block text-slate-300 mb-1">البيان / تفاصيل المواد والكميات:</label>
+          <textarea id="txDesc" rows="2" placeholder="اكتب التفاصيل بدقة..." class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white"></textarea>
         </div>
-    </div>
+      </div>
 
-    <!-- MODAL: ADD USER -->
-    <div id="add-user-modal" class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl border p-4 space-y-3 text-xs">
-            <h3 class="font-bold text-sm text-slate-900 border-b pb-2"><i class="fa-solid fa-user-shield ml-1 text-emerald-600"></i> إضافة موظف جديد</h3>
-            <form onsubmit="saveNewUser(event)" class="space-y-2.5">
-                <div>
-                    <label class="block font-bold mb-1">اسم الموظف *</label>
-                    <input type="text" id="new-user-name" required placeholder="مثال: أسلان" class="w-full border rounded-xl p-2 font-bold">
-                </div>
-                <div>
-                    <label class="block font-bold mb-1">المسمى الوظيفي *</label>
-                    <select id="new-user-role" class="w-full border rounded-xl p-2 font-bold">
-                        <option value="محاسب رئيسي">محاسب رئيسي</option>
-                        <option value="مدخل بيانات">مدخل بيانات</option>
-                        <option value="أمين مستودع">أمين مستودع</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block font-bold mb-1">كلمة المرور *</label>
-                    <input type="password" id="new-user-password" required placeholder="••••••••" class="w-full border rounded-xl p-2 font-mono">
-                </div>
-                <div class="flex justify-end gap-2 pt-2 border-t">
-                    <button type="button" onclick="closeModal('add-user-modal')" class="px-3 py-1.5 border rounded-xl">إلغاء</button>
-                    <button type="submit" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl">حفظ الموظف</button>
-                </div>
-            </form>
+      <div class="flex justify-end gap-2 pt-2 border-t border-slate-700/60">
+        <button onclick="closeModal('txModal')" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-xs text-slate-300 font-bold">إلغاء</button>
+        <button onclick="saveTransaction()" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-xs text-white font-bold">حفظ ومزامنة فورية</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- نافذة إضافة حساب جديد -->
+  <div id="accountModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="glass-card w-full max-w-sm rounded-2xl p-5 border border-slate-700 text-right space-y-3">
+      <h4 class="font-bold text-sm text-white">إضافة حساب / عميل / مورد</h4>
+      <div class="space-y-2 text-xs">
+        <div>
+          <label class="block text-slate-300 mb-1">اسم الشخص أو الشركة:</label>
+          <input type="text" id="accName" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white">
         </div>
-    </div>
-    <!-- MODAL: CHANGE PASSWORD -->
-    <div id="change-my-password-modal" class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl border p-4 space-y-3 text-xs">
-            <h3 class="font-bold text-sm text-slate-900 border-b pb-2"><i class="fa-solid fa-key ml-1 text-amber-500"></i> تغيير كلمة المرور</h3>
-            <form onsubmit="handleMyPasswordChange(event)" class="space-y-2.5">
-                <div>
-                    <label class="block font-bold mb-1">كلمة المرور الحالية *</label>
-                    <input type="password" id="my-old-pass" required class="w-full border rounded-xl p-2 font-mono">
-                </div>
-                <div>
-                    <label class="block font-bold mb-1">كلمة المرور الجديدة *</label>
-                    <input type="password" id="my-new-pass" required class="w-full border rounded-xl p-2 font-mono">
-                </div>
-                <div class="flex justify-end gap-2 pt-2 border-t">
-                    <button type="button" onclick="closeModal('change-my-password-modal')" class="px-3 py-1.5 border rounded-xl">إلغاء</button>
-                    <button type="submit" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl">تحديث</button>
-                </div>
-            </form>
+        <div>
+          <label class="block text-slate-300 mb-1">الصفة:</label>
+          <select id="accRole" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white">
+            <option value="عميل">عميل</option>
+            <option value="مورد">مورد</option>
+            <option value="مورد وعميل">مورد وعميل</option>
+          </select>
         </div>
-    </div>
-
-    <!-- MODAL: GOOGLE CLIENT ID CONFIGURATION -->
-    <div id="google-config-modal" class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl border p-5 space-y-3 text-xs">
-            <div class="flex items-center justify-between border-b pb-2">
-                <h3 class="font-bold text-sm text-slate-900 flex items-center gap-1.5">
-                    <i class="fa-brands fa-google text-blue-600 text-base"></i>
-                    <span>إعدادات مفتاح Google OAuth لموقع GitHub</span>
-                </h3>
-                <button onclick="closeModal('google-config-modal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <p class="text-slate-600 leading-relaxed">
-                لتفعيل نافذة تسجيل الدخول الرسمية لجوجل على رابط موقعك في GitHub Pages، الصق معرّف العميل (OAuth Client ID) المستخرج من Google Cloud Console لمرة واحدة فقط:
-            </p>
-            <div>
-                <label class="block font-bold mb-1">Google OAuth Client ID:</label>
-                <input type="text" id="input-google-client-id" placeholder="xxxx-xxxx.apps.googleusercontent.com" class="w-full border rounded-xl p-2 font-mono text-xs">
-            </div>
-            <div class="p-2.5 bg-amber-50 border border-amber-200 rounded-xl text-[11px] text-amber-900 leading-relaxed">
-                <i class="fa-solid fa-circle-info text-amber-600 ml-1"></i>
-                تأكد من إضافة رابط موقعك على GitHub (مثال: <code class="bg-white px-1 py-0.5 rounded">https://user.github.io</code>) داخل قائمة <strong>Authorized JavaScript origins</strong> في منصة Google Cloud.
-            </div>
-            <div class="flex justify-end gap-2 pt-2 border-t">
-                <button type="button" onclick="closeModal('google-config-modal')" class="px-3 py-1.5 border rounded-xl">إلغاء</button>
-                <button type="button" onclick="saveGoogleClientIdSetting()" class="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl">حفظ المفتاح</button>
-            </div>
+        <div>
+          <label class="block text-slate-300 mb-1">رقم الهاتف / العنوان:</label>
+          <input type="text" id="accPhone" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white">
         </div>
+      </div>
+      <div class="flex justify-end gap-2 pt-2">
+        <button onclick="closeModal('accountModal')" class="px-3 py-1.5 bg-slate-800 text-slate-300 rounded-lg text-xs">إلغاء</button>
+        <button onclick="saveAccount()" class="px-4 py-1.5 bg-indigo-600 text-white rounded-lg text-xs font-bold">حفظ الحساب</button>
+      </div>
     </div>
+  </div>
 
-    <!-- Toast Notification -->
-    <div id="custom-toast" class="fixed bottom-5 left-5 z-50 transform -translate-y-10 opacity-0 pointer-events-none transition-all duration-300 max-w-sm bg-slate-950 text-white px-4 py-3 rounded-xl shadow-2xl border border-slate-800 flex items-center gap-2.5 text-xs font-bold">
-        <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400"></i>
-        <span id="toast-message">تمت العملية بنجاح</span>
+  <!-- نافذة إضافة موظف -->
+  <div id="userModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="glass-card w-full max-w-sm rounded-2xl p-5 border border-slate-700 text-right space-y-3">
+      <h4 class="font-bold text-sm text-white">تسجيل موظف جديد بالمنظومة</h4>
+      <div class="space-y-2 text-xs">
+        <div>
+          <label class="block text-slate-300 mb-1">اسم الموظف الكامل:</label>
+          <input type="text" id="newEmpName" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white">
+        </div>
+        <div>
+          <label class="block text-slate-300 mb-1">اسم المستخدم (للدخول):</label>
+          <input type="text" id="newEmpUser" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white">
+        </div>
+        <div>
+          <label class="block text-slate-300 mb-1">كلمة المرور:</label>
+          <input type="text" id="newEmpPass" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white">
+        </div>
+        <div>
+          <label class="block text-slate-300 mb-1">المسمى الوظيفي:</label>
+          <input type="text" id="newEmpRole" placeholder="محاسب فرع / مدخل بيانات" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white">
+        </div>
+      </div>
+      <div class="flex justify-end gap-2 pt-2">
+        <button onclick="closeModal('userModal')" class="px-3 py-1.5 bg-slate-800 text-slate-300 rounded-lg text-xs">إلغاء</button>
+        <button onclick="saveEmployee()" class="px-4 py-1.5 bg-indigo-600 text-white rounded-lg text-xs font-bold">حفظ الموظف</button>
+      </div>
     </div>
-    <script>
-        const STORAGE_KEY_AUTH = 'acct_sys_auth_v13';
-        const STORAGE_KEY_ORG = 'acct_sys_org_v13';
-        const STORAGE_KEY_DB = 'acct_sys_db_v13';
-        const STORAGE_KEY_NOTIFS = 'acct_sys_notifs_v13';
-        const STORAGE_KEY_CLIENT_ID = 'acct_sys_google_client_id_v13';
-        const STORAGE_KEY_SHEET_ID = 'acct_sys_google_sheet_id_v13';
+  </div>
 
-        // OAuth Client ID (can be configured in modal or hardcoded)
-        let GOOGLE_CLIENT_ID = localStorage.getItem(STORAGE_KEY_CLIENT_ID) || "";
-        let googleTokenClient = null;
-        let googleAccessToken = null;
+  <!-- ========================================== -->
+  <!-- 4. محرك البرمجة والمزامنة السحابية الذاتي -->
+  <!-- ========================================== -->
+  <script>
+    // -------------------------------------------------------------
+    // مفاتيح منصة Google Firebase السحابية لربط مشروعك
+    // (سنضع مفاتيحك الخاصة هنا لتتصل بالسحابة فوراً)
+    // -------------------------------------------------------------
+    const firebaseConfig = {
+      apiKey: "ضع_مفتاح_API_الخاص_بك_هنا",
+      authDomain: "accounting-app-asad.firebaseapp.com",
+      projectId: "accounting-app-asad",
+      storageBucket: "accounting-app-asad.appspot.com",
+      messagingSenderId: "00000000000",
+      appId: "1:00000000000:web:00000000000"
+    };
 
-        window.state = {
-            organization: { name: "", createdAt: "", managerEmail: "", spreadsheetId: "", spreadsheetUrl: "" },
-            currentUser: null,
-            parties: [],
-            transactions: [],
-            users: [],
-            notifications: []
+    let db = null;
+    let auth = null;
+    let isFirebaseReady = false;
+
+    // محاولة تهيئة Firebase إذا كانت المفاتيح مدخلة
+    try {
+      if (firebaseConfig.apiKey && !firebaseConfig.apiKey.includes("ضع_مفتاح")) {
+        firebase.initializeApp(firebaseConfig);
+        auth = firebase.auth();
+        db = firebase.firestore();
+        isFirebaseReady = true;
+      }
+    } catch (e) {
+      console.warn("Firebase Setup Required:", e);
+    }
+
+    // الذاكرة المؤقتة للبرنامج
+    let appState = {
+      currentUser: null,
+      companyId: null,
+      accounts: [],
+      transactions: [],
+      users: []
+    };
+
+    // بدء تشغيل الواجهة
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('txActualDate').value = new Date().toISOString().split('T')[0];
+      
+      if (!isFirebaseReady) {
+        document.getElementById('firebaseSetupNotice').classList.remove('hidden');
+      }
+
+      // فحص الجلسة المحفوظة
+      const savedUser = localStorage.getItem('as_accounting_session');
+      if (savedUser) {
+        try {
+          const userObj = JSON.parse(savedUser);
+          activateAppSession(userObj);
+        } catch (e) {}
+      }
+    });
+
+    // التبديل بين تبويبات الدخول
+    function switchAuthTab(type) {
+      if (type === 'manager') {
+        document.getElementById('managerAuthView').classList.remove('hidden');
+        document.getElementById('employeeAuthView').classList.add('hidden');
+        document.getElementById('tabManagerBtn').className = "flex-1 py-2.5 font-bold text-sm border-b-2 border-indigo-500 text-indigo-400";
+        document.getElementById('tabEmployeeBtn').className = "flex-1 py-2.5 font-bold text-sm border-b-2 border-transparent text-slate-400";
+      } else {
+        document.getElementById('managerAuthView').classList.add('hidden');
+        document.getElementById('employeeAuthView').classList.remove('hidden');
+        document.getElementById('tabManagerBtn').className = "flex-1 py-2.5 font-bold text-sm border-b-2 border-transparent text-slate-400";
+        document.getElementById('tabEmployeeBtn').className = "flex-1 py-2.5 font-bold text-sm border-b-2 border-indigo-500 text-indigo-400";
+      }
+    }
+
+    // تسجيل الدخول الرسمي عبر Google (OAuth Popup)
+    async function loginWithGoogle() {
+      if (!isFirebaseReady) {
+        alert("يرجى إكمال خطوة وضع مفاتيح Firebase في الكود أولاً ليتم الربط الحقيقي بحسابك.");
+        return;
+      }
+
+      const provider = new firebase.auth.GoogleAuthProvider();
+      try {
+        const result = await auth.signInWithPopup(provider);
+        const user = result.user;
+        
+        const session = {
+          role: 'manager',
+          name: user.displayName || 'المدير العام',
+          email: user.email,
+          companyId: user.email.toLowerCase().replace(/[^a-zA-Z0-9]/g, '_')
         };
 
-        window.addEventListener('DOMContentLoaded', () => {
-            initSystem();
-            initGoogleOAuthClient();
-        });
+        localStorage.setItem('as_accounting_session', JSON.stringify(session));
+        activateAppSession(session);
+      } catch (err) {
+        alert("خطأ في تسجيل الدخول عبر Google: " + err.message);
+      }
+    }
 
-        function initSystem() {
-            const savedOrg = localStorage.getItem(STORAGE_KEY_ORG);
-            if (savedOrg) {
-                try { window.state.organization = JSON.parse(savedOrg); } catch(e) {}
-            }
+    // تسجيل دخول الموظف
+    async function loginAsEmployee() {
+      const compKey = document.getElementById('empCompanyKey').value.trim().toLowerCase().replace(/[^a-zA-Z0-9]/g, '_');
+      const user = document.getElementById('empUsername').value.trim();
+      const pass = document.getElementById('empPassword').value.trim();
 
-            const cachedDb = localStorage.getItem(STORAGE_KEY_DB);
-            if (cachedDb) {
-                try {
-                    const parsed = JSON.parse(cachedDb);
-                    window.state.parties = parsed.parties || [];
-                    window.state.transactions = parsed.transactions || [];
-                    window.state.users = parsed.users || [];
-                } catch(e) {}
-            }
+      if (!compKey || !user || !pass) {
+        alert("يرجى ملء جميع الحقول.");
+        return;
+      }
 
-            const savedNotifs = localStorage.getItem(STORAGE_KEY_NOTIFS);
-            if (savedNotifs) {
-                try { window.state.notifications = JSON.parse(savedNotifs); } catch(e) {}
-            }
-
-            updateOrgDisplayHeader();
-
-            const savedUser = localStorage.getItem(STORAGE_KEY_AUTH);
-            if (savedUser) {
-                try {
-                    window.state.currentUser = JSON.parse(savedUser);
-                    unlockAppUI();
-                    return;
-                } catch(e) {}
-            }
-
-            showAuthGate();
-            if (!window.state.organization.name) {
-                switchAuthTab('register');
-            }
-        }
-
-        function initGoogleOAuthClient() {
-            if (typeof google === 'undefined' || !google.accounts || !google.accounts.oauth2) {
-                setTimeout(initGoogleOAuthClient, 500);
-                return;
-            }
-
-            if (!GOOGLE_CLIENT_ID) {
-                return;
-            }
-
-            try {
-                googleTokenClient = google.accounts.oauth2.initTokenClient({
-                    client_id: GOOGLE_CLIENT_ID,
-                    scope: 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile',
-                    callback: handleGoogleOAuthCallback
-                });
-            } catch (err) {
-                console.error("Google OAuth Init Error:", err);
-            }
-        }
-        function requestGoogleLoginForManager() {
-            if (!GOOGLE_CLIENT_ID) {
-                openCloudConfigModal();
-                return;
-            }
-            if (!googleTokenClient) {
-                initGoogleOAuthClient();
-            }
-            if (googleTokenClient) {
-                googleTokenClient.requestAccessToken({ prompt: 'consent' });
-            } else {
-                showToast('تعذر تهيئة اتصال Google، تأكد من صحة Client ID', true);
-            }
-        }
-
-        async function handleGoogleOAuthCallback(tokenResponse) {
-            if (tokenResponse.error) {
-                showToast('فشل التحقق من حساب Google: ' + tokenResponse.error, true);
-                return;
-            }
-
-            googleAccessToken = tokenResponse.access_token;
-            showToast('تمت المصادقة مع Google بنجاح!');
-
-            // Fetch Google Profile Info
-            try {
-                const profileRes = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
-                    headers: { 'Authorization': `Bearer ${googleAccessToken}` }
-                });
-                const profile = await profileRes.json();
-                
-                // If this was an org registration
-                if (window.pendingRegistration) {
-                    await completeOrgCreationWithGoogle(profile, window.pendingRegistration);
-                    window.pendingRegistration = null;
-                } else {
-                    // Check if returning manager
-                    handleReturningGoogleManager(profile);
-                }
-            } catch (err) {
-                console.error("Profile Fetch Error:", err);
-            }
-        }
-
-        async function completeOrgCreationWithGoogle(profile, regData) {
-            showToast('جاري إنشاء ملف Google Sheet في Google Drive الخاص بك...');
-            const todayStr = new Date().toISOString().split('T')[0];
-            const cleanOrg = (regData.orgName || "المؤسسة_التجارية").replace(/[\/\\?%*:|"<>]/g, "_");
-            const sheetTitle = `قاعدة_بيانات_المحاسبة_${cleanOrg}_${todayStr}`;
-
-            try {
-                // 1. Create Spreadsheet via Google Sheets API v4
-                const createRes = await fetch('https://sheets.googleapis.com/v4/spreadsheets', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${googleAccessToken}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        properties: { title: sheetTitle },
-                        sheets: [
-                            { properties: { title: "المستخدمين", rightToLeft: true } },
-                            { properties: { title: "دليل_الحسابات", rightToLeft: true } },
-                            { properties: { title: "سجل_الحركات", rightToLeft: true } }
-                        ]
-                    })
-                });
-
-                const sheetData = await createRes.json();
-                if (sheetData.error) {
-                    throw new Error(sheetData.error.message);
-                }
-
-                const spreadsheetId = sheetData.spreadsheetId;
-                const spreadsheetUrl = sheetData.spreadsheetUrl;
-
-                const newOrg = {
-                    name: regData.orgName,
-                    createdAt: todayStr,
-                    managerEmail: profile.email || "manager@gmail.com",
-                    spreadsheetId: spreadsheetId,
-                    spreadsheetUrl: spreadsheetUrl
-                };
-
-                window.state.organization = newOrg;
-                localStorage.setItem(STORAGE_KEY_ORG, JSON.stringify(newOrg));
-                localStorage.setItem(STORAGE_KEY_SHEET_ID, spreadsheetId);
-
-                const adminUser = {
-                    id: 'u_admin_' + Date.now(),
-                    username: regData.managerName || profile.name || "المدير العام",
-                    email: profile.email || "manager@gmail.com",
-                    role: 'مدير عام',
-                    password: regData.password
-                };
-
-                window.state.users = [adminUser];
-                window.state.currentUser = adminUser;
-                localStorage.setItem(STORAGE_KEY_AUTH, JSON.stringify(adminUser));
-
-                if (window.state.parties.length === 0) {
-                    window.state.parties = [
-                        { id: 'p1', name: 'أبو غسان', type: 'مورد وعميل', phone: '0991234567', createdBy: adminUser.username }
-                    ];
-                }
-
-                saveLocalCache();
-                await syncAllToGoogleSheetDirect();
-
-                updateOrgDisplayHeader();
-                unlockAppUI();
-                addNotification(`تم تأسيس سحابة Google Sheet [${sheetTitle}] بنجاح`, 'system');
-                showToast(`تم إنشاء الملف وربطه بدرايف بنجاح!`);
-
-            } catch (err) {
-                console.error("Sheet Creation Error:", err);
-                showToast('خطأ أثناء إنشاء الشيت: ' + err.message, true);
-            }
-        }
-        async function syncAllToGoogleSheetDirect() {
-            const org = window.state.organization;
-            if (!org.spreadsheetId || !googleAccessToken) {
-                return;
-            }
-
-            setSyncIndicator(true, 'جاري الحفظ في Google Sheets...');
-
-            try {
-                // Format users rows
-                const userValues = [
-                    ["كود المستخدم", "اسم المستخدم", "البريد الإلكتروني", "كلمة المرور", "الصفة", "تاريخ الإنشاء"]
-                ];
-                window.state.users.forEach(u => {
-                    userValues.push([u.id || "", u.username || "", u.email || "", u.password || "", u.role || "", u.createdAt || ""]);
-                });
-
-                // Format parties rows
-                const partyValues = [
-                    ["كود الحساب", "اسم الحساب", "نوع الحساب", "الهاتف", "العنوان", "ملاحظات", "أنشئ بواسطة"]
-                ];
-                window.state.parties.forEach(p => {
-                    partyValues.push([p.id || "", p.name || "", p.type || "", p.phone || "", p.address || "", p.notes || "", p.createdBy || ""]);
-                });
-
-                // Format transactions rows
-                const txValues = [
-                    ["كود القيد", "رقم الفاتورة", "تاريخ البضاعة الفعلي", "تاريخ الإدخال", "كود الحساب", "اسم الحساب", "نوع الحركة", "البيان والتفاصيل", "الكمية", "سعر الوحدة", "العملة", "المبلغ الإجمالي", "حالة التسعير", "اسم المُدخل"]
-                ];
-                window.state.transactions.forEach(t => {
-                    txValues.push([
-                        t.id || "", t.invoiceNum || "", t.goodsDate || "", t.systemDate || "",
-                        t.partyId || "", t.partyName || "", t.type || "", t.desc || "",
-                        t.qty || 0, t.price || 0, t.currency || "USD", t.amount || 0,
-                        t.pricingStatus || "مسعر", t.createdBy || ""
-                    ]);
-                });
-
-                // Update Sheets via values:batchUpdate
-                const updateRes = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${org.spreadsheetId}/values:batchUpdate`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${googleAccessToken}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        valueInputOption: "USER_ENTERED",
-                        data: [
-                            { range: "المستخدمين!A1:F500", values: userValues },
-                            { range: "دليل_الحسابات!A1:G500", values: partyValues },
-                            { range: "سجل_الحركات!A1:N2000", values: txValues }
-                        ]
-                    })
-                });
-
-                const result = await updateRes.json();
-                if (result.error) {
-                    throw new Error(result.error.message);
-                }
-
-                setSyncIndicator(false, 'متصل بـ Google Drive ومُزامن');
-            } catch (err) {
-                console.warn("Direct Sheets Sync Notice:", err);
-                setSyncIndicator(false, 'محفوظ محلياً (إعادة المحاولة لاحقاً)');
-            }
-        }
-
-        function setSyncIndicator(isSyncing, text) {
-            const badge = document.getElementById('cloud-sync-badge');
-            const dot = document.getElementById('sync-dot');
-            const statusText = document.getElementById('sync-status-text');
-
-            if (statusText) statusText.textContent = text;
-            if (dot) {
-                if (isSyncing) {
-                    dot.className = "w-2 h-2 rounded-full bg-amber-400 animate-ping";
-                } else {
-                    dot.className = "w-2 h-2 rounded-full bg-emerald-400 animate-pulse";
-                }
-            }
-        }
-        function handleManagerRegistrationInit(e) {
-            e.preventDefault();
-            const orgName = document.getElementById('reg-org-name').value.trim();
-            const managerName = document.getElementById('reg-manager-name').value.trim();
-            const password = document.getElementById('reg-manager-password').value.trim();
-
-            if (!orgName || !managerName || !password) {
-                showToast('يرجى ملء كافة الحقول المطلوبة', true);
-                return;
-            }
-
-            window.pendingRegistration = { orgName, managerName, password };
-
-            if (!GOOGLE_CLIENT_ID) {
-                openCloudConfigModal();
-            } else {
-                requestGoogleLoginForManager();
-            }
-        }
-
-        function handleReturningGoogleManager(profile) {
-            const user = window.state.users.find(u => u.email && u.email.toLowerCase() === profile.email.toLowerCase());
-            if (user) {
-                window.state.currentUser = user;
-                localStorage.setItem(STORAGE_KEY_AUTH, JSON.stringify(user));
-                unlockAppUI();
-                showToast(`مرحباً بعودتك ${user.username}! تم تسجيل الدخول`);
-            } else if (window.state.currentUser) {
-                unlockAppUI();
-                showToast('تم تجديد جلسة Google بنجاح');
-            } else {
-                showToast('هذا الحساب غير مسجل كمدير في هذه المنظومة', true);
-            }
-        }
-
-        function handleUserLogin(e) {
-            e.preventDefault();
-            const usernameInput = document.getElementById('input-login-username').value.trim().toLowerCase();
-            const passwordInput = document.getElementById('input-login-password').value.trim();
-            const remember = document.getElementById('chk-remember-me').checked;
-
-            if (!usernameInput || !passwordInput) return;
-
-            const matchedUser = window.state.users.find(u => 
-                (u.username.toLowerCase() === usernameInput || (u.email && u.email.toLowerCase() === usernameInput)) &&
-                u.password === passwordInput
-            );
-
-            if (matchedUser) {
-                window.state.currentUser = matchedUser;
-                if (remember) localStorage.setItem(STORAGE_KEY_AUTH, JSON.stringify(matchedUser));
-                unlockAppUI();
-                showToast(`مرحباً ${matchedUser.username}! تم تسجيل الدخول بنجاح.`);
-            } else {
-                showToast('اسم المستخدم أو كلمة المرور غير صحيحة', true);
-            }
-        }
-
-        function switchAuthTab(tab) {
-            const loginBtn = document.getElementById('tab-btn-login');
-            const regBtn = document.getElementById('tab-btn-register');
-            const viewLogin = document.getElementById('view-login-box');
-            const viewRegister = document.getElementById('view-register-box');
-            const viewForgot = document.getElementById('view-forgot-box');
-
-            viewForgot.classList.add('hidden');
-
-            if (tab === 'login') {
-                loginBtn.className = 'py-2 text-xs font-black rounded-xl transition shadow bg-emerald-600 text-white flex items-center justify-center gap-1.5';
-                regBtn.className = 'py-2 text-xs font-bold rounded-xl transition text-slate-300 hover:text-white flex items-center justify-center gap-1.5';
-                viewLogin.classList.remove('hidden');
-                viewRegister.classList.add('hidden');
-            } else if (tab === 'register') {
-                regBtn.className = 'py-2 text-xs font-black rounded-xl transition shadow bg-blue-600 text-white flex items-center justify-center gap-1.5';
-                loginBtn.className = 'py-2 text-xs font-bold rounded-xl transition text-slate-300 hover:text-white flex items-center justify-center gap-1.5';
-                viewRegister.classList.remove('hidden');
-                viewLogin.classList.add('hidden');
-            }
-        }
-
-        function showForgotPasswordView() {
-            document.getElementById('view-login-box').classList.add('hidden');
-            document.getElementById('view-register-box').classList.add('hidden');
-            document.getElementById('view-forgot-box').classList.remove('hidden');
-        }
-
-        function showAuthGate() {
-            document.getElementById('auth-gate-overlay').classList.remove('hidden');
-        }
-
-        function unlockAppUI() {
-            document.getElementById('auth-gate-overlay').classList.add('hidden');
-            updateActiveUserLabels();
-            renderAllViews();
-            renderNotificationsUI();
-        }
-
-        function logoutSession() {
-            localStorage.removeItem(STORAGE_KEY_AUTH);
-            window.state.currentUser = null;
-            showAuthGate();
-            showToast('تم تسجيل الخروج بنجاح');
-        }
-
-        function isCurrentUserAdmin() {
-            return window.state.currentUser && window.state.currentUser.role === 'مدير عام';
-        }
-
-        function updateActiveUserLabels() {
-            if (!window.state.currentUser) return;
-            const u = window.state.currentUser;
-            document.getElementById('current-user-name-display').textContent = u.username;
-            document.getElementById('current-user-role-badge').textContent = u.role;
-            document.querySelectorAll('.active-user-name-indicator').forEach(el => el.textContent = `${u.username} (${u.role})`);
-        }
-
-        window.updateOrgDisplayHeader = function() {
-            const org = window.state.organization;
-            const titleEl = document.getElementById('header-org-title');
-            const subDateEl = document.getElementById('org-created-date-label');
-            const sheetNameEl = document.getElementById('active-sheet-name-label');
-            const openSheetBtn = document.getElementById('btn-open-google-sheet');
-
-            if (titleEl) titleEl.textContent = org.name || "منظومة الحسابات السحابية";
-            if (subDateEl) subDateEl.textContent = org.createdAt || "اليوم";
-            if (sheetNameEl) sheetNameEl.textContent = org.name ? `شيت_${org.name}` : "قاعدة_بيانات_المحاسبة";
-
-            if (openSheetBtn && org.spreadsheetUrl) {
-                openSheetBtn.href = org.spreadsheetUrl;
-                openSheetBtn.classList.remove('hidden');
-            }
-        };
-
-        function openCloudConfigModal() {
-            document.getElementById('input-google-client-id').value = GOOGLE_CLIENT_ID;
-            openModal('google-config-modal');
-        }
-
-        function saveGoogleClientIdSetting() {
-            const val = document.getElementById('input-google-client-id').value.trim();
-            GOOGLE_CLIENT_ID = val;
-            localStorage.setItem(STORAGE_KEY_CLIENT_ID, val);
-            initGoogleOAuthClient();
-            closeModal('google-config-modal');
-            showToast('تم حفظ معرّف Google بنجاح');
-        }
-        function handlePricingStatusChange() {
-            const status = document.getElementById('tx-pricing-status').value;
-            if (status === 'لم يتفق عليه بعد') {
-                document.getElementById('tx-price').value = 0;
-                document.getElementById('tx-total').value = 0;
-            }
-            calculateTxTotal();
-        }
-
-        function handleTxTypeChange() {}
-
-        function calculateTxTotal() {
-            const status = document.getElementById('tx-pricing-status').value;
-            if (status === 'لم يتفق عليه بعد') {
-                document.getElementById('tx-total').value = 0;
-                return;
-            }
-            const qty = parseFloat(document.getElementById('tx-qty').value) || 0;
-            const price = parseFloat(document.getElementById('tx-price').value) || 0;
-            document.getElementById('tx-total').value = (qty * price).toFixed(2);
-        }
-
-        async function saveNewTransaction(e) {
-            e.preventDefault();
-            const partyId = document.getElementById('tx-party-id').value;
-            const party = window.state.parties.find(p => p.id === partyId);
-            if (!party) return;
-
-            const pricingStatus = document.getElementById('tx-pricing-status').value;
-            const isUnpriced = (pricingStatus === 'لم يتفق عليه بعد');
-            const qty = parseFloat(document.getElementById('tx-qty').value) || 1;
-            const price = isUnpriced ? 0 : (parseFloat(document.getElementById('tx-price').value) || 0);
-            const amount = isUnpriced ? 0 : (parseFloat(document.getElementById('tx-total').value) || 0);
-            const author = window.state.currentUser ? window.state.currentUser.username : 'المدير';
-            const invNum = document.getElementById('tx-inv-num').value.trim() || ('INV-' + Math.floor(Math.random()*9000 + 1000));
-            const curr = document.getElementById('tx-currency').value;
-
-            const newTx = {
-                id: 'tx_' + Date.now(),
-                invoiceNum: invNum,
-                goodsDate: document.getElementById('tx-goods-date').value,
-                systemDate: new Date().toISOString(),
-                partyId: partyId,
-                partyName: party.name,
-                type: document.getElementById('tx-type').value,
-                desc: document.getElementById('tx-desc').value.trim(),
-                qty: qty,
-                price: price,
-                amount: amount,
-                currency: curr,
-                pricingStatus: pricingStatus,
-                isUnpriced: isUnpriced,
-                createdBy: author
+      if (isFirebaseReady) {
+        const docRef = db.collection('companies').doc(compKey);
+        const snap = await docRef.get();
+        if (snap.exists) {
+          const data = snap.data();
+          const found = (data.users || []).find(u => u.username === user && u.password === pass);
+          if (found) {
+            const session = {
+              role: 'employee',
+              name: found.name,
+              companyId: compKey
             };
+            localStorage.setItem('as_accounting_session', JSON.stringify(session));
+            activateAppSession(session);
+            return;
+          }
+        }
+      }
+      alert("بيانات الدخول غير صحيحة أو المؤسسة غير موجودة.");
+    }
 
-            window.state.transactions.unshift(newTx);
-            saveLocalCache();
+    // تنشيط الجلسة وبدء الاستماع للسحابة
+    function activateAppSession(session) {
+      appState.currentUser = session;
+      appState.companyId = session.companyId;
 
-            closeModal('add-transaction-modal');
-            renderAllViews();
-            showToast(isUnpriced ? 'تم إثبات البضاعة بدون سعر كمعلقة' : 'تم حفظ الفاتورة وتحديث الأرصدة');
-            addNotification(`أضاف [${author}] حركة (${invNum} - ${party.name}) بمبلغ ${amount} ${curr}`, 'action');
+      document.getElementById('authGate').classList.add('hidden');
+      document.getElementById('mainApp').classList.remove('hidden');
+      document.getElementById('currentUserLabel').innerText = session.name;
 
-            await syncAllToGoogleSheetDirect();
+      if (isFirebaseReady) {
+        listenToCloudData();
+      } else {
+        // تحميل محلي تجريبي لحين تفعيل المفاتيح
+        loadLocalDemoData();
+      }
+    }
+
+    // الاستماع الحي الفوري لكل تعديل في سحابة Firebase (Real-time Listener)
+    function listenToCloudData() {
+      const docRef = db.collection('companies').doc(appState.companyId);
+      
+      docRef.onSnapshot((doc) => {
+        if (doc.exists) {
+          const data = doc.data();
+          appState.accounts = data.accounts || [];
+          appState.transactions = data.transactions || [];
+          appState.users = data.users || [];
+          refreshUI();
+        } else {
+          // تأسيس أولي فارغ
+          docRef.set({ accounts: [], transactions: [], users: [] });
+        }
+      });
+    }
+
+    // حفظ في السحابة
+    async function syncToCloud() {
+      if (isFirebaseReady && appState.companyId) {
+        await db.collection('companies').doc(appState.companyId).set({
+          accounts: appState.accounts,
+          transactions: appState.transactions,
+          users: appState.users
+        }, { merge: true });
+      } else {
+        refreshUI();
+      }
+    }
+
+    // إضافة حركة جديدة
+    async function saveTransaction() {
+      const acc = document.getElementById('txAccountSelect').value;
+      const type = document.getElementById('txTypeSelect').value;
+      const actualDate = document.getElementById('txActualDate').value;
+      const desc = document.getElementById('txDesc').value.trim();
+      const amount = parseFloat(document.getElementById('txAmount').value) || 0;
+
+      if (!acc) { alert("يرجى اختيار الحساب."); return; }
+      if (type !== 'معلق' && amount <= 0) { alert("يرجى إدخال مبلغ صحيح."); return; }
+
+      const tx = {
+        id: 'TX-' + Date.now().toString().slice(-6),
+        actualDate: actualDate,
+        entryDate: new Date().toISOString().split('T')[0],
+        account: acc,
+        type: type,
+        amount: type === 'معلق' ? 0 : amount,
+        desc: desc,
+        user: appState.currentUser.name
+      };
+
+      appState.transactions.unshift(tx);
+      await syncToCloud();
+      closeModal('txModal');
+      document.getElementById('txDesc').value = '';
+      document.getElementById('txAmount').value = '';
+    }
+
+    // إضافة حساب
+    async function saveAccount() {
+      const name = document.getElementById('accName').value.trim();
+      const role = document.getElementById('accRole').value;
+      const phone = document.getElementById('accPhone').value.trim();
+
+      if (!name) { alert("يرجى إدخال اسم الحساب."); return; }
+
+      appState.accounts.push({ name, role, phone });
+      await syncToCloud();
+      closeModal('accountModal');
+      document.getElementById('accName').value = '';
+      document.getElementById('accPhone').value = '';
+    }
+
+    // إضافة موظف
+    async function saveEmployee() {
+      const name = document.getElementById('newEmpName').value.trim();
+      const username = document.getElementById('newEmpUser').value.trim();
+      const password = document.getElementById('newEmpPass').value.trim();
+      const role = document.getElementById('newEmpRole').value.trim();
+
+      if (!name || !username || !password) { alert("يرجى ملء جميع الحقول."); return; }
+
+      appState.users.push({ name, username, password, role });
+      await syncToCloud();
+      closeModal('userModal');
+      document.getElementById('newEmpName').value = '';
+      document.getElementById('newEmpUser').value = '';
+      document.getElementById('newEmpPass').value = '';
+    }
+
+    // تثبيت سعر بضاعة معلقة
+    async function resolvePending(txId) {
+      const price = prompt("أدخل السعر النهائي المتفق عليه لهذه البضاعة ($):");
+      if (price && !isNaN(price) && parseFloat(price) > 0) {
+        const tx = appState.transactions.find(t => t.id === txId);
+        if (tx) {
+          tx.amount = parseFloat(price);
+          tx.type = 'وارد';
+          tx.desc += ` (تم تسعيرها معتمداً: $${price})`;
+          await syncToCloud();
+        }
+      }
+    }
+
+    // حذف قيد
+    async function deleteTx(id) {
+      if (confirm("هل أنت متأكد من حذف هذه الحركة؟")) {
+        appState.transactions = appState.transactions.filter(t => t.id !== id);
+        await syncToCloud();
+      }
+    }
+
+    // تحديث الواجهات والجداول
+    function refreshUI() {
+      // 1. حساب الإحصاءات
+      let totalIn = 0, totalOut = 0;
+      let accBalances = {};
+
+      appState.accounts.forEach(a => accBalances[a.name] = 0);
+
+      appState.transactions.forEach(t => {
+        if (t.type === 'وارد') {
+          totalIn += t.amount;
+          accBalances[t.account] = (accBalances[t.account] || 0) - t.amount;
+        } else if (t.type === 'صادر') {
+          totalOut += t.amount;
+          accBalances[t.account] = (accBalances[t.account] || 0) + t.amount;
+        } else if (t.type === 'دفعة_لنا') {
+          accBalances[t.account] = (accBalances[t.account] || 0) - t.amount;
+        } else if (t.type === 'دفعة_علينا') {
+          accBalances[t.account] = (accBalances[t.account] || 0) + t.amount;
+        }
+      });
+
+      let rec = 0, pay = 0;
+      Object.values(accBalances).forEach(b => {
+        if (b > 0) rec += b;
+        if (b < 0) pay += Math.abs(b);
+      });
+
+      document.getElementById('statTotalIn').innerText = `$ ${totalIn.toLocaleString()}`;
+      document.getElementById('statTotalOut').innerText = `$ ${totalOut.toLocaleString()}`;
+      document.getElementById('statReceivable').innerText = `$ ${rec.toLocaleString()}`;
+      document.getElementById('statPayable').innerText = `$ ${pay.toLocaleString()}`;
+
+      // 2. تحديث قائمة الحسابات
+      const accTbody = document.getElementById('accountsTableBody');
+      accTbody.innerHTML = '';
+      const txSelect = document.getElementById('txAccountSelect');
+      const stSelect = document.getElementById('statementAccountSelect');
+      txSelect.innerHTML = '';
+      stSelect.innerHTML = '';
+
+      appState.accounts.forEach(a => {
+        const bal = accBalances[a.name] || 0;
+        const pendingCount = appState.transactions.filter(t => t.account === a.name && t.type === 'معلق').length;
+
+        accTbody.innerHTML += `
+          <tr class="hover:bg-slate-800/40">
+            <td class="py-3 px-3 font-bold text-white">${a.name}</td>
+            <td class="py-3 px-3 text-slate-400">${a.role}</td>
+            <td class="py-3 px-3 text-slate-400">${a.phone || '-'}</td>
+            <td class="py-3 px-3 font-black ${bal >= 0 ? 'text-emerald-400' : 'text-rose-400'}">$ ${bal.toLocaleString()}</td>
+            <td class="py-3 px-3">${pendingCount > 0 ? `<span class="px-2 py-0.5 bg-amber-500/20 text-amber-300 rounded-full text-xs">${pendingCount} معلقة</span>` : '<span class="text-slate-500">-</span>'}</td>
+            <td class="py-3 px-3 text-center">
+              <button onclick="viewAccountStatement('${a.name}')" class="text-indigo-400 hover:text-indigo-300 text-xs font-bold">كشف حساب</button>
+            </td>
+          </tr>
+        `;
+
+        txSelect.innerHTML += `<option value="${a.name}">${a.name}</option>`;
+        stSelect.innerHTML += `<option value="${a.name}">${a.name}</option>`;
+      });
+
+      // 3. جدول دفتر اليومية
+      const ledTbody = document.getElementById('ledgerTableBody');
+      ledTbody.innerHTML = '';
+      appState.transactions.forEach(t => {
+        ledTbody.innerHTML += `
+          <tr class="hover:bg-slate-800/40">
+            <td class="py-2.5 px-2 font-mono text-indigo-400 font-bold">${t.id}</td>
+            <td class="py-2.5 px-2">${t.actualDate}</td>
+            <td class="py-2.5 px-2 text-slate-400">${t.entryDate}</td>
+            <td class="py-2.5 px-2 font-bold text-white">${t.account}</td>
+            <td class="py-2.5 px-2"><span class="px-2 py-0.5 rounded text-xs ${t.type === 'وارد' ? 'bg-emerald-500/20 text-emerald-300' : t.type === 'صادر' ? 'bg-indigo-500/20 text-indigo-300' : 'bg-amber-500/20 text-amber-300'}">${t.type}</span></td>
+            <td class="py-2.5 px-2 text-slate-300">${t.desc}</td>
+            <td class="py-2.5 px-2 font-black text-white">$ ${t.amount.toLocaleString()}</td>
+            <td class="py-2.5 px-2 text-xs text-slate-400">${t.user}</td>
+            <td class="py-2.5 px-2 text-center">
+              <button onclick="deleteTx('${t.id}')" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash-can"></i></button>
+            </td>
+          </tr>
+        `;
+      });
+
+      // 4. البضائع المعلقة
+      const pendings = appState.transactions.filter(t => t.type === 'معلق');
+      document.getElementById('pendingCountBadge').innerText = pendings.length;
+      const pendTbody = document.getElementById('pendingTableBody');
+      pendTbody.innerHTML = '';
+      pendings.forEach(p => {
+        pendTbody.innerHTML += `
+          <tr class="hover:bg-slate-800/40">
+            <td class="py-3 px-2">${p.actualDate}</td>
+            <td class="py-3 px-2 font-bold text-white">${p.account}</td>
+            <td class="py-3 px-2 text-amber-400">بضاعة غير مسعرة</td>
+            <td class="py-3 px-2">${p.desc}</td>
+            <td class="py-3 px-2 text-center">
+              <button onclick="resolvePending('${p.id}')" class="bg-amber-600 hover:bg-amber-500 text-white px-3 py-1 rounded-lg text-xs font-bold">تحديد السعر الآن</button>
+            </td>
+          </tr>
+        `;
+      });
+
+      // 5. السلف والدفعات
+      const advTbody = document.getElementById('advancesTableBody');
+      advTbody.innerHTML = '';
+      appState.transactions.filter(t => t.type.includes('دفعة')).forEach(d => {
+        advTbody.innerHTML += `
+          <tr class="hover:bg-slate-800/40">
+            <td class="py-3 px-3">${d.actualDate}</td>
+            <td class="py-3 px-3 font-bold text-white">${d.account}</td>
+            <td class="py-3 px-3 ${d.type === 'دفعة_لنا' ? 'text-emerald-400' : 'text-rose-400'}">${d.type === 'دفعة_لنا' ? 'مقبوضة (لنا)' : 'مدفوعة (علينا)'}</td>
+            <td class="py-3 px-3">${d.desc}</td>
+            <td class="py-3 px-3 font-black text-white">$ ${d.amount.toLocaleString()}</td>
+          </tr>
+        `;
+      });
+
+      // 6. الموظفون
+      const uTbody = document.getElementById('usersTableBody');
+      uTbody.innerHTML = '';
+      appState.users.forEach(u => {
+        uTbody.innerHTML += `
+          <tr class="hover:bg-slate-800/40">
+            <td class="py-2.5 px-3 font-bold text-white">${u.name}</td>
+            <td class="py-2.5 px-3 font-mono text-indigo-400">${u.username}</td>
+            <td class="py-2.5 px-3 font-mono text-slate-400">••••••••</td>
+            <td class="py-2.5 px-3 text-slate-300">${u.role}</td>
+            <td class="py-2.5 px-3 text-center text-slate-500">-</td>
+          </tr>
+        `;
+      });
+    }
+
+    // توليد كشف الحساب
+    function generateStatement() {
+      const accName = document.getElementById('statementAccountSelect').value;
+      const acc = appState.accounts.find(a => a.name === accName);
+      if (!acc) return;
+
+      document.getElementById('printClientName').innerText = acc.name;
+      document.getElementById('printClientPhone').innerText = (acc.role || '') + ' - ' + (acc.phone || '');
+      document.getElementById('printDate').innerText = new Date().toLocaleDateString('ar-EG');
+
+      const tbody = document.getElementById('statementTableBody');
+      tbody.innerHTML = '';
+      let balance = 0;
+
+      const txs = appState.transactions.filter(t => t.account === accName).reverse();
+      txs.forEach(t => {
+        let debit = 0, credit = 0;
+        if (t.type === 'صادر' || t.type === 'دفعة_علينا') {
+          debit = t.amount;
+          balance += debit;
+        } else if (t.type === 'وارد' || t.type === 'دفعة_لنا') {
+          credit = t.amount;
+          balance -= credit;
         }
 
-        function openResolvePriceModal(txId) {
-            const tx = window.state.transactions.find(t => t.id === txId);
-            if (!tx) return;
-
-            document.getElementById('resolve-tx-id').value = tx.id;
-            document.getElementById('resolve-party-name').textContent = tx.partyName;
-            document.getElementById('resolve-qty').textContent = tx.qty;
-            document.getElementById('resolve-unit-price').value = '';
-            document.getElementById('resolve-total-amount').value = '0.00';
-            openModal('resolve-price-modal');
-        }
-
-        function calculateResolveTotal() {
-            const qty = parseFloat(document.getElementById('resolve-qty').textContent) || 0;
-            const price = parseFloat(document.getElementById('resolve-unit-price').value) || 0;
-            document.getElementById('resolve-total-amount').value = (qty * price).toFixed(2);
-        }
-
-        async function savePriceResolution(e) {
-            e.preventDefault();
-            const txId = document.getElementById('resolve-tx-id').value;
-            const tx = window.state.transactions.find(t => t.id === txId);
-            if (!tx) return;
-
-            const unitPrice = parseFloat(document.getElementById('resolve-unit-price').value) || 0;
-            const total = parseFloat(document.getElementById('resolve-total-amount').value) || (unitPrice * tx.qty);
-            const author = window.state.currentUser ? window.state.currentUser.username : 'المدير';
-
-            tx.price = unitPrice;
-            tx.amount = total;
-            tx.pricingStatus = 'مسعر';
-            tx.isUnpriced = false;
-
-            saveLocalCache();
-            closeModal('resolve-price-modal');
-            renderAllViews();
-            showToast(`تم تثبيت السعر واعتماد المبلغ: ${total} ${tx.currency}`);
-            addNotification(`قام [${author}] بتسعير بضاعة (${tx.partyName} - ${tx.desc}) بسعر ${unitPrice}`, 'pricing');
-
-            await syncAllToGoogleSheetDirect();
-        }
-
-        function checkAdminAndOpenPartyModal() {
-            if (!isCurrentUserAdmin()) {
-                showToast('إضافة الحسابات مقتصرة على المدير العام فقط', true);
-                return;
-            }
-            openModal('add-party-modal');
-        }
-
-        async function saveNewParty(e) {
-            e.preventDefault();
-            const name = document.getElementById('party-name').value.trim();
-            if (!name) return;
-
-            const newParty = {
-                id: 'p_' + Date.now(),
-                name: name,
-                type: document.getElementById('party-type').value,
-                phone: document.getElementById('party-phone').value.trim() || '---',
-                createdBy: window.state.currentUser ? window.state.currentUser.username : 'المدير'
-            };
-
-            window.state.parties.push(newParty);
-            saveLocalCache();
-            closeModal('add-party-modal');
-            renderAllViews();
-            showToast(`تمت إضافة الحساب: ${name}`);
-
-            await syncAllToGoogleSheetDirect();
-        }
-
-        function checkAdminAndOpenUserModal() {
-            if (!isCurrentUserAdmin()) {
-                showToast('إدارة الموظفين خاصة بالمدير العام فقط', true);
-                return;
-            }
-            openModal('add-user-modal');
-        }
-
-        async function saveNewUser(e) {
-            e.preventDefault();
-            const name = document.getElementById('new-user-name').value.trim();
-            const pass = document.getElementById('new-user-password').value.trim();
-            if (!name || !pass) return;
-
-            const newUser = {
-                id: 'u_' + Date.now(),
-                username: name,
-                role: document.getElementById('new-user-role').value,
-                password: pass,
-                createdAt: new Date().toISOString()
-            };
-
-            window.state.users.push(newUser);
-            saveLocalCache();
-            closeModal('add-user-modal');
-            renderUsersManagementGrid();
-            showToast(`تم إنشاء حساب الموظف: ${name}`);
-            addNotification(`تم إنشاء حساب موظف جديد [${name}] بواسطة المدير`, 'system');
-
-            await syncAllToGoogleSheetDirect();
-        }
-
-        function openChangePasswordModal() {
-            openModal('change-my-password-modal');
-        }
-
-        async function handleMyPasswordChange(e) {
-            e.preventDefault();
-            if (!window.state.currentUser) return;
-
-            const oldPass = document.getElementById('my-old-pass').value.trim();
-            const newPass = document.getElementById('my-new-pass').value.trim();
-
-            if (oldPass !== window.state.currentUser.password) {
-                showToast('كلمة المرور الحالية غير صحيحة', true);
-                return;
-            }
-
-            window.state.currentUser.password = newPass;
-            const userInDb = window.state.users.find(u => u.id === window.state.currentUser.id);
-            if (userInDb) userInDb.password = newPass;
-
-            saveLocalCache();
-            localStorage.setItem(STORAGE_KEY_AUTH, JSON.stringify(window.state.currentUser));
-
-            addNotification(`قام [${window.state.currentUser.username}] بتحديث كلمة المرور الخاصة به`, 'security');
-            closeModal('change-my-password-modal');
-            showToast('تم تغيير كلمة المرور بنجاح!');
-
-            await syncAllToGoogleSheetDirect();
-        }
-
-        function saveLocalCache() {
-            localStorage.setItem(STORAGE_KEY_DB, JSON.stringify({
-                parties: window.state.parties,
-                transactions: window.state.transactions,
-                users: window.state.users
-            }));
-        }
-        function renderDashboard() {
-            const curr = document.getElementById('dash-currency-filter').value;
-            document.querySelectorAll('.dash-curr-label').forEach(el => el.textContent = curr);
-
-            let totalInbound = 0;
-            let totalOutbound = 0;
-            let unpricedCount = 0;
-
-            const balances = {};
-            window.state.parties.forEach(p => {
-                balances[p.id] = { USD: 0, SYP: 0, SAR: 0, TRY: 0, unpriced: 0 };
-            });
-
-            window.state.transactions.forEach(t => {
-                if (t.isUnpriced || t.pricingStatus === 'لم يتفق عليه بعد') {
-                    unpricedCount++;
-                    if (balances[t.partyId]) balances[t.partyId].unpriced++;
-                    return;
-                }
-
-                const amt = parseFloat(t.amount) || 0;
-                if (balances[t.partyId] && balances[t.partyId][t.currency] !== undefined) {
-                    if (t.type === 'goods_in' || t.type === 'payment_in') {
-                        balances[t.partyId][t.currency] += amt;
-                    } else {
-                        balances[t.partyId][t.currency] -= amt;
-                    }
-                }
-
-                if (t.currency === curr) {
-                    if (t.type === 'goods_in') totalInbound += amt;
-                    if (t.type === 'goods_out') totalOutbound += amt;
-                }
-            });
-
-            let receivables = 0;
-            let payables = 0;
-            Object.values(balances).forEach(b => {
-                const bal = b[curr] || 0;
-                if (bal > 0) payables += bal;
-                if (bal < 0) receivables += Math.abs(bal);
-            });
-
-            document.getElementById('dash-total-inbound').textContent = formatMoney(totalInbound);
-            document.getElementById('dash-total-outbound').textContent = formatMoney(totalOutbound);
-            document.getElementById('dash-receivables').textContent = formatMoney(receivables);
-            document.getElementById('dash-payables').textContent = formatMoney(payables);
-
-            const alertBox = document.getElementById('dash-unpriced-alert');
-            const alertCount = document.getElementById('dash-unpriced-count-badge');
-            const tabBadge = document.getElementById('tab-unpriced-count');
-            if (tabBadge) tabBadge.textContent = unpricedCount;
-            if (alertCount) alertCount.textContent = unpricedCount;
-            if (alertBox) {
-                if (unpricedCount > 0) alertBox.classList.remove('hidden');
-                else alertBox.classList.add('hidden');
-            }
-
-            const tbody = document.getElementById('dash-accounts-tbody');
-            if (!tbody) return;
-            tbody.innerHTML = '';
-
-            window.state.parties.forEach(p => {
-                const b = balances[p.id] || { USD: 0, SYP: 0, unpriced: 0 };
-                const tr = document.createElement('tr');
-                tr.className = 'hover:bg-slate-50 transition';
-                tr.innerHTML = `
-                    <td class="p-3 font-bold text-slate-900">${escapeHtml(p.name)}</td>
-                    <td class="p-3 text-slate-600">${escapeHtml(p.type)}</td>
-                    <td class="p-3 text-slate-500 text-xs font-mono">${escapeHtml(p.phone)}</td>
-                    <td class="p-3 font-bold font-mono">${formatMoney(b.USD)} $</td>
-                    <td class="p-3 font-bold font-mono">${formatMoney(b.SYP)} ل.س</td>
-                    <td class="p-3 text-center">${b.unpriced > 0 ? `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-900">${b.unpriced} معلقة</span>` : '-'}</td>
-                    <td class="p-3 text-center">
-                        <button onclick="viewPartyStatement('${p.id}')" class="px-2.5 py-1 bg-teal-50 hover:bg-teal-100 text-teal-800 rounded-lg text-xs font-bold transition">كشف حساب</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function viewPartyStatement(partyId) {
-            const select = document.getElementById('stmt-party-select');
-            if (select) select.value = partyId;
-            switchTab('statement-view');
-        }
-
-        function runStatementFilter() {
-            const partyId = document.getElementById('stmt-party-select').value;
-            const currency = document.getElementById('stmt-currency-select').value;
-            const fromDate = document.getElementById('stmt-date-from').value;
-            const toDate = document.getElementById('stmt-date-to').value;
-
-            const party = window.state.parties.find(p => p.id === partyId);
-            if (!party) return;
-
-            document.getElementById('stmt-party-name').textContent = party.name;
-            document.getElementById('stmt-party-type').textContent = party.type;
-            document.getElementById('stmt-party-contact').textContent = party.phone;
-            document.getElementById('stmt-badge-curr').textContent = currency;
-            document.getElementById('stmt-print-date').textContent = new Date().toLocaleDateString('ar-EG');
-            document.getElementById('stmt-print-by-user').textContent = window.state.currentUser ? window.state.currentUser.username : 'المدير';
-
-            let txs = window.state.transactions.filter(t => t.partyId === partyId && t.currency === currency);
-            txs.sort((a, b) => new Date(a.goodsDate) - new Date(b.goodsDate));
-
-            const tbody = document.getElementById('stmt-tbody');
-            tbody.innerHTML = '';
-
-            let running = 0;
-            let totCredit = 0;
-            let totDebit = 0;
-            let count = 1;
-
-            txs.forEach(t => {
-                const isUnp = (t.isUnpriced || t.pricingStatus === 'لم يتفق عليه بعد');
-                if (fromDate && t.goodsDate < fromDate) return;
-                if (toDate && t.goodsDate > toDate) return;
-
-                let credit = 0;
-                let debit = 0;
-                const amt = parseFloat(t.amount) || 0;
-
-                if (!isUnp) {
-                    if (t.type === 'goods_in' || t.type === 'payment_in') {
-                        credit = amt;
-                        running += amt;
-                        totCredit += amt;
-                    } else {
-                        debit = amt;
-                        running -= amt;
-                        totDebit += amt;
-                    }
-                }
-
-                const tr = document.createElement('tr');
-                tr.className = isUnp ? 'bg-amber-50/50' : 'hover:bg-slate-50';
-                tr.innerHTML = `
-                    <td class="p-2 text-center text-slate-400 font-mono">${count++}</td>
-                    <td class="p-2 font-mono whitespace-nowrap font-bold">${escapeHtml(t.goodsDate)}</td>
-                    <td class="p-2 font-bold font-mono">${escapeHtml(t.invoiceNum)}</td>
-                    <td class="p-2 font-medium">${escapeHtml(t.desc)}</td>
-                    <td class="p-2 text-center font-mono font-bold">${t.qty}</td>
-                    <td class="p-2 text-center font-mono">${isUnp ? 'معلق' : formatMoney(t.price)}</td>
-                    <td class="p-2 text-center">${isUnp ? '<span class="text-amber-800 font-bold">معلق (0)</span>' : 'معتمد'}</td>
-                    <td class="p-2 font-mono text-emerald-800 font-bold bg-emerald-50/20">${credit > 0 ? formatMoney(credit) : '-'}</td>
-                    <td class="p-2 font-mono text-rose-800 font-bold bg-rose-50/20">${debit > 0 ? formatMoney(debit) : '-'}</td>
-                    <td class="p-2 font-mono font-black text-left pl-2 bg-slate-100">${formatMoney(running)}</td>
-                    <td class="p-2 text-center text-slate-500 font-semibold">${escapeHtml(t.createdBy || 'المدير')}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-
-            document.getElementById('stmt-total-credit').textContent = formatMoney(totCredit);
-            document.getElementById('stmt-total-debit').textContent = formatMoney(totDebit);
-            document.getElementById('stmt-final-balance').textContent = formatMoney(running) + ` ${currency}`;
-
-            const sumText = document.getElementById('stmt-balance-summary-text');
-            if (running > 0) {
-                sumText.innerHTML = `رصيد دائن: يستحق للمورد مبلغ <strong>${formatMoney(running)} ${currency}</strong> بذمتنا.`;
-            } else if (running < 0) {
-                sumText.innerHTML = `رصيد مدين: يستحق لنا بذمة العميل مبلغ <strong>${formatMoney(Math.abs(running))} ${currency}</strong>.`;
-            } else {
-                sumText.innerHTML = `الحساب متوازن وخالص تماماً (0.00).`;
-            }
-        }
-        function renderAdvancesView() {
-            const tbody = document.getElementById('advances-tbody');
-            const tabBadge = document.getElementById('tab-advances-count');
-            tbody.innerHTML = '';
-
-            const advances = window.state.transactions.filter(t => t.type === 'advance_payment');
-            if (tabBadge) tabBadge.textContent = advances.length;
-
-            advances.forEach((t, i) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="p-3 text-center text-slate-400 font-mono">${i + 1}</td>
-                    <td class="p-3 font-mono font-bold">${escapeHtml(t.goodsDate)}</td>
-                    <td class="p-3 font-bold">${escapeHtml(t.partyName)}</td>
-                    <td class="p-3 font-mono">${escapeHtml(t.invoiceNum)}</td>
-                    <td class="p-3 font-medium">${escapeHtml(t.desc)}</td>
-                    <td class="p-3 font-mono font-black text-emerald-700 text-left">${formatMoney(t.amount)}</td>
-                    <td class="p-3 text-center font-bold">${t.currency}</td>
-                    <td class="p-3 text-center text-slate-600 font-semibold">${escapeHtml(t.createdBy || 'المدير')}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function renderMasterTable() {
-            const keyword = document.getElementById('master-search-input').value.trim().toLowerCase();
-            const tbody = document.getElementById('master-tbody');
-            tbody.innerHTML = '';
-
-            let count = 1;
-            window.state.transactions.forEach(t => {
-                if (keyword && !(t.partyName + t.desc + t.invoiceNum).toLowerCase().includes(keyword)) return;
-
-                const isUnp = (t.isUnpriced || t.pricingStatus === 'لم يتفق عليه بعد');
-                const tr = document.createElement('tr');
-                tr.className = 'hover:bg-slate-50 transition';
-                tr.innerHTML = `
-                    <td class="p-2.5 text-center text-slate-400 font-mono">${count++}</td>
-                    <td class="p-2.5 font-mono font-bold">${escapeHtml(t.goodsDate)}</td>
-                    <td class="p-2.5 font-bold">${escapeHtml(t.partyName)}</td>
-                    <td class="p-2.5">${escapeHtml(t.type)}</td>
-                    <td class="p-2.5 font-mono">${escapeHtml(t.invoiceNum)}</td>
-                    <td class="p-2.5 max-w-xs truncate">${escapeHtml(t.desc)}</td>
-                    <td class="p-2.5 text-center font-mono font-bold">${t.qty}</td>
-                    <td class="p-2.5 text-center font-mono">${isUnp ? 'معلق' : formatMoney(t.price)}</td>
-                    <td class="p-2.5 text-left font-mono font-bold">${isUnp ? '0.00' : formatMoney(t.amount)}</td>
-                    <td class="p-2.5 text-center font-bold">${t.currency}</td>
-                    <td class="p-2.5 text-center">${isUnp ? '<span class="text-amber-800 font-bold">معلق</span>' : '<span class="text-emerald-800 font-bold">مسعر</span>'}</td>
-                    <td class="p-2.5 text-center text-slate-600 font-semibold">${escapeHtml(t.createdBy || 'المدير')}</td>
-                    <td class="p-2.5 text-center">${isUnp ? `<button onclick="openResolvePriceModal('${t.id}')" class="px-2 py-0.5 bg-amber-500 hover:bg-amber-600 text-white rounded text-[10px] font-bold">تسعير</button>` : '-'}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function renderUnpricedTable() {
-            const tbody = document.getElementById('unpriced-tbody');
-            tbody.innerHTML = '';
-
-            const unpricedTxs = window.state.transactions.filter(t => t.isUnpriced || t.pricingStatus === 'لم يتفق عليه بعد');
-
-            unpricedTxs.forEach((t, idx) => {
-                const tr = document.createElement('tr');
-                tr.className = 'hover:bg-amber-50/50 transition';
-                tr.innerHTML = `
-                    <td class="p-3 text-center font-mono text-slate-400">${idx + 1}</td>
-                    <td class="p-3 font-mono font-bold">${escapeHtml(t.goodsDate)}</td>
-                    <td class="p-3 font-bold">${escapeHtml(t.partyName)}</td>
-                    <td class="p-3 font-mono">${escapeHtml(t.invoiceNum)}</td>
-                    <td class="p-3 font-medium">${escapeHtml(t.desc)}</td>
-                    <td class="p-3 text-center font-mono font-black text-blue-700">${t.qty}</td>
-                    <td class="p-3 text-center font-bold">${t.currency}</td>
-                    <td class="p-3 text-center text-slate-600 font-semibold">${escapeHtml(t.createdBy || 'المدير')}</td>
-                    <td class="p-3 text-center">
-                        <button onclick="openResolvePriceModal('${t.id}')" class="px-3 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded text-xs font-bold">تثبيت السعر</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function renderPartiesGrid() {
-            const grid = document.getElementById('parties-grid');
-            if (!grid) return;
-            grid.innerHTML = '';
-
-            window.state.parties.forEach(p => {
-                const card = document.createElement('div');
-                card.className = 'bg-white p-3.5 rounded-2xl border shadow-sm flex flex-col justify-between space-y-2';
-                card.innerHTML = `
-                    <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center font-bold"><i class="fa-solid fa-user-tie"></i></div>
-                        <div>
-                            <h4 class="font-bold text-slate-900 text-xs">${escapeHtml(p.name)}</h4>
-                            <span class="text-[10px] text-purple-700 font-semibold">${escapeHtml(p.type)}</span>
-                        </div>
-                    </div>
-                    <div class="text-[11px] text-slate-500"><i class="fa-solid fa-phone text-slate-400 ml-1"></i> ${escapeHtml(p.phone)}</div>
-                    <div class="pt-1 border-t flex justify-end">
-                        <button onclick="viewPartyStatement('${p.id}')" class="px-2.5 py-1 bg-slate-900 hover:bg-black text-white rounded text-xs font-bold transition">كشف الحساب</button>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        window.renderUsersManagementGrid = function() {
-            const container = document.getElementById('users-grid');
-            if (!container) return;
-            container.innerHTML = '';
-
-            window.state.users.forEach(u => {
-                const isCurrent = window.state.currentUser && (u.username === window.state.currentUser.username);
-                const card = document.createElement('div');
-                card.className = `p-3.5 rounded-2xl border ${isCurrent ? 'border-emerald-500 bg-emerald-50/20' : 'bg-white'} shadow-sm space-y-2`;
-                card.innerHTML = `
-                    <div class="flex justify-between items-center">
-                        <div class="font-bold text-xs">${escapeHtml(u.username)} <span class="text-slate-400 font-normal">(${escapeHtml(u.role)})</span></div>
-                        ${isCurrent ? '<span class="px-2 py-0.2 rounded text-[9px] bg-emerald-600 text-white font-bold">حسابك</span>' : ''}
-                    </div>
-                    <div class="text-[11px] font-mono text-slate-500">كلمة المرور: <strong>${escapeHtml(u.password)}</strong></div>
-                `;
-                container.appendChild(card);
-            });
-        };
-
-        function downloadEmployeePackage() {
-            const currentHtml = document.documentElement.outerHTML;
-            const blob = new Blob([currentHtml], { type: 'text/html;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `منظومة_المحاسبة_للموظفين.html`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            showToast('تم تنزيل نسخة الموظفين الجاهزة للعمل بنجاح');
-        }
-        function printStatement() {
-            const area = document.getElementById('printable-statement-area');
-            if (!area) return;
-            area.classList.add('print-active-area');
-            window.print();
-            setTimeout(() => area.classList.remove('print-active-area'), 1000);
-        }
-
-        function exportStatementToExcel() {
-            const partyId = document.getElementById('stmt-party-select').value;
-            const currency = document.getElementById('stmt-currency-select').value;
-            const party = window.state.parties.find(p => p.id === partyId);
-            if (!party) return;
-
-            let txs = window.state.transactions.filter(t => t.partyId === partyId && t.currency === currency);
-            txs.sort((a, b) => new Date(a.goodsDate) - new Date(b.goodsDate));
-
-            const rows = [
-                ['كشف حساب مالي تفصيلي رسمي'],
-                ['اسم الحساب:', party.name, 'الصفة:', party.type, 'العملة:', currency],
-                ['تاريخ الإصدار:', new Date().toLocaleDateString('ar-EG'), 'المستخرج:', window.state.currentUser ? window.state.currentUser.username : 'المدير'],
-                [],
-                ['م', 'تاريخ البضاعة', 'رقم الفاتورة', 'البيان', 'الكمية', 'السعر', 'الحالة', 'له (دائن)', 'عليه (مدين)', 'الرصيد التراكمي', 'المُدخل']
-            ];
-
-            let running = 0;
-            let totCredit = 0;
-            let totDebit = 0;
-
-            txs.forEach((t, i) => {
-                let credit = 0;
-                let debit = 0;
-                const isUnp = (t.isUnpriced || t.pricingStatus === 'لم يتفق عليه بعد');
-                const amt = parseFloat(t.amount) || 0;
-
-                if (!isUnp) {
-                    if (t.type === 'goods_in' || t.type === 'payment_in') {
-                        credit = amt; running += amt; totCredit += amt;
-                    } else {
-                        debit = amt; running -= amt; totDebit += amt;
-                    }
-                }
-
-                rows.push([
-                    i + 1, t.goodsDate, t.invoiceNum, t.desc, t.qty,
-                    isUnp ? 'معلق' : t.price, isUnp ? 'معلق' : 'معتمد',
-                    credit || 0, debit || 0, running, t.createdBy || 'المدير'
-                ]);
-            });
-
-            rows.push([]);
-            rows.push(['المجموع العام:', '', '', '', '', '', '', totCredit, totDebit, running, '']);
-
-            const ws = XLSX.utils.aoa_to_sheet(rows);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "كشف الحساب");
-            XLSX.writeFile(wb, `كشف_${party.name}_${currency}_${new Date().toISOString().slice(0,10)}.xlsx`);
-            showToast('تم تصدير ملف الإكسل بنجاح');
-        }
-
-        function exportAllMasterToExcel() {
-            const rows = [
-                ['دفتر اليومية وسجل الحركات العام'],
-                ['تاريخ التصدير:', new Date().toLocaleDateString('ar-EG'), 'المستخرج:', window.state.currentUser ? window.state.currentUser.username : 'المدير'],
-                [],
-                ['م', 'تاريخ البضاعة', 'اسم الحساب', 'نوع الحركة', 'الفاتورة', 'البيان', 'الكمية', 'السعر', 'المبلغ', 'العملة', 'الحالة', 'المُدخل']
-            ];
-
-            window.state.transactions.forEach((t, i) => {
-                const isUnp = (t.isUnpriced || t.pricingStatus === 'لم يتفق عليه بعد');
-                rows.push([
-                    i + 1, t.goodsDate, t.partyName, t.type, t.invoiceNum, t.desc,
-                    t.qty, t.price, isUnp ? 0 : t.amount, t.currency,
-                    isUnp ? 'لم يتفق عليه بعد' : 'مسعر', t.createdBy || 'المدير'
-                ]);
-            });
-
-            const ws = XLSX.utils.aoa_to_sheet(rows);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "دفتر اليومية");
-            XLSX.writeFile(wb, `دفتر_اليومية_${new Date().toISOString().slice(0,10)}.xlsx`);
-            showToast('تم تصدير دفتر اليومية كـ Excel');
-        }
-
-        function exportFullOrganizationToExcel() {
-            const wb = XLSX.utils.book_new();
-
-            const mRows = [
-                ['دفتر اليومية العام للمؤسسة'],
-                ['م', 'تاريخ البضاعة', 'الحساب', 'نوع الحركة', 'الفاتورة', 'البيان', 'الكمية', 'السعر', 'المبلغ', 'العملة', 'الحالة', 'المُدخل']
-            ];
-            window.state.transactions.forEach((t, i) => {
-                mRows.push([i+1, t.goodsDate, t.partyName, t.type, t.invoiceNum, t.desc, t.qty, t.price, t.amount, t.currency, t.pricingStatus, t.createdBy]);
-            });
-            XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(mRows), "دفتر اليومية");
-
-            const pRows = [
-                ['دليل الحسابات'],
-                ['م', 'اسم الحساب', 'الصفة', 'الهاتف']
-            ];
-            window.state.parties.forEach((p, i) => {
-                pRows.push([i+1, p.name, p.type, p.phone]);
-            });
-            XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(pRows), "دليل الحسابات");
-
-            const orgName = (window.state.organization.name || "منظومة_الحسابات").replace(/\s+/g, '_');
-            XLSX.writeFile(wb, `سحابة_${orgName}_${new Date().toISOString().slice(0,10)}.xlsx`);
-            showToast('تم تصدير كامل قاعدة البيانات كملف Excel');
-        }
-
-        function addNotification(message, type = 'action') {
-            const notif = {
-                id: 'notif_' + Date.now(),
-                message: message,
-                type: type,
-                time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
-                read: false
-            };
-            window.state.notifications.unshift(notif);
-            if (window.state.notifications.length > 30) window.state.notifications.pop();
-            localStorage.setItem(STORAGE_KEY_NOTIFS, JSON.stringify(window.state.notifications));
-            renderNotificationsUI();
-        }
-
-        window.renderNotificationsUI = function() {
-            const list = document.getElementById('notifications-list');
-            const badge = document.getElementById('notifications-count-badge');
-            if (!list || !badge) return;
-
-            const unread = window.state.notifications.filter(n => !n.read).length;
-            if (unread > 0) {
-                badge.textContent = unread;
-                badge.classList.remove('hidden');
-            } else {
-                badge.classList.add('hidden');
-            }
-
-            if (window.state.notifications.length === 0) {
-                list.innerHTML = '<div class="p-4 text-center text-slate-400 text-xs font-semibold">لا توجد تنبيهات جديدة</div>';
-                return;
-            }
-
-            list.innerHTML = '';
-            window.state.notifications.forEach(n => {
-                const item = document.createElement('div');
-                item.className = 'p-2 text-[11px] text-slate-800';
-                item.innerHTML = `<div>${escapeHtml(n.message)}</div><div class="text-[9px] text-slate-400 mt-0.5">${n.time}</div>`;
-                list.appendChild(item);
-            });
-        };
-
-        function toggleNotificationsDropdown() {
-            const drop = document.getElementById('notifications-dropdown');
-            if (!drop) return;
-            drop.classList.toggle('hidden');
-            window.state.notifications.forEach(n => n.read = true);
-            localStorage.setItem(STORAGE_KEY_NOTIFS, JSON.stringify(window.state.notifications));
-            renderNotificationsUI();
-        }
-
-        function clearAllNotifications() {
-            window.state.notifications = [];
-            localStorage.setItem(STORAGE_KEY_NOTIFS, JSON.stringify([]));
-            renderNotificationsUI();
-            showToast('تم مسح الإشعارات');
-        }
-
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active', 'text-white', 'border-emerald-500');
-                btn.classList.add('text-slate-400', 'border-transparent');
-            });
-
-            const activeContent = document.getElementById(tabId);
-            const activeBtn = document.getElementById(`tab-${tabId}`);
-            if (activeContent) activeContent.classList.remove('hidden');
-            if (activeBtn) {
-                activeBtn.classList.add('active', 'text-white', 'border-emerald-500');
-                activeBtn.classList.remove('text-slate-400', 'border-transparent');
-            }
-
-            if (tabId === 'dashboard-view') renderDashboard();
-            if (tabId === 'statement-view') runStatementFilter();
-            if (tabId === 'advances-view') renderAdvancesView();
-            if (tabId === 'transactions-view') renderMasterTable();
-            if (tabId === 'unpriced-view') renderUnpricedTable();
-            if (tabId === 'parties-view') renderPartiesGrid();
-            if (tabId === 'users-management-view') renderUsersManagementGrid();
-        }
-
-        function populatePartyDropdowns() {
-            const stmtSelect = document.getElementById('stmt-party-select');
-            const txSelect = document.getElementById('tx-party-id');
-
-            let optionsHtml = '';
-            window.state.parties.forEach(p => {
-                optionsHtml += `<option value="${p.id}">${escapeHtml(p.name)} (${escapeHtml(p.type)})</option>`;
-            });
-
-            if (stmtSelect) {
-                const prev = stmtSelect.value;
-                stmtSelect.innerHTML = optionsHtml;
-                if (prev) stmtSelect.value = prev;
-            }
-            if (txSelect) txSelect.innerHTML = optionsHtml;
-        }
-
-        window.renderAllViews = function() {
-            populatePartyDropdowns();
-            renderDashboard();
-            runStatementFilter();
-            renderAdvancesView();
-            renderMasterTable();
-            renderUnpricedTable();
-            renderPartiesGrid();
-            renderUsersManagementGrid();
-            updateActiveUserLabels();
-        };
-
-        function openModal(id, defaultType = null) {
-            const m = document.getElementById(id);
-            if (m) {
-                m.classList.remove('hidden');
-                if (id === 'add-transaction-modal') {
-                    document.getElementById('tx-goods-date').value = new Date().toISOString().split('T')[0];
-                    populatePartyDropdowns();
-                    if (defaultType) document.getElementById('tx-type').value = defaultType;
-                }
-            }
-        }
-
-        function closeModal(id) {
-            const m = document.getElementById(id);
-            if (m) m.classList.add('hidden');
-        }
-
-        function formatMoney(num) {
-            if (isNaN(num) || num === null || num === undefined) return '0.00';
-            return parseFloat(num).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        }
-
-        function escapeHtml(string) {
-            if (!string) return '';
-            return String(string)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;');
-        }
-
-        function showToast(msg, isError = false) {
-            const toast = document.getElementById('custom-toast');
-            const icon = document.getElementById('toast-icon');
-            const text = document.getElementById('toast-message');
-            if (!toast) return;
-
-            text.textContent = msg;
-            icon.className = isError ? 'fa-solid fa-triangle-exclamation text-rose-400' : 'fa-solid fa-circle-check text-emerald-400';
-
-            toast.classList.remove('opacity-0', 'pointer-events-none', '-translate-y-10');
-            toast.classList.add('opacity-100', 'translate-y-0');
-
-            setTimeout(() => {
-                toast.classList.remove('opacity-100', 'translate-y-0');
-                toast.classList.add('opacity-0', 'pointer-events-none', '-translate-y-10');
-            }, 3000);
-        }
-    </script>
+        tbody.innerHTML += `
+          <tr>
+            <td class="p-2 border-l border-slate-300 font-mono">${t.id}</td>
+            <td class="p-2 border-l border-slate-300">${t.actualDate}</td>
+            <td class="p-2 border-l border-slate-300">${t.desc}</td>
+            <td class="p-2 border-l border-slate-300 font-bold text-emerald-700">${debit > 0 ? '$ ' + debit.toLocaleString() : '-'}</td>
+            <td class="p-2 border-l border-slate-300 font-bold text-rose-700">${credit > 0 ? '$ ' + credit.toLocaleString() : '-'}</td>
+            <td class="p-2 font-black">$ ${balance.toLocaleString()}</td>
+          </tr>
+        `;
+      });
+    }
+
+    function viewAccountStatement(accName) {
+      switchView('statement');
+      document.getElementById('statementAccountSelect').value = accName;
+      generateStatement();
+    }
+
+    // تصدير إكسل رسمي
+    function exportToExcel() {
+      if (appState.transactions.length === 0) {
+        alert("لا توجد حركات لتصديرها.");
+        return;
+      }
+      const data = appState.transactions.map(t => ({
+        "رقم القيد": t.id,
+        "تاريخ البضاعة": t.actualDate,
+        "تاريخ التوثيق": t.entryDate,
+        "الحساب": t.account,
+        "نوع الحركة": t.type,
+        "البيان والكميات": t.desc,
+        "المبلغ ($)": t.amount,
+        "المستخدم": t.user
+      }));
+
+      const ws = XLSX.utils.json_to_sheet(data);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "اليومية العامة");
+      XLSX.writeFile(wb, `سجل_المحاسبة_${new Date().toISOString().split('T')[0]}.xlsx`);
+    }
+
+    // التبديل بين التبويبات
+    function switchView(viewName) {
+      ['dashboard', 'ledger', 'pending', 'advances', 'statement', 'users'].forEach(v => {
+        document.getElementById(`view-${v}`).classList.add('hidden');
+        document.getElementById(`nav-${v}`).className = "py-3 px-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 whitespace-nowrap";
+      });
+
+      document.getElementById(`view-${viewName}`).classList.remove('hidden');
+      document.getElementById(`nav-${viewName}`).className = "py-3 px-2 border-b-2 border-indigo-500 text-indigo-400 flex items-center gap-2 whitespace-nowrap";
+
+      if (viewName === 'statement') generateStatement();
+    }
+
+    function toggleTxInputs() {
+      const type = document.getElementById('txTypeSelect').value;
+      document.getElementById('amountBox').style.display = type === 'معلق' ? 'none' : 'block';
+    }
+
+    function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+    function logout() {
+      localStorage.removeItem('as_accounting_session');
+      if (auth) auth.signOut();
+      location.reload();
+    }
+
+    function loadLocalDemoData() {
+      appState.accounts = [{ name: 'شركة النور للتجارة', role: 'مورد', phone: '0944000000' }];
+      appState.transactions = [];
+      refreshUI();
+    }
+  </script>
 </body>
 </html>

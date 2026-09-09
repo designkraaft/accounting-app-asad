@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منظومة إدارة الحسابات المالية السحابية وكشوف الحساب المعتمدة</title>
+    <title>منظومة المحاسبة السحابية المركزية وكشوف الحساب المعتمدة | v3.5</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Tajawal -->
@@ -12,10 +12,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- SheetJS for Native Excel Export -->
+    <!-- SheetJS for Native Excel (.xlsx) Export -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
-    <!-- Firebase SDKs (Compatibility build for seamless web deployment) -->
+    <!-- Firebase SDKs (Compatibility Build) -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -56,51 +56,57 @@
 </head>
 <body class="min-h-screen flex flex-col bg-slate-50 text-slate-900 antialiased selection:bg-emerald-600 selection:text-white">
 
-    <!-- نافذة تسجيل الدخول وحماية النظام السحابي -->
-    <div id="auth-gate-overlay" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+    <!-- نافذة تسجيل الدخول وحماية المنظومة بتصميم أنيق ومطور -->
+    <div id="auth-gate-overlay" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-auto">
-            <div class="bg-slate-900 text-white p-6 text-center border-b border-slate-800">
+            
+            <!-- رأس بطاقة الدخول مع الشعار ورقم الإصدار -->
+            <div class="bg-slate-900 text-white p-6 text-center border-b border-slate-800 relative">
+                <span class="absolute top-3 left-3 px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-950 text-emerald-400 border border-emerald-800/80">
+                    الإصدار v3.5
+                </span>
                 <div class="w-14 h-14 mx-auto mb-3 rounded-2xl bg-emerald-600 flex items-center justify-center text-white shadow-xl shadow-emerald-950/40">
                     <i class="fa-solid fa-file-invoice-dollar text-2xl"></i>
                 </div>
-                <h2 class="text-lg font-black tracking-tight">منظومة الحسابات السحابية المركزية</h2>
-                <p class="text-xs text-slate-400 mt-1">مزامنة سحابية حية 100% عبر Google Cloud Firestore</p>
+                <h2 class="text-lg font-black tracking-tight">منظومة الحسابات السحابية</h2>
+                <p class="text-xs text-slate-400 mt-1">مزامنة سحابية حية 100% مع دعم النسخ الاحتياطي في Google Drive</p>
                 
+                <!-- تبويبات التبديل بين تسجيل الدخول وتسجيل جديد -->
                 <div class="grid grid-cols-2 gap-2 mt-5 p-1 bg-slate-950 rounded-xl">
-                    <button type="button" id="tab-btn-login" onclick="switchAuthTab('login')" class="py-2 text-xs font-black rounded-lg transition shadow bg-emerald-600 text-white flex items-center justify-center gap-1.5">
+                    <button type="button" id="tab-btn-login" onclick="switchAuthTab('login')" class="py-2.5 text-xs font-black rounded-lg transition shadow bg-emerald-600 text-white flex items-center justify-center gap-1.5">
                         <i class="fa-solid fa-right-to-bracket"></i>
                         <span>تسجيل الدخول</span>
                     </button>
-                    <button type="button" id="tab-btn-register" onclick="switchAuthTab('register')" class="py-2 text-xs font-bold rounded-lg transition text-slate-400 hover:text-white flex items-center justify-center gap-1.5">
-                        <i class="fa-solid fa-building-user"></i>
-                        <span>تأسيس المؤسسة</span>
+                    <button type="button" id="tab-btn-register" onclick="switchAuthTab('register')" class="py-2.5 text-xs font-bold rounded-lg transition text-slate-400 hover:text-white flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-user-plus"></i>
+                        <span>تسجيل جديد للمدير</span>
                     </button>
                 </div>
             </div>
 
             <div class="p-6">
-                <!-- VIEW 1: LOGIN -->
+                <!-- VIEW 1: LOGIN (دخول المدير بحساب Google أو الموظف باسم المستخدم) -->
                 <div id="view-login-box" class="space-y-4">
-                    <button type="button" onclick="loginWithGoogleManager()" class="w-full py-3.5 bg-white border border-slate-300 hover:bg-slate-50 text-slate-800 font-bold text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2.5 transition shadow-sm active:scale-[0.98]">
+                    <button type="button" onclick="loginWithGoogleManager()" class="w-full py-3.5 bg-white border-2 border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-800 font-bold text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2.5 transition shadow-sm active:scale-[0.98]">
                         <svg class="w-5 h-5" viewBox="0 0 24 24">
                             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                             <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
                             <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
                             <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
                         </svg>
-                        <span>دخول المدير العام المباشر بحساب Google</span>
+                        <span>دخول المدير العام بحساب Google (تلقائي)</span>
                     </button>
 
                     <div class="relative flex py-2 items-center">
                         <div class="flex-grow border-t border-slate-200"></div>
-                        <span class="flex-shrink mx-3 text-[11px] text-slate-400 font-bold">أو دخول الموظف المسجل بالاسم</span>
+                        <span class="flex-shrink mx-3 text-[11px] text-slate-400 font-bold">أو دخول الموظف المسجل</span>
                         <div class="flex-grow border-t border-slate-200"></div>
                     </div>
 
                     <form onsubmit="handleEmployeeLogin(event)" class="space-y-3">
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1">اسم المستخدم / الموظف:</label>
-                            <input type="text" id="login-username" required placeholder="أدخل اسمك المسجل بالنظام..." class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs sm:text-sm font-bold text-slate-900 focus:ring-2 focus:ring-emerald-500 outline-none">
+                            <input type="text" id="login-username" required placeholder="اسم المستخدم المعين لك..." class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs sm:text-sm font-bold text-slate-900 focus:ring-2 focus:ring-emerald-500 outline-none">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1">كلمة المرور:</label>
@@ -108,32 +114,45 @@
                         </div>
                         <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-black rounded-xl shadow-md transition flex items-center justify-center gap-2">
                             <i class="fa-solid fa-right-to-bracket"></i>
-                            <span>دخول الموظف للمنظومة</span>
+                            <span>دخول الموظف للنظام</span>
                         </button>
                     </form>
                 </div>
 
-                <!-- VIEW 2: ORG SETUP -->
+                <!-- VIEW 2: REGISTER (تسجيل مدير عام ومؤسسة جديدة ببيانات إجبارية) -->
                 <div id="view-register-box" class="hidden space-y-3.5">
                     <form onsubmit="handleOrgSetupWithGoogle(event)" class="space-y-3">
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1">اسم المؤسسة أو الشركة التجاري *</label>
-                            <input type="text" id="reg-org-name" required placeholder="مثال: شركة الأمل للتجارة العامة" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs font-bold text-slate-900 focus:ring-2 focus:ring-blue-500 outline-none">
+                            <input type="text" id="reg-org-name" required placeholder="مثال: شركة الأمل للمقاولات والتجارة" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs font-bold text-slate-900 focus:ring-2 focus:ring-blue-500 outline-none">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">اسم المدير العام المسؤول *</label>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">الاسم الكامل للمدير العام المسؤول *</label>
                             <input type="text" id="reg-manager-name" required placeholder="مثال: أسد المصطفى" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs font-bold text-slate-900 focus:ring-2 focus:ring-blue-500 outline-none">
                         </div>
-                        <div class="p-3 bg-blue-50 rounded-xl border border-blue-200 text-[11px] text-blue-900 leading-relaxed">
-                            <i class="fa-solid fa-shield-halved text-blue-600 ml-1"></i>
-                            سيتم توثيق وربط المنظومة بحساب Google الخاص بك كمدير عام لمنحك الصلاحيات الحصرية لإضافة الموظفين واعتماد المعلقات.
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">رقم الهاتف أو الجوال للتواصل *</label>
+                            <input type="text" id="reg-manager-phone" required placeholder="05XXXXXXXX / 09XXXXXXXX" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs font-mono text-slate-900 focus:ring-2 focus:ring-blue-500 outline-none">
+                        </div>
+                        <div class="p-3 bg-blue-50 rounded-xl border border-blue-200 text-[11px] text-blue-950 leading-relaxed space-y-1">
+                            <div class="font-bold flex items-center gap-1.5 text-blue-900">
+                                <i class="fa-solid fa-shield-halved text-blue-600"></i>
+                                <span>توثيق الربط وحماية درايف:</span>
+                            </div>
+                            <p>سيتم توثيق المنظومة بحساب Google الخاص بك لمنحك صلاحيات الإدارة التامة وأخذ النسخ الاحتياطية مباشرة في Google Drive.</p>
                         </div>
                         <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-black rounded-xl shadow-md transition flex items-center justify-center gap-2">
                             <i class="fa-brands fa-google"></i>
-                            <span>المتابعة بحساب Google وبدء التأسيس</span>
+                            <span>تسجيل جديد والمتابعة بحساب Google</span>
                         </button>
                     </form>
                 </div>
+            </div>
+
+            <!-- شريط معلومات الحقوق والإصدار في نافذة الدخول -->
+            <div class="p-4 bg-slate-100 border-t border-slate-200 text-center text-[11px] text-slate-600 font-semibold flex items-center justify-between">
+                <span>الإصدار المعتمد v3.5</span>
+                <span>تصميم وتطوير: <a href="https://khaldoun.net" target="_blank" rel="noopener noreferrer" class="text-emerald-700 hover:text-emerald-800 font-bold underline">خلدون الحمدو (khaldoun.net)</a></span>
             </div>
         </div>
     </div>
@@ -152,18 +171,27 @@
                             <h1 class="text-base sm:text-lg font-black tracking-tight" id="header-org-title">منظومة الحسابات السحابية</h1>
                             <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-950 text-emerald-400 border border-emerald-700/60 flex items-center gap-1.5">
                                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                                <span>Firestore سحابية حية</span>
+                                <span>سحابة Firestore حية</span>
+                            </span>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-800 text-slate-300 border border-slate-700">
+                                v3.5
                             </span>
                         </div>
                         <p class="text-[11px] text-slate-400">
-                            المدير: <span id="header-manager-name" class="font-bold text-slate-200">المدير العام</span> • كود الفاتورة القادم: <span id="header-next-inv" class="font-mono text-emerald-400">INV-1001</span>
+                            المدير: <span id="header-manager-name" class="font-bold text-slate-200">المدير العام</span> • رقم الفاتورة القادم: <span id="header-next-inv" class="font-mono text-emerald-400 font-bold">INV-1001</span>
                         </p>
                     </div>
                 </div>
 
                 <div class="flex flex-wrap items-center justify-center gap-2">
-                    <!-- Backup & Restore Buttons -->
-                    <button onclick="exportBackupJson()" class="text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-blue-300 px-3 py-2 rounded-xl transition font-bold flex items-center gap-1.5 shadow-sm" title="أخذ نسخة احتياطية سريعة JSON">
+                    <!-- Backup Directly to Google Drive -->
+                    <button id="btn-drive-backup" onclick="backupDirectlyToGoogleDrive()" class="text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-amber-300 hover:text-amber-200 px-3 py-2 rounded-xl transition font-bold flex items-center gap-1.5 shadow-sm" title="حفظ نسخة احتياطية مباشرة في Google Drive للمدير">
+                        <i class="fa-brands fa-google-drive text-amber-400"></i>
+                        <span>نسخ إلى Drive</span>
+                    </button>
+
+                    <!-- Backup to Local JSON File -->
+                    <button onclick="exportBackupJson()" class="text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-blue-300 px-3 py-2 rounded-xl transition font-bold flex items-center gap-1.5 shadow-sm" title="تنزيل نسخة احتياطية JSON للجهاز">
                         <i class="fa-solid fa-cloud-arrow-down"></i>
                         <span>نسخ احتياطي</span>
                     </button>
@@ -188,7 +216,7 @@
                     </div>
 
                     <!-- New Quick Transaction Button -->
-                    <button onclick="openModal('add-transaction-modal')" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-black rounded-xl shadow-lg transition flex items-center gap-1.5">
+                    <button id="btn-header-new-tx" onclick="openModal('add-transaction-modal')" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-black rounded-xl shadow-lg transition flex items-center gap-1.5">
                         <i class="fa-solid fa-circle-plus"></i>
                         <span>حركة جديدة</span>
                     </button>
@@ -216,7 +244,7 @@
                     <i class="fa-solid fa-users text-purple-400"></i> دليل الحسابات
                 </button>
                 <button onclick="switchTab('users-management-view')" id="tab-users-management-view" class="tab-btn px-3.5 py-2 text-slate-400 hover:text-white border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap">
-                    <i class="fa-solid fa-id-badge text-rose-400"></i> إدارة الموظفين
+                    <i class="fa-solid fa-id-badge text-rose-400"></i> إدارة الموظفين والصلاحيات
                 </button>
             </div>
         </div>
@@ -296,7 +324,7 @@
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                 <div class="p-4 border-b border-slate-100 flex justify-between items-center">
                     <h2 class="text-xs sm:text-sm font-bold text-slate-800">أرصدة الحسابات الإجمالية للموردين والعملاء</h2>
-                    <button onclick="checkAdminAndOpenPartyModal()" class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl transition">
+                    <button onclick="checkPartyPermAndOpenModal()" class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl transition">
                         <i class="fa-solid fa-user-plus ml-1 text-emerald-400"></i> حساب جديد
                     </button>
                 </div>
@@ -325,7 +353,7 @@
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-100 pb-3">
                     <div class="flex items-center gap-2">
                         <i class="fa-solid fa-file-invoice-dollar text-teal-600 text-lg"></i>
-                        <h2 class="font-black text-sm text-slate-900">كشف الحساب المالي المعتمد للطباعة</h2>
+                        <h2 class="font-black text-sm text-slate-900">كشف الحساب المالي المعتمد للطباعة و PDF</h2>
                     </div>
                     <div class="flex gap-2">
                         <button onclick="printStatement()" class="px-3.5 py-2 bg-slate-900 hover:bg-black text-white text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow">
@@ -396,7 +424,7 @@
                                 <th class="p-2 w-24 text-emerald-800 bg-emerald-50/50">له (دائن)</th>
                                 <th class="p-2 w-24 text-rose-800 bg-rose-50/50">عليه (مدين)</th>
                                 <th class="p-2 w-28 bg-slate-200 text-slate-900 font-black text-left pl-2">الرصيد المتبقي</th>
-                                <th class="p-2 w-16 text-center">المُدخل</th>
+                                <th class="p-2 w-20 text-center">المُدخل</th>
                                 <th class="p-2 w-14 text-center no-print">مرفق</th>
                             </tr>
                         </thead>
@@ -457,7 +485,7 @@
         <!-- ==================== TAB 4: MASTER GENERAL JOURNAL ==================== -->
         <section id="transactions-view" class="tab-content hidden space-y-4">
             <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm flex flex-wrap justify-between items-center gap-2">
-                <input type="text" id="master-search-input" oninput="renderMasterTable()" placeholder="بحث في السجل العام (اسم، فاتورة، بيان)..." class="p-2 text-xs bg-slate-50 border border-slate-300 rounded-xl w-64 text-slate-900 outline-none">
+                <input type="text" id="master-search-input" oninput="renderMasterTable()" placeholder="بحث في السجل العام (اسم، فاتورة، بيان، مُدخل)..." class="p-2 text-xs bg-slate-50 border border-slate-300 rounded-xl w-64 text-slate-900 outline-none">
                 <div class="flex gap-2">
                     <button onclick="printStatement()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold rounded-xl transition"><i class="fa-solid fa-print ml-1 text-amber-400"></i> طباعة</button>
                     <button onclick="exportAllMasterToExcel()" class="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl transition"><i class="fa-solid fa-file-excel ml-1"></i> إكسل</button>
@@ -528,24 +556,43 @@
                     <h2 class="font-bold text-slate-900 text-xs sm:text-sm">دليل الحسابات والعملاء والموردين</h2>
                     <p class="text-[11px] text-slate-500">حصر جميع أطراف التعامل وبياناتهم</p>
                 </div>
-                <button onclick="checkAdminAndOpenPartyModal()" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow transition">+ حساب جديد</button>
+                <button onclick="checkPartyPermAndOpenModal()" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow transition">+ حساب جديد</button>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="parties-grid"></div>
         </section>
 
-        <!-- ==================== TAB 7: USERS MANAGEMENT ==================== -->
+        <!-- ==================== TAB 7: USERS & PERMISSIONS MANAGEMENT ==================== -->
         <section id="users-management-view" class="tab-content hidden space-y-4">
             <div class="bg-white p-4 rounded-2xl border border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                 <div>
-                    <h2 class="font-black text-sm sm:text-base text-slate-900">إدارة حسابات الموظفين والمستخدمين</h2>
-                    <p class="text-xs text-slate-500">يضيف المدير الموظف باسمه وكلمة سره، ليتمكن من تسجيل الدخول مباشرة من أي هاتف أو كمبيوتر، وتوثيق اسمه على كل عملية يدخلها.</p>
+                    <h2 class="font-black text-sm sm:text-base text-slate-900">إدارة حسابات الموظفين وصلاحياتهم</h2>
+                    <p class="text-xs text-slate-500">تحديد صلاحيات دقيقة لكل موظف مع حجب كلمات المرور لمنع اطلاع الموظفين على بيانات وحسابات بعضهم البعض.</p>
                 </div>
-                <button onclick="checkAdminAndOpenUserModal()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow transition">+ موظف جديد</button>
+                <button onclick="checkAdminAndOpenUserModal()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow transition">+ إضافة موظف جديد</button>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="users-grid"></div>
         </section>
 
     </main>
+
+    <!-- شريط تذييل الصفحة الرسمي مع معلومات الإصدار وحقوق المطور -->
+    <footer class="no-print bg-white border-t border-slate-200 mt-auto py-4 text-xs text-slate-600">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-2">
+            <div class="flex items-center gap-2">
+                <span class="font-black text-slate-800">منظومة الحسابات السحابية</span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 border border-slate-300">الإصدار v3.5 السحابي</span>
+            </div>
+            <div class="flex items-center gap-2 font-medium">
+                <span>تصميم وتطوير:</span>
+                <a href="https://khaldoun.net" target="_blank" rel="noopener noreferrer" class="text-emerald-700 hover:text-emerald-800 font-extrabold flex items-center gap-1">
+                    <span>خلدون الحمدو</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                </a>
+                <span class="text-slate-300">|</span>
+                <a href="https://khaldoun.net" target="_blank" rel="noopener noreferrer" class="text-slate-500 hover:text-slate-800 font-mono">khaldoun.net</a>
+            </div>
+        </div>
+    </footer>
 
     <!-- MODAL 1: ADD TRANSACTION -->
     <div id="add-transaction-modal" class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm hidden flex items-center justify-center p-4 overflow-y-auto">
@@ -697,13 +744,16 @@
         </div>
     </div>
 
-    <!-- MODAL 4: ADD USER / EMPLOYEE -->
-    <div id="add-user-modal" class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
-        <div class="bg-white text-slate-900 w-full max-w-sm rounded-2xl shadow-2xl border border-slate-200 p-5 space-y-3.5 text-xs">
-            <h3 class="font-bold text-sm text-slate-900 border-b border-slate-100 pb-2"><i class="fa-solid fa-user-shield ml-1 text-emerald-600"></i> إضافة موظف جديد للمنظومة</h3>
-            <form onsubmit="saveNewUser(event)" class="space-y-3">
+    <!-- MODAL 4: ADD USER / EMPLOYEE WITH GRANULAR PERMISSIONS -->
+    <div id="add-user-modal" class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white text-slate-900 w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 overflow-hidden my-4 text-xs">
+            <div class="bg-slate-900 text-white p-4 flex justify-between items-center">
+                <h3 class="font-bold text-xs sm:text-sm text-emerald-400"><i class="fa-solid fa-user-shield ml-1"></i> إضافة موظف جديد وتحديد صلاحياته</h3>
+                <button onclick="closeModal('add-user-modal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="saveNewUser(event)" class="p-5 space-y-3.5">
                 <div>
-                    <label class="block font-bold mb-1 text-slate-700">اسم الموظف *</label>
+                    <label class="block font-bold mb-1 text-slate-700">اسم الموظف المسجل *</label>
                     <input type="text" id="new-user-name" required placeholder="مثال: أصلان" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold outline-none">
                 </div>
                 <div>
@@ -712,15 +762,45 @@
                         <option value="محاسب رئيسي">محاسب رئيسي</option>
                         <option value="مدخل بيانات">مدخل بيانات</option>
                         <option value="أمين مستودع">أمين مستودع</option>
+                        <option value="أمين صندوق">أمين صندوق</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block font-bold mb-1 text-slate-700">كلمة المرور *</label>
+                    <label class="block font-bold mb-1 text-slate-700">كلمة المرور الخاصة بالموظف *</label>
                     <input type="password" id="new-user-password" required placeholder="••••••••" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-mono outline-none">
+                    <span class="text-[10px] text-slate-500 mt-1 block">تُحجب كلمة المرور ولا تظهر لباقي الموظفين نهائياً.</span>
                 </div>
+
+                <!-- Granular Permissions Checklist -->
+                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                    <span class="block font-black text-slate-800 border-b border-slate-200 pb-1">صلاحيات هذا الموظف بالنظام:</span>
+                    <div class="space-y-1.5 font-semibold text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="perm-add-tx" checked class="rounded text-emerald-600 focus:ring-emerald-500 w-4 h-4">
+                            <span>تسجيل حركات وفواتير ودفعات جديدة</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="perm-resolve-price" checked class="rounded text-emerald-600 focus:ring-emerald-500 w-4 h-4">
+                            <span>تثبيت أسعار البضائع المعلقة</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="perm-manage-parties" checked class="rounded text-emerald-600 focus:ring-emerald-500 w-4 h-4">
+                            <span>إضافة وتعديل دليل الحسابات والموردين</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="perm-view-statements" checked class="rounded text-emerald-600 focus:ring-emerald-500 w-4 h-4">
+                            <span>استعراض كشوف الحساب والطباعة</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="perm-export-excel" checked class="rounded text-emerald-600 focus:ring-emerald-500 w-4 h-4">
+                            <span>تصدير ملفات Excel</span>
+                        </label>
+                    </div>
+                </div>
+
                 <div class="flex justify-end gap-2 pt-3 border-t border-slate-200">
                     <button type="button" onclick="closeModal('add-user-modal')" class="px-4 py-2 border border-slate-300 rounded-xl text-slate-600">إلغاء</button>
-                    <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow">حفظ الموظف</button>
+                    <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow">حفظ الموظف وتثبيت الصلاحيات</button>
                 </div>
             </form>
         </div>
@@ -761,12 +841,14 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        const STORAGE_KEY_AUTH = 'acct_sys_current_user_v16';
+        const STORAGE_KEY_AUTH = 'acct_sys_current_user_v35';
+        const STORAGE_KEY_DRIVE_TOKEN = 'acct_sys_drive_token_v35';
 
         // State Machine
         window.state = {
-            organization: { name: "مؤسسة الأمل التجارية", createdAt: "2026-09-10", managerName: "المدير العام" },
+            organization: { name: "مؤسسة الأمل التجارية", createdAt: "2026-09-10", managerName: "المدير العام", managerPhone: "---" },
             currentUser: null,
+            googleDriveAccessToken: localStorage.getItem(STORAGE_KEY_DRIVE_TOKEN) || null,
             parties: [],
             transactions: [],
             users: [],
@@ -801,7 +883,8 @@
                         const defaultOrg = {
                             name: "مؤسسة الأمل التجارية",
                             createdAt: new Date().toISOString().split('T')[0],
-                            managerName: window.state.currentUser.username
+                            managerName: window.state.currentUser.username,
+                            managerPhone: "---"
                         };
                         db.collection('accounting_system').doc('meta').set(defaultOrg);
                     }
@@ -845,15 +928,30 @@
 
         function loginWithGoogleManager() {
             const provider = new firebase.auth.GoogleAuthProvider();
+            // Request Google Drive scope so we can directly backup database to the manager's Drive
+            provider.addScope('https://www.googleapis.com/auth/drive.file');
+
             auth.signInWithPopup(provider)
                 .then(result => {
                     const gUser = result.user;
+                    if (result.credential && result.credential.accessToken) {
+                        window.state.googleDriveAccessToken = result.credential.accessToken;
+                        localStorage.setItem(STORAGE_KEY_DRIVE_TOKEN, result.credential.accessToken);
+                    }
+
                     const adminUser = {
                         id: gUser.uid,
-                        username: gUser.displayName || 'أسد المصطفى (المدير)',
+                        username: gUser.displayName || 'المدير العام',
                         email: gUser.email,
                         role: 'مدير عام',
-                        isGoogleAdmin: true
+                        isGoogleAdmin: true,
+                        permissions: {
+                            addTx: true,
+                            resolvePrice: true,
+                            manageParties: true,
+                            viewStatements: true,
+                            exportExcel: true
+                        }
                     };
                     window.state.currentUser = adminUser;
                     localStorage.setItem(STORAGE_KEY_AUTH, JSON.stringify(adminUser));
@@ -861,35 +959,125 @@
 
                     unlockAppUI();
                     startRealtimeListeners();
-                    showToast(`أهلاً بك يا ${adminUser.username}! تم تسجيل الدخول`);
+                    showToast(`أهلاً بك يا ${adminUser.username}! تم تسجيل الدخول بنجاح`);
                 })
                 .catch(error => {
                     showToast('خطأ في إذن Google: ' + error.message, true);
                 });
         }
 
+        async function backupDirectlyToGoogleDrive() {
+            if (!isCurrentUserAdmin()) {
+                showToast('النسخ الاحتياطي في Google Drive مخصص للمدير العام فقط', true);
+                return;
+            }
+
+            const token = window.state.googleDriveAccessToken;
+            if (!token) {
+                // If token not in memory, re-authenticate with Google Drive scope seamlessly
+                loginWithGoogleManager();
+                return;
+            }
+
+            showToast('جاري رفع وتخزين النسخة الاحتياطية في Google Drive...');
+
+            const backupData = {
+                organization: window.state.organization,
+                parties: window.state.parties,
+                transactions: window.state.transactions,
+                users: window.state.users.map(u => ({ ...u, password: '***' })),
+                version: "3.5",
+                backupTimestamp: new Date().toISOString()
+            };
+
+            const fileName = `نسخة_محاسبة_${(window.state.organization.name || 'المنظومة').replace(/\s+/g, '_')}_${new Date().toISOString().slice(0, 10)}.json`;
+            const fileContent = JSON.stringify(backupData, null, 2);
+
+            // Upload directly to Google Drive via multipart upload
+            const metadata = {
+                name: fileName,
+                mimeType: 'application/json',
+                description: 'نسخة احتياطية سحابية كاملة لمنظومة المحاسبة المعتمدة'
+            };
+
+            const boundary = '-------314159265358979323846';
+            const delimiter = "\r\n--" + boundary + "\r\n";
+            const close_delim = "\r\n--" + boundary + "--";
+
+            const multipartRequestBody =
+                delimiter +
+                'Content-Type: application/json; charset=UTF-8\r\n\r\n' +
+                JSON.stringify(metadata) +
+                delimiter +
+                'Content-Type: application/json\r\n\r\n' +
+                fileContent +
+                close_delim;
+
+            try {
+                const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': `multipart/related; boundary=${boundary}`
+                    },
+                    body: multipartRequestBody
+                });
+
+                if (res.ok) {
+                    showToast(`تم حفظ النسخة بنجاح في Google Drive: ${fileName}`);
+                } else {
+                    const errJson = await res.json().catch(() => ({}));
+                    if (res.status === 401) {
+                        showToast('انتهت جلسة أذونات Drive، يرجى إعادة تسجيل الدخول بجوجل لتجديدها', true);
+                        loginWithGoogleManager();
+                    } else {
+                        showToast(`تعذر الرفع المباشر: ${errJson.error?.message || 'يرجى التحقق من أذونات Google Drive'}`, true);
+                    }
+                }
+            } catch (err) {
+                showToast(`خطأ أثناء الاتصال بـ Google Drive: ${err.message}`, true);
+            }
+        }
+
         function handleOrgSetupWithGoogle(e) {
             e.preventDefault();
             const orgName = document.getElementById('reg-org-name').value.trim();
             const managerName = document.getElementById('reg-manager-name').value.trim();
-            if (!orgName || !managerName) return;
+            const managerPhone = document.getElementById('reg-manager-phone').value.trim();
+            if (!orgName || !managerName || !managerPhone) return;
 
             const provider = new firebase.auth.GoogleAuthProvider();
+            provider.addScope('https://www.googleapis.com/auth/drive.file');
+
             auth.signInWithPopup(provider)
                 .then(result => {
                     const gUser = result.user;
+                    if (result.credential && result.credential.accessToken) {
+                        window.state.googleDriveAccessToken = result.credential.accessToken;
+                        localStorage.setItem(STORAGE_KEY_DRIVE_TOKEN, result.credential.accessToken);
+                    }
+
                     const adminUser = {
                         id: gUser.uid,
                         username: managerName,
                         email: gUser.email,
+                        phone: managerPhone,
                         role: 'مدير عام',
-                        isGoogleAdmin: true
+                        isGoogleAdmin: true,
+                        permissions: {
+                            addTx: true,
+                            resolvePrice: true,
+                            manageParties: true,
+                            viewStatements: true,
+                            exportExcel: true
+                        }
                     };
                     const orgData = {
                         name: orgName,
                         createdAt: new Date().toISOString().split('T')[0],
                         managerName: managerName,
-                        managerEmail: gUser.email
+                        managerEmail: gUser.email,
+                        managerPhone: managerPhone
                     };
 
                     window.state.currentUser = adminUser;
@@ -901,7 +1089,7 @@
 
                     unlockAppUI();
                     startRealtimeListeners();
-                    showToast(`تم تأسيس سحابة ${orgName} بنجاح!`);
+                    showToast(`تم تأسيس سحابة ${orgName} وربط حساب Google بنجاح!`);
                 })
                 .catch(error => {
                     showToast('خطأ في الاتصال: ' + error.message, true);
@@ -946,13 +1134,13 @@
             const viewRegister = document.getElementById('view-register-box');
 
             if (tab === 'login') {
-                loginBtn.className = 'py-2 text-xs font-black rounded-lg transition shadow bg-emerald-600 text-white flex items-center justify-center gap-1.5';
-                regBtn.className = 'py-2 text-xs font-bold rounded-lg transition text-slate-400 hover:text-white flex items-center justify-center gap-1.5';
+                loginBtn.className = 'py-2.5 text-xs font-black rounded-lg transition shadow bg-emerald-600 text-white flex items-center justify-center gap-1.5';
+                regBtn.className = 'py-2.5 text-xs font-bold rounded-lg transition text-slate-400 hover:text-white flex items-center justify-center gap-1.5';
                 viewLogin.classList.remove('hidden');
                 viewRegister.classList.add('hidden');
             } else {
-                regBtn.className = 'py-2 text-xs font-black rounded-lg transition shadow bg-blue-600 text-white flex items-center justify-center gap-1.5';
-                loginBtn.className = 'py-2 text-xs font-bold rounded-lg transition text-slate-400 hover:text-white flex items-center justify-center gap-1.5';
+                regBtn.className = 'py-2.5 text-xs font-black rounded-lg transition shadow bg-blue-600 text-white flex items-center justify-center gap-1.5';
+                loginBtn.className = 'py-2.5 text-xs font-bold rounded-lg transition text-slate-400 hover:text-white flex items-center justify-center gap-1.5';
                 viewRegister.classList.remove('hidden');
                 viewLogin.classList.add('hidden');
             }
@@ -970,14 +1158,23 @@
 
         function logoutSession() {
             localStorage.removeItem(STORAGE_KEY_AUTH);
+            localStorage.removeItem(STORAGE_KEY_DRIVE_TOKEN);
             if (auth.currentUser) auth.signOut();
             window.state.currentUser = null;
+            window.state.googleDriveAccessToken = null;
             showAuthGate();
-            showToast('تم تسجيل الخروج');
+            showToast('تم تسجيل الخروج بنجاح');
         }
 
         function isCurrentUserAdmin() {
             return window.state.currentUser && window.state.currentUser.role === 'مدير عام';
+        }
+
+        function userHasPermission(permKey) {
+            if (!window.state.currentUser) return false;
+            if (isCurrentUserAdmin()) return true;
+            const perms = window.state.currentUser.permissions || {};
+            return perms[permKey] === true;
         }
 
         function updateActiveUserLabels() {
@@ -986,6 +1183,13 @@
             document.getElementById('current-user-name-display').textContent = u.username;
             document.getElementById('current-user-role-badge').textContent = u.role;
             document.querySelectorAll('.active-user-name-indicator').forEach(el => el.textContent = `${u.username} (${u.role})`);
+            
+            // Adjust permission indicators on UI
+            const driveBtn = document.getElementById('btn-drive-backup');
+            if (driveBtn) {
+                if (isCurrentUserAdmin()) driveBtn.classList.remove('hidden');
+                else driveBtn.classList.add('hidden');
+            }
         }
 
         function updateOrgHeaderUI() {
@@ -1052,6 +1256,11 @@
 
         async function saveNewTransaction(e) {
             e.preventDefault();
+            if (!userHasPermission('addTx')) {
+                showToast('عذراً، ليس لديك صلاحية تسجيل حركات جديدة', true);
+                return;
+            }
+
             const partyId = document.getElementById('tx-party-id').value;
             const party = window.state.parties.find(p => p.id === partyId);
             if (!party) return;
@@ -1068,8 +1277,8 @@
 
             const newTx = {
                 invoiceNum: invNum,
-                goodsDate: goodsDate, // تاريخ البضاعة الفعلي
-                systemDate: new Date().toISOString(), // تاريخ إدخال البيانات
+                goodsDate: goodsDate, // تاريخ وصول البضاعة الفعلي
+                systemDate: new Date().toISOString(), // تاريخ إدخال البيانات الفعلي
                 partyId: partyId,
                 partyName: party.name,
                 type: document.getElementById('tx-type').value,
@@ -1095,6 +1304,11 @@
         }
 
         function openResolvePriceModal(txId) {
+            if (!userHasPermission('resolvePrice')) {
+                showToast('عذراً، ليس لديك صلاحية تثبيت أسعار البضائع المعلقة', true);
+                return;
+            }
+
             const tx = window.state.transactions.find(t => t.id === txId);
             if (!tx) return;
 
@@ -1139,9 +1353,9 @@
             }
         }
 
-        function checkAdminAndOpenPartyModal() {
-            if (!isCurrentUserAdmin()) {
-                showToast('إضافة الحسابات مقتصرة على المدير العام', true);
+        function checkPartyPermAndOpenModal() {
+            if (!userHasPermission('manageParties')) {
+                showToast('إضافة الحسابات مقتصرة على المخولين بصلاحية دليل الحسابات', true);
                 return;
             }
             openModal('add-party-modal');
@@ -1171,7 +1385,7 @@
 
         function checkAdminAndOpenUserModal() {
             if (!isCurrentUserAdmin()) {
-                showToast('إدارة الموظفين خاصة بالمدير العام فقط', true);
+                showToast('إدارة حسابات الموظفين مقتصرة حصرياً على المدير العام', true);
                 return;
             }
             openModal('add-user-modal');
@@ -1179,15 +1393,26 @@
 
         async function saveNewUser(e) {
             e.preventDefault();
+            if (!isCurrentUserAdmin()) return;
+
             const name = document.getElementById('new-user-name').value.trim();
             const pass = document.getElementById('new-user-password').value.trim();
             if (!name || !pass) return;
+
+            const permissions = {
+                addTx: document.getElementById('perm-add-tx').checked,
+                resolvePrice: document.getElementById('perm-resolve-price').checked,
+                manageParties: document.getElementById('perm-manage-parties').checked,
+                viewStatements: document.getElementById('perm-view-statements').checked,
+                exportExcel: document.getElementById('perm-export-excel').checked
+            };
 
             const newUser = {
                 username: name,
                 usernameLower: name.toLowerCase(),
                 role: document.getElementById('new-user-role').value,
                 password: pass,
+                permissions: permissions,
                 createdBy: window.state.currentUser ? window.state.currentUser.username : 'المدير',
                 createdAt: new Date().toISOString()
             };
@@ -1195,7 +1420,7 @@
             try {
                 await db.collection('accounting_users').add(newUser);
                 closeModal('add-user-modal');
-                showToast(`تم إنشاء حساب الموظف: ${name}`);
+                showToast(`تم إنشاء حساب الموظف وتحديد صلاحياته: ${name}`);
             } catch (err) {
                 showToast('خطأ في إنشاء الموظف: ' + err.message, true);
             }
@@ -1374,7 +1599,7 @@
                     <td class="p-2 font-mono text-emerald-800 font-bold bg-emerald-50/40">${credit > 0 ? formatMoney(credit) : '-'}</td>
                     <td class="p-2 font-mono text-rose-800 font-bold bg-rose-50/40">${debit > 0 ? formatMoney(debit) : '-'}</td>
                     <td class="p-2 font-mono font-black text-left pl-2 bg-slate-100">${formatMoney(running)}</td>
-                    <td class="p-2 text-center text-slate-500 font-semibold">${escapeHtml(t.createdBy || 'المدير')}</td>
+                    <td class="p-2 text-center text-slate-600 font-bold">${escapeHtml(t.createdBy || 'المدير')}</td>
                     <td class="p-2 text-center no-print">${fileBtn}</td>
                 `;
                 tbody.appendChild(tr);
@@ -1416,7 +1641,7 @@
                     <td class="p-3 font-medium text-slate-700">${escapeHtml(t.desc)}</td>
                     <td class="p-3 font-mono font-black text-emerald-700 text-left">${formatMoney(t.amount)}</td>
                     <td class="p-3 text-center font-bold text-slate-500">${t.currency}</td>
-                    <td class="p-3 text-center text-slate-500 font-semibold">${escapeHtml(t.createdBy || 'المدير')}</td>
+                    <td class="p-3 text-center text-slate-600 font-bold">${escapeHtml(t.createdBy || 'المدير')}</td>
                     <td class="p-3 text-center">${fileBtn}</td>
                 `;
                 tbody.appendChild(tr);
@@ -1451,7 +1676,7 @@
                     <td class="p-2.5 text-left font-mono font-black ${isUnp ? 'text-amber-700' : 'text-emerald-700'}">${isUnp ? '0.00' : formatMoney(t.amount)}</td>
                     <td class="p-2.5 text-center font-bold text-slate-500">${t.currency}</td>
                     <td class="p-2.5 text-center">${isUnp ? '<span class="px-2 py-0.5 rounded text-[10px] font-black bg-amber-100 text-amber-900 border border-amber-300">معلق</span>' : '<span class="px-2 py-0.5 rounded text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300">مسعر</span>'}</td>
-                    <td class="p-2.5 text-center text-slate-500 font-semibold">${escapeHtml(t.createdBy || 'المدير')}</td>
+                    <td class="p-2.5 text-center text-slate-600 font-bold">${escapeHtml(t.createdBy || 'المدير')}</td>
                     <td class="p-2.5 text-center">${fileBtn}</td>
                     <td class="p-2.5 text-center">${isUnp ? `<button onclick="openResolvePriceModal('${t.id}')" class="px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-[10px] font-black">تسعير</button>` : '-'}</td>
                 `;
@@ -1480,7 +1705,7 @@
                     <td class="p-3 font-medium text-slate-700">${escapeHtml(t.desc)}</td>
                     <td class="p-3 text-center font-mono font-black text-blue-700">${t.qty}</td>
                     <td class="p-3 text-center font-bold text-slate-500">${t.currency}</td>
-                    <td class="p-3 text-center text-slate-500 font-semibold">${escapeHtml(t.createdBy || 'المدير')}</td>
+                    <td class="p-3 text-center text-slate-600 font-bold">${escapeHtml(t.createdBy || 'المدير')}</td>
                     <td class="p-3 text-center">${fileBtn}</td>
                     <td class="p-3 text-center">
                         <button onclick="openResolvePriceModal('${t.id}')" class="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-black shadow transition">تثبيت السعر</button>
@@ -1522,14 +1747,47 @@
 
             window.state.users.forEach(u => {
                 const isCurrent = window.state.currentUser && (u.username === window.state.currentUser.username);
+                const isManager = isCurrentUserAdmin();
+                
+                // Privacy Protection: Employees can never view passwords of others
+                let passwordDisplay = '••••••••';
+                if (isManager && u.password) {
+                    passwordDisplay = `<span class="text-emerald-700 font-mono font-bold">${escapeHtml(u.password)}</span>`;
+                } else if (!u.password) {
+                    passwordDisplay = `<span class="text-blue-600 font-semibold">مرتبط بـ Google</span>`;
+                }
+
+                // Render permission tags
+                const p = u.permissions || {};
+                let permsHtml = '';
+                if (u.role === 'مدير عام') {
+                    permsHtml = '<span class="px-2 py-0.5 rounded text-[9px] bg-purple-100 text-purple-800 font-black">كافة الصلاحيات الكاملة</span>';
+                } else {
+                    permsHtml = `
+                        <div class="flex flex-wrap gap-1 text-[9px] text-slate-600">
+                            ${p.addTx ? '<span class="px-1.5 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded">إضافة فواتير</span>' : ''}
+                            ${p.resolvePrice ? '<span class="px-1.5 py-0.5 bg-amber-50 text-amber-700 border border-amber-200 rounded">تسعير</span>' : ''}
+                            ${p.manageParties ? '<span class="px-1.5 py-0.5 bg-blue-50 text-blue-700 border border-blue-200 rounded">دليل الحسابات</span>' : ''}
+                            ${p.viewStatements ? '<span class="px-1.5 py-0.5 bg-teal-50 text-teal-700 border border-teal-200 rounded">كشوف الحساب</span>' : ''}
+                            ${p.exportExcel ? '<span class="px-1.5 py-0.5 bg-indigo-50 text-indigo-700 border border-indigo-200 rounded">إكسل</span>' : ''}
+                        </div>
+                    `;
+                }
+
                 const card = document.createElement('div');
                 card.className = `p-4 rounded-2xl border ${isCurrent ? 'border-emerald-500 bg-emerald-50/40' : 'bg-white border-slate-200'} shadow-sm space-y-2.5`;
                 card.innerHTML = `
                     <div class="flex justify-between items-center">
                         <div class="font-bold text-xs text-slate-900">${escapeHtml(u.username)} <span class="text-slate-500 font-normal">(${escapeHtml(u.role)})</span></div>
-                        ${isCurrent ? '<span class="px-2 py-0.5 rounded text-[9px] bg-emerald-600 text-white font-black">حسابك</span>' : ''}
+                        ${isCurrent ? '<span class="px-2 py-0.5 rounded text-[9px] bg-emerald-600 text-white font-black">حسابك الحالي</span>' : ''}
                     </div>
-                    <div class="text-xs font-mono text-slate-500">كلمة المرور: <strong class="text-emerald-700">${escapeHtml(u.password || 'مرتبط بـ Google')}</strong></div>
+                    <div class="text-xs text-slate-500">
+                        كلمة المرور: ${passwordDisplay}
+                    </div>
+                    <div class="pt-1.5 border-t border-slate-100">
+                        <span class="block text-[10px] font-bold text-slate-400 mb-1">الصلاحيات:</span>
+                        ${permsHtml}
+                    </div>
                 `;
                 container.appendChild(card);
             });
@@ -1557,7 +1815,8 @@
                 organization: window.state.organization,
                 parties: window.state.parties,
                 transactions: window.state.transactions,
-                users: window.state.users,
+                users: window.state.users.map(u => ({ ...u, password: '***' })),
+                version: "3.5",
                 exportDate: new Date().toISOString()
             };
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
@@ -1567,10 +1826,15 @@
             document.body.appendChild(downloadAnchor);
             downloadAnchor.click();
             downloadAnchor.remove();
-            showToast('تم تحميل النسخة الاحتياطية بنجاح');
+            showToast('تم تحميل النسخة الاحتياطية بنجاح على جهازك');
         }
 
         function exportStatementToExcel() {
+            if (!userHasPermission('exportExcel')) {
+                showToast('عذراً، ليس لديك صلاحية تصدير ملفات Excel', true);
+                return;
+            }
+
             const partyId = document.getElementById('stmt-party-select').value;
             const currency = document.getElementById('stmt-currency-select').value;
             const party = window.state.parties.find(p => p.id === partyId);
@@ -1580,7 +1844,7 @@
             txs.sort((a, b) => new Date(a.goodsDate) - new Date(b.goodsDate));
 
             const rows = [
-                ['كشف حساب مالي تفصيلي رسمي'],
+                ['كشف حساب مالي تفصيلي رسمي - منظومة المحاسبة السحابية v3.5'],
                 ['اسم الحساب:', party.name, 'الصفة:', party.type, 'العملة:', currency],
                 ['تاريخ الإصدار:', new Date().toLocaleDateString('ar-EG'), 'المستخرج:', window.state.currentUser ? window.state.currentUser.username : 'المدير'],
                 [],
@@ -1615,15 +1879,20 @@
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "كشف الحساب");
             XLSX.writeFile(wb, `كشف_${party.name}_${currency}_${new Date().toISOString().slice(0,10)}.xlsx`);
-            showToast('تم تصدير كشف الحساب كـ Excel');
+            showToast('تم تصدير كشف الحساب كـ Excel بنجاح');
         }
 
         function exportAllMasterToExcel() {
+            if (!userHasPermission('exportExcel')) {
+                showToast('عذراً، ليس لديك صلاحية تصدير ملفات Excel', true);
+                return;
+            }
+
             const rows = [
-                ['دفتر اليومية وسجل الحركات العام'],
+                ['دفتر اليومية وسجل الحركات العام - منظومة المحاسبة السحابية v3.5'],
                 ['تاريخ التصدير:', new Date().toLocaleDateString('ar-EG'), 'المستخرج:', window.state.currentUser ? window.state.currentUser.username : 'المدير'],
                 [],
-                ['م', 'تاريخ البضاعة', 'اسم الحساب', 'نوع الحركة', 'الفاتورة', 'البيان', 'الكمية', 'السعر', 'المبلغ', 'العملة', 'الحالة', 'المُدخل']
+                ['م', 'تاريخ البضاعة الفعلي', 'اسم الحساب', 'نوع الحركة', 'الفاتورة', 'البيان', 'الكمية', 'السعر', 'المبلغ', 'العملة', 'الحالة', 'المُدخل']
             ];
 
             window.state.transactions.forEach((t, i) => {
@@ -1640,7 +1909,7 @@
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "سجل الحركات");
             XLSX.writeFile(wb, `سجل_الحركات_${new Date().toISOString().slice(0,10)}.xlsx`);
-            showToast('تم تصدير السجل العام كـ Excel');
+            showToast('تم تصدير السجل العام كـ Excel بنجاح');
         }
 
         function exportFullOrganizationToExcel() {
@@ -1648,6 +1917,10 @@
         }
 
         function printStatement() {
+            if (!userHasPermission('viewStatements')) {
+                showToast('عذراً، ليس لديك صلاحية الطباعة واستخراج كشوف الحساب', true);
+                return;
+            }
             const area = document.getElementById('printable-statement-area');
             if (!area) return;
             area.classList.add('print-active-area');
@@ -1758,7 +2031,7 @@
             setTimeout(() => {
                 toast.classList.remove('opacity-100', 'translate-y-0');
                 toast.classList.add('opacity-0', 'pointer-events-none', '-translate-y-10');
-            }, 3000);
+            }, 3500);
         }
     </script>
 </body>

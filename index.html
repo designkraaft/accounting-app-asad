@@ -23,20 +23,13 @@
                             800: '#1e293b',
                             900: '#0f172a',
                             950: '#020617'
-                        },
-                        finance: {
-                            in: '#be123c',      /* أحمر مالي دافئ للوارد */
-                            inBg: '#fff1f2',
-                            out: '#047857',     /* أخضر زمردي هادئ للصادر */
-                            outBg: '#ecfdf5',
-                            accent: '#1d4ed8'
                         }
                     }
                 }
             }
         }
     </script>
-    <!-- Google Fonts: Tajawal & Cairo -->
+    <!-- Google Fonts: Tajawal -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
@@ -68,9 +61,9 @@
         }
 
         .tab-btn-active {
-            background-color: #ffffff !important;
-            color: #0f172a !important;
-            box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            background-color: #0f172a !important;
+            color: #ffffff !important;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
             font-weight: 800 !important;
         }
 
@@ -88,26 +81,17 @@
                 color: black !important;
             }
             .no-print { display: none !important; }
-            .print-bg-header {
-                background-color: #f8fafc !important;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col bg-slate-100/70 text-slate-900 antialiased selection:bg-slate-900 selection:text-white">
 
     <!-- نافذة تسجيل الدخول البنكية المؤسسية (Enterprise Portal) -->
-    <div id="auth-gate-overlay" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
-        <div class="bg-white w-full max-w-4xl rounded-3xl shadow-2xl border border-slate-200/80 overflow-hidden my-auto grid grid-cols-1 lg:grid-cols-12">
+    <div id="auth-gate-overlay" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+        <div class="bg-white w-full max-w-4xl rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-auto grid grid-cols-1 lg:grid-cols-12">
             
-            <!-- الجانب الترويجي والتعريفي المؤسسي (Left Brand Panel) -->
+            <!-- Left Brand Panel -->
             <div class="lg:col-span-5 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 text-white p-8 sm:p-10 flex flex-col justify-between relative overflow-hidden">
-                <!-- أشكال خلفية جمالية خفيفة -->
-                <div class="absolute -left-12 -bottom-12 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
-                <div class="absolute -right-10 -top-10 w-44 h-44 bg-blue-500/10 rounded-full blur-2xl pointer-events-none"></div>
-                
                 <div class="space-y-6 relative z-10">
                     <div class="flex items-center gap-3">
                         <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-slate-800 to-slate-700 border border-slate-600/50 flex items-center justify-center text-white shadow-inner">
@@ -115,14 +99,14 @@
                         </div>
                         <div>
                             <div class="text-sm font-black tracking-wide text-white uppercase">منظومة الحسابات المركزية</div>
-                            <div class="text-[11px] text-slate-400 font-mono">Enterprise Cloud ERP v4.5</div>
+                            <div class="text-[11px] text-slate-400 font-mono">Enterprise Cloud ERP v5.5</div>
                         </div>
                     </div>
 
                     <div class="space-y-3 pt-4">
                         <h2 class="text-2xl sm:text-3xl font-black text-white leading-snug">إدارة مالية دقيقة، فورية وموثوقة.</h2>
                         <p class="text-xs text-slate-300 leading-relaxed">
-                            منظومة سحابية متكاملة لمتابعة الأرصدة، تسوية الفواتير، وحصر السلف والواردات مع المزامنة التلقائية والنسخ الاحتياطي السحابي المستمر.
+                            منظومة سحابية متكاملة لمتابعة الأرصدة، تسوية الفواتير، وحصر السلف والواردات مع المزامنة التلقائية والنسخ الاحتياطي في Google Drive.
                         </p>
                     </div>
 
@@ -133,7 +117,7 @@
                         </div>
                         <div class="flex items-center gap-2.5 text-slate-300">
                             <i class="fa-solid fa-circle-check text-emerald-400 text-xs"></i>
-                            <span>عزل مالي ذكي للبضائع غير المسعرة حتى الاتفاق</span>
+                            <span>نسخ مزدوج في Drive (مجلد Excel + مجلد Database)</span>
                         </div>
                         <div class="flex items-center gap-2.5 text-slate-300">
                             <i class="fa-solid fa-circle-check text-emerald-400 text-xs"></i>
@@ -142,249 +126,218 @@
                     </div>
                 </div>
 
-                <div class="pt-8 mt-6 border-t border-slate-800 relative z-10">
+                <div class="pt-6 mt-6 border-t border-slate-800 relative z-10">
                     <div class="text-[11px] text-slate-400">
-                        المدير الحالي: <span class="font-black text-slate-100" id="portal-manager-preview">حساب Google المسجل</span>
-                    </div>
-                    <div class="text-[10px] text-slate-500 font-mono mt-0.5" id="portal-phone-preview">
-                        نظام الحسابات السحابية الموحد
+                        تصميم وتطوير: <a href="https://khaldoun.net" target="_blank" class="font-bold text-slate-200 hover:text-emerald-400 underline underline-offset-4">خلدون الحمدو (khaldoun.net)</a>
                     </div>
                 </div>
             </div>
 
-            <!-- الجانب التفاعلي ونماذج الدخول (Right Auth Panel) -->
+            <!-- Right Auth Panel -->
             <div class="lg:col-span-7 p-6 sm:p-10 bg-white flex flex-col justify-between">
                 <div>
-                    <!-- أزرار التبديل المؤسسية بين الدخول والتسجيل -->
-                    <div class="flex items-center justify-between border-b border-slate-200 pb-4 mb-6">
-                        <div>
-                            <h3 class="text-lg font-black text-slate-900" id="auth-panel-heading">تسجيل الدخول للمنظومة</h3>
-                            <p class="text-xs text-slate-500 mt-0.5">تسجيل الدخول الفوري بحساب Google للمدير العام أو ببيانات المحاسب</p>
-                        </div>
-                        <div class="flex bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs">
-                            <button type="button" id="tab-btn-login" onclick="switchAuthTab('login')" class="py-1.5 px-3 rounded-lg font-bold transition bg-white text-slate-900 shadow-sm">
-                                دخول النظام
-                            </button>
-                            <button type="button" id="tab-btn-register" onclick="switchAuthTab('register')" class="py-1.5 px-3 rounded-lg font-bold transition text-slate-500 hover:text-slate-900">
-                                إعداد المنشأة
-                            </button>
-                        </div>
+                    <div class="border-b border-slate-200 pb-4 mb-6">
+                        <h3 class="text-lg font-black text-slate-900" id="auth-panel-heading">تسجيل الدخول للمنظومة</h3>
+                        <p class="text-xs text-slate-500 mt-1">
+                            <strong class="text-emerald-700">ملاحظة هامة:</strong> تسجيل الدخول المباشر بحساب Google مخصص للمدير العام، وهو <u>يغنيك تماماً عن تسجيل منشأة جديدة</u> حيث يربط السحابة ودرايف تلقائياً.
+                        </p>
                     </div>
 
                     <!-- VIEW 1: LOGIN -->
                     <div id="view-login-box" class="space-y-4">
-                        <button type="button" onclick="loginWithGoogleManager()" class="w-full py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-black text-xs sm:text-sm rounded-2xl flex items-center justify-center gap-3 transition-all shadow-md active:scale-[0.99]">
-                            <svg class="w-5 h-5" viewBox="0 0 24 24">
-                                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-                                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-                            </svg>
-                            <span>تسجيل الدخول المباشر بحساب Google (المدير)</span>
-                        </button>
+                        <div class="bg-blue-50 border border-blue-200 rounded-2xl p-4 text-xs space-y-2">
+                            <div class="font-black text-blue-950 flex items-center gap-1.5">
+                                <i class="fa-brands fa-google text-blue-600"></i>
+                                <span>دخول المدير العام (بضغطة واحدة):</span>
+                            </div>
+                            <p class="text-slate-600 leading-relaxed text-[11px]">
+                                سيتم ربط حسابك، التعرف على اسمك وإيميلك تلقائياً، وتفعيل مجلد النسخ المزدوج في Google Drive الخاص بك.
+                            </p>
+                            <button type="button" onclick="loginWithGoogleManager()" class="w-full mt-1 py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-black text-xs sm:text-sm rounded-xl flex items-center justify-center gap-3 transition shadow-md active:scale-[0.99]">
+                                <svg class="w-5 h-5" viewBox="0 0 24 24">
+                                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                                </svg>
+                                <span>دخول المدير المباشر عبر Google</span>
+                            </button>
+                        </div>
 
-                        <div class="relative flex py-2 items-center">
+                        <div class="relative flex py-1 items-center">
                             <div class="flex-grow border-t border-slate-200"></div>
-                            <span class="flex-shrink mx-3 text-[11px] text-slate-400 font-bold bg-white px-2">أو تسجيل دخول المحاسبين والموظفين</span>
+                            <span class="flex-shrink mx-3 text-[11px] text-slate-400 font-bold bg-white px-2">أو دخول المحاسبين والموظفين</span>
                             <div class="flex-grow border-t border-slate-200"></div>
                         </div>
 
                         <form onsubmit="handleEmployeeLogin(event)" class="space-y-3">
                             <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-1">اسم المستخدم أو البريد:</label>
-                                <div class="relative">
-                                    <i class="fa-solid fa-user-tie absolute right-3.5 top-3.5 text-slate-400 text-xs"></i>
-                                    <input type="text" id="login-username" required placeholder="أدخل اسمك المسجل بالنظام..." class="w-full bg-slate-50 border border-slate-300 rounded-xl pr-9 pl-3 py-2.5 text-xs sm:text-sm font-bold text-slate-900 focus:ring-2 focus:ring-slate-900 focus:bg-white outline-none transition">
-                                </div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">اسم المحاسب أو البريد:</label>
+                                <input type="text" id="login-username" required placeholder="أدخل اسمك المسجل..." class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs sm:text-sm font-bold text-slate-900 outline-none focus:ring-2 focus:ring-slate-900">
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 mb-1">كلمة المرور:</label>
-                                <div class="relative">
-                                    <i class="fa-solid fa-lock absolute right-3.5 top-3.5 text-slate-400 text-xs"></i>
-                                    <input type="password" id="login-password" required placeholder="••••••••" class="w-full bg-slate-50 border border-slate-300 rounded-xl pr-9 pl-3 py-2.5 text-xs sm:text-sm font-mono text-slate-900 focus:ring-2 focus:ring-slate-900 focus:bg-white outline-none transition">
-                                </div>
+                                <input type="password" id="login-password" required placeholder="••••••••" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs sm:text-sm font-mono text-slate-900 outline-none focus:ring-2 focus:ring-slate-900">
                             </div>
-                            <button type="submit" class="w-full py-3 bg-slate-800 hover:bg-slate-700 text-white text-xs sm:text-sm font-black rounded-xl shadow transition-all flex items-center justify-center gap-2">
+                            <button type="submit" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-white text-xs sm:text-sm font-bold rounded-xl shadow transition flex items-center justify-center gap-2">
                                 <i class="fa-solid fa-arrow-right-to-bracket text-emerald-400"></i>
-                                <span>دخول المحاسب</span>
-                            </button>
-                        </form>
-                    </div>
-
-                    <!-- VIEW 2: REGISTER / ORG SETUP -->
-                    <div id="view-register-box" class="hidden space-y-3.5">
-                        <form onsubmit="handleOrgSetupWithGoogle(event)" class="space-y-3">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-1">اسم المؤسسة أو الشركة التجاري *</label>
-                                <input type="text" id="reg-org-name" required placeholder="مثال: مؤسسة المصطفى التجارية" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs font-bold text-slate-900 focus:ring-2 focus:ring-slate-900 outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-1">اسم المحاسب المسؤول المعتمد *</label>
-                                <input type="text" id="reg-manager-name" required placeholder="اسم المسؤول عن كشوف الحساب" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs font-bold text-slate-900 focus:ring-2 focus:ring-slate-900 outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-1">رقم الهاتف الرسمي للاعتماد *</label>
-                                <input type="text" id="reg-manager-phone" required placeholder="مثال: 0967399557" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs font-mono font-bold text-slate-900 focus:ring-2 focus:ring-slate-900 outline-none">
-                            </div>
-                            <button type="submit" class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-black rounded-xl shadow-md transition flex items-center justify-center gap-2">
-                                <i class="fa-brands fa-google text-emerald-400"></i>
-                                <span>حفظ والربط بحساب Google</span>
+                                <span>تسجيل دخول المحاسب</span>
                             </button>
                         </form>
                     </div>
                 </div>
 
-                <!-- تذييل التوثيق الرسمي -->
-                <div class="pt-6 mt-6 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
-                    <div>
-                        تصميم وتطوير: <a href="https://khaldoun.net" target="_blank" class="font-bold text-slate-800 hover:text-emerald-700 underline decoration-slate-300 underline-offset-4">خلدون الحمدو (khaldoun.net)</a>
-                    </div>
-                    <div class="flex items-center gap-1.5 font-mono text-[10px] text-slate-500">
-                        <i class="fa-solid fa-shield-halved text-emerald-600"></i>
-                        <span>الإصدار Enterprise v5.0</span>
-                    </div>
+                <div class="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
+                    <div>المسؤول: <span class="font-bold text-slate-700" id="portal-manager-preview">حساب Google المسجل</span></div>
+                    <div class="font-mono text-[10px] text-emerald-700 font-bold"><i class="fa-solid fa-shield-halved"></i> سحابة آمنة 256-bit</div>
                 </div>
             </div>
 
         </div>
     </div>
 
-    <!-- ترويسة التطبيق المؤسسية العصرية (Corporate Clean Nav) -->
+    <!-- الترويسة الرئيسية النظيفة (Clean Minimal Header) -->
     <header class="no-print bg-white text-slate-900 shadow-sm sticky top-0 z-30 border-b border-slate-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-            <div class="flex flex-col lg:flex-row items-center justify-between gap-3">
-                <div class="flex items-center space-x-3 space-x-reverse w-full lg:w-auto justify-between lg:justify-start">
-                    <div class="flex items-center space-x-3 space-x-reverse">
-                        <div class="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center text-white shadow-sm">
-                            <i class="fa-solid fa-vault text-emerald-400 text-base"></i>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+                <!-- Org Brand & Identity -->
+                <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-start">
+                    <div class="flex items-center gap-2.5 cursor-pointer" onclick="switchTab('dashboard-view')">
+                        <div class="w-9 h-9 rounded-xl bg-slate-900 flex items-center justify-center text-white shadow-sm">
+                            <i class="fa-solid fa-vault text-emerald-400 text-sm"></i>
                         </div>
                         <div>
                             <div class="flex items-center gap-2">
-                                <h1 class="text-sm sm:text-base font-black tracking-tight text-slate-900" id="header-org-title">منظومة الحسابات المركزية</h1>
-                                <span class="px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-slate-100 text-slate-700 border border-slate-200 flex items-center gap-1.5">
+                                <h1 class="text-sm font-black text-slate-900" id="header-org-title">منظومة الحسابات المركزية</h1>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1">
                                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                                     <span id="online-sync-status">سحابة متصلة</span>
                                 </span>
-                                <span id="drive-header-badge" class="hidden sm:inline-flex px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-blue-50 text-blue-700 border border-blue-200 items-center gap-1">
-                                    <i class="fa-brands fa-google-drive text-amber-500"></i>
-                                    <span id="drive-header-text">Drive: جاهز</span>
-                                </span>
                             </div>
                             <p class="text-[11px] text-slate-500">
-                                المسؤول: <span class="font-bold text-slate-800" id="header-manager-name">جاري التحديد...</span> • الهاتف: <span id="header-manager-phone" class="font-mono text-slate-700 font-bold">---</span> • الفاتورة القادمة: <span id="header-next-inv" class="font-mono text-slate-900 font-bold">INV-1001</span>
+                                المسؤول: <span class="font-bold text-slate-800" id="header-manager-name">المدير العام</span> • الهاتف: <span id="header-manager-phone" class="font-mono text-slate-700 font-bold">0967399557</span>
                             </p>
                         </div>
                     </div>
 
-                    <!-- Mobile quick trigger -->
-                    <button onclick="openNewTransactionModal()" class="lg:hidden px-3 py-1.5 bg-slate-900 text-white rounded-lg font-bold text-xs">
-                        <i class="fa-solid fa-plus"></i> حركة
-                    </button>
-                </div>
-
-                <!-- الإجراءات السريعة العلوية -->
-                <div class="flex flex-wrap items-center justify-center lg:justify-end gap-2 w-full lg:w-auto">
-                    <!-- Quick Direct Drive Backup Button -->
-                    <button onclick="triggerGoogleDriveRealBackup()" id="btn-quick-drive-backup" class="text-xs bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-800 px-3 py-1.5 rounded-xl transition font-black flex items-center gap-1.5 shadow-sm" title="أخذ أو تحديث نسخة Google Drive الفورية يدوياً">
-                        <i class="fa-brands fa-google-drive text-amber-500 text-sm"></i>
-                        <span id="quick-drive-btn-label">نسخ Drive يدوي</span>
-                    </button>
-
-                    <!-- Settings & Backup Modal Trigger Button -->
-                    <button onclick="openSettingsModal()" class="text-xs bg-slate-50 hover:bg-slate-100 border border-slate-300 text-slate-800 px-3 py-1.5 rounded-xl transition font-black flex items-center gap-1.5 shadow-sm" title="إعدادات المنظومة، النسخ الاحتياطي في درايف، والاسترداد">
-                        <i class="fa-solid fa-gear text-slate-600 text-sm"></i>
-                        <span>الإعدادات والنسخ</span>
-                    </button>
-
-                    <button onclick="exportComprehensiveMultiSheetExcel()" class="text-xs bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 px-3 py-1.5 rounded-xl transition font-black flex items-center gap-1.5 shadow-sm" title="تصدير السجل الشامل بملف Excel متعدد الأوراق">
-                        <i class="fa-solid fa-file-excel text-emerald-600"></i>
-                        <span>تصدير Excel شامل</span>
-                    </button>
-
-                    <div class="flex items-center bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1">
-                        <div class="text-right ml-2">
-                            <div class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                                <span id="current-user-name-display">المستخدم</span>
-                                <span id="current-user-role-badge" class="px-1.5 py-0.2 rounded text-[9px] font-bold bg-slate-200 text-slate-800">مدير عام</span>
-                            </div>
-                        </div>
-                        <button onclick="logoutSession()" class="text-xs text-slate-400 hover:text-rose-600 p-1 rounded transition" title="تسجيل الخروج">
-                            <i class="fa-solid fa-power-off"></i>
+                    <!-- Quick Mobile Actions -->
+                    <div class="flex sm:hidden items-center gap-1.5">
+                        <button onclick="openNewTransactionModal()" class="px-2.5 py-1.5 bg-slate-900 text-white rounded-lg font-bold text-xs">
+                            <i class="fa-solid fa-plus"></i> حركة
                         </button>
                     </div>
+                </div>
 
-                    <button onclick="openNewTransactionModal()" class="hidden lg:flex px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-black rounded-xl shadow transition items-center gap-1.5">
+                <!-- Central Top Action Bar (Clean & Organized) -->
+                <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                    <!-- Prominent Direct Action Buttons -->
+                    <button onclick="openNewTransactionModal()" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-black rounded-xl shadow transition flex items-center gap-1.5">
                         <i class="fa-solid fa-plus text-emerald-400"></i>
-                        <span>حركة / دفعة جديدة</span>
+                        <span>حركة جديدة</span>
                     </button>
+
+                    <button onclick="checkAdminAndOpenPartyModal()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded-xl border border-slate-300 transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-user-plus text-slate-600"></i>
+                        <span class="hidden md:inline">حساب جديد</span>
+                    </button>
+
+                    <!-- Google Drive Live Status Button -->
+                    <button onclick="triggerGoogleDriveRealBackup()" id="btn-quick-drive-backup" class="text-xs bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-800 px-3 py-2 rounded-xl transition font-black flex items-center gap-1.5 shadow-sm" title="أخذ أو تحديث نسخة Google Drive الفورية يدوياً">
+                        <i class="fa-brands fa-google-drive text-amber-500 text-sm"></i>
+                        <span id="quick-drive-btn-label">Drive: حفظ الآن</span>
+                    </button>
+
+                    <!-- Settings & Options Menu Modal Button -->
+                    <button onclick="openSettingsModal()" class="text-xs bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-800 p-2 sm:px-3 sm:py-2 rounded-xl transition font-bold flex items-center gap-1.5 shadow-sm" title="الإعدادات والنسخ الشامل">
+                        <i class="fa-solid fa-gear text-slate-600"></i>
+                        <span class="hidden lg:inline">الإعدادات والنسخ</span>
+                    </button>
+
+                    <!-- User Pill & Logout -->
+                    <div class="flex items-center bg-slate-50 border border-slate-200 rounded-xl px-2 py-1 gap-1.5">
+                        <div class="text-right">
+                            <span id="current-user-name-display" class="text-xs font-bold text-slate-800 block leading-tight">المدير</span>
+                            <span id="current-user-role-badge" class="text-[9px] font-black text-emerald-700 block leading-tight">مدير عام</span>
+                        </div>
+                        <button onclick="logoutSession()" class="text-slate-400 hover:text-rose-600 p-1 transition" title="تسجيل الخروج">
+                            <i class="fa-solid fa-power-off text-xs"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <!-- شريط التبويبات التنفيذي (Executive Segmented Control) -->
-            <div class="mt-3 pt-2 border-t border-slate-100">
-                <nav class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-1.5 p-1 bg-slate-100/90 rounded-xl border border-slate-200 text-xs font-bold">
-                    <button onclick="switchTab('dashboard-view')" id="tab-dashboard-view" class="tab-btn tab-btn-active py-2 px-2 rounded-lg text-slate-700 flex items-center justify-center gap-1.5 transition text-center">
-                        <i class="fa-solid fa-chart-pie text-slate-700"></i>
-                        <span>لوحة المؤشرات</span>
+            <!-- Global Tabs Navigation (Executive Segmented Control) -->
+            <div class="mt-2.5 pt-2 border-t border-slate-100">
+                <nav class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1 p-1 bg-slate-100/90 rounded-xl border border-slate-200 text-xs font-bold">
+                    <button onclick="switchTab('dashboard-view')" id="tab-dashboard-view" class="tab-btn tab-btn-active py-2 px-2 rounded-lg text-slate-700 flex items-center justify-center gap-1.5 transition">
+                        <i class="fa-solid fa-table-cells-large"></i>
+                        <span>الرئيسية والبطاقات</span>
                     </button>
                     
-                    <button onclick="switchTab('statement-view')" id="tab-statement-view" class="tab-btn py-2 px-2 rounded-lg text-slate-600 hover:text-slate-900 flex items-center justify-center gap-1.5 transition text-center">
+                    <button onclick="switchTab('statement-view')" id="tab-statement-view" class="tab-btn py-2 px-2 rounded-lg text-slate-600 hover:text-slate-900 flex items-center justify-center gap-1.5 transition">
                         <i class="fa-solid fa-file-invoice-dollar text-slate-500"></i>
                         <span>كشف الحساب والطباعة</span>
                     </button>
                     
-                    <button onclick="switchTab('advances-view')" id="tab-advances-view" class="tab-btn py-2 px-2 rounded-lg text-slate-600 hover:text-slate-900 flex items-center justify-center gap-1.5 transition text-center">
+                    <button onclick="switchTab('advances-view')" id="tab-advances-view" class="tab-btn py-2 px-2 rounded-lg text-slate-600 hover:text-slate-900 flex items-center justify-center gap-1.5 transition">
                         <i class="fa-solid fa-hand-holding-dollar text-emerald-600"></i>
                         <span>الدفعات والسلف</span>
                         <span id="tab-advances-count" class="bg-slate-200 text-slate-800 px-1.5 py-0.2 rounded text-[10px] font-mono">0</span>
                     </button>
                     
-                    <button onclick="switchTab('transactions-view')" id="tab-transactions-view" class="tab-btn py-2 px-2 rounded-lg text-slate-600 hover:text-slate-900 flex items-center justify-center gap-1.5 transition text-center">
+                    <button onclick="switchTab('transactions-view')" id="tab-transactions-view" class="tab-btn py-2 px-2 rounded-lg text-slate-600 hover:text-slate-900 flex items-center justify-center gap-1.5 transition">
                         <i class="fa-solid fa-book-journal-whills text-slate-500"></i>
                         <span>دفتر القيود العام</span>
                     </button>
                     
-                    <button onclick="switchTab('unpriced-view')" id="tab-unpriced-view" class="tab-btn py-2 px-2 rounded-lg text-slate-600 hover:text-slate-900 flex items-center justify-center gap-1.5 transition text-center">
+                    <button onclick="switchTab('unpriced-view')" id="tab-unpriced-view" class="tab-btn py-2 px-2 rounded-lg text-slate-600 hover:text-slate-900 flex items-center justify-center gap-1.5 transition">
                         <i class="fa-solid fa-clock-rotate-left text-amber-600"></i>
                         <span>بضائع بدون تسعير</span>
                         <span id="tab-unpriced-count" class="bg-amber-100 text-amber-900 px-1.5 py-0.2 rounded text-[10px] font-mono font-bold">0</span>
                     </button>
                     
-                    <button onclick="switchTab('parties-view')" id="tab-parties-view" class="tab-btn py-2 px-2 rounded-lg text-slate-600 hover:text-slate-900 flex items-center justify-center gap-1.5 transition text-center">
+                    <button onclick="switchTab('parties-view')" id="tab-parties-view" class="tab-btn py-2 px-2 rounded-lg text-slate-600 hover:text-slate-900 flex items-center justify-center gap-1.5 transition">
                         <i class="fa-solid fa-users text-slate-500"></i>
                         <span>دليل الحسابات</span>
-                    </button>
-                    
-                    <button onclick="switchTab('users-management-view')" id="tab-users-management-view" class="tab-btn py-2 px-2 rounded-lg text-slate-600 hover:text-slate-900 flex items-center justify-center gap-1.5 transition text-center">
-                        <i class="fa-solid fa-id-badge text-slate-500"></i>
-                        <span>المحاسبون والإدارة</span>
                     </button>
                 </nav>
             </div>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full space-y-6">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex-1 w-full space-y-5">
 
-        <!-- ==================== TAB 1: DASHBOARD ==================== -->
+        <!-- ==================== TAB 1: EXECUTIVE HUB & CARDS ==================== -->
         <section id="dashboard-view" class="tab-content space-y-5">
-            <!-- Unpriced Alert -->
-            <div id="dash-unpriced-alert" class="hidden bg-amber-50 border border-amber-300/80 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-amber-950 shadow-sm">
+            <!-- Google Drive Status Notice Banner (Informative & Clean) -->
+            <div class="bg-gradient-to-r from-blue-900 to-slate-900 text-white p-4 rounded-2xl shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-xs">
                 <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center font-black text-sm">
-                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-lg text-amber-400">
+                        <i class="fa-brands fa-google-drive"></i>
                     </div>
                     <div>
-                        <h3 class="font-black text-xs sm:text-sm text-amber-950">تنبيه: بضائع استُلمت كمياتها ولم يتفق على سعرها بعد!</h3>
-                        <p class="text-[11px] text-amber-800">تم تسجيل الكميات وعزل أثرها المالي لحين تحديد السعر والاتفاق عليه (تعديل السعر متاح في أي وقت).</p>
+                        <div class="font-black text-sm flex items-center gap-2">
+                            <span>النسخ الاحتياطي التلقائي المزدوج في Google Drive</span>
+                            <span class="px-2 py-0.2 bg-emerald-500 text-white rounded text-[10px]">مفعل ونشط</span>
+                        </div>
+                        <p class="text-slate-300 text-[11px] mt-0.5" id="drive-banner-path-text">
+                            المسار في درايف: <strong class="text-white font-mono">Google Drive > منظومة_الحسابات_السحابية > نسخ_اليوم > [مجلد Excel + مجلد Database]</strong>
+                        </p>
                     </div>
                 </div>
-                <button onclick="switchTab('unpriced-view')" class="px-3.5 py-1.5 bg-amber-600 text-white rounded-xl text-xs font-black hover:bg-amber-700 transition">
-                    معاينة المعلقات (<span id="dash-unpriced-count-badge">0</span>)
-                </button>
+                <div class="flex items-center gap-2">
+                    <button onclick="triggerGoogleDriveRealBackup()" class="px-3.5 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition flex items-center gap-1.5 shadow">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <span>تحديث نسخة Drive الآن</span>
+                    </button>
+                    <a href="https://drive.google.com" target="_blank" class="px-3 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl font-bold transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        <span>فتح Drive</span>
+                    </a>
+                </div>
             </div>
 
-            <!-- Currency Selector Bar -->
+            <!-- Currency & Status Ribbon -->
             <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-3">
                 <div class="flex items-center gap-2">
                     <span class="text-xs font-black text-slate-700"><i class="fa-solid fa-coins text-slate-400 ml-1"></i> العملة النشطة للعرض:</span>
@@ -395,15 +348,17 @@
                         <option value="TRY">الليرة التركية (TRY)</option>
                     </select>
                 </div>
-                <div class="text-[11px] font-bold text-slate-500 flex items-center gap-1.5">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                    <span>المزامنة السحابية تعمل لحظياً مع استمرارية الحفظ دون إنترنت (Offline Mode)</span>
+                <div class="flex items-center gap-2">
+                    <button onclick="exportComprehensiveMultiSheetExcel()" class="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-file-excel text-emerald-600"></i>
+                        <span>تصدير ملف Excel شامل (كافة التبويبات)</span>
+                    </button>
                 </div>
             </div>
 
-            <!-- 4 Metric Cards: Bank & FinTech Look -->
+            <!-- 4 Financial Metric Cards -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
                     <span class="text-[11px] font-bold text-slate-500 block">إجمالي الوارد (بضائع استلمناها)</span>
                     <div class="mt-2 flex items-baseline gap-1.5">
                         <span id="dash-total-inbound" class="text-2xl font-black text-rose-700 font-mono">0.00</span>
@@ -412,7 +367,7 @@
                     <div class="text-[10px] text-slate-400 mt-1">إجمالي ما استلمناه في الذمة</div>
                 </div>
 
-                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
                     <span class="text-[11px] font-bold text-slate-500 block">إجمالي الصادر (بضائع ودفعات سلمناها)</span>
                     <div class="mt-2 flex items-baseline gap-1.5">
                         <span id="dash-total-outbound" class="text-2xl font-black text-emerald-700 font-mono">0.00</span>
@@ -421,7 +376,7 @@
                     <div class="text-[10px] text-slate-400 mt-1">إجمالي ما خرج من طرفنا</div>
                 </div>
 
-                <div class="bg-white p-5 rounded-2xl border border-emerald-200/80 bg-gradient-to-br from-white to-emerald-50/30 shadow-sm relative overflow-hidden">
+                <div class="bg-white p-5 rounded-2xl border border-emerald-200/80 bg-gradient-to-br from-white to-emerald-50/20 shadow-sm">
                     <span class="text-[11px] font-bold text-emerald-800 block">مستحق لنا (بذمة العملاء)</span>
                     <div class="mt-2 flex items-baseline gap-1.5">
                         <span id="dash-receivables" class="text-2xl font-black text-emerald-700 font-mono">0.00</span>
@@ -430,7 +385,7 @@
                     <div class="text-[10px] text-emerald-600 mt-1">حقوق مالية لصالحنا</div>
                 </div>
 
-                <div class="bg-white p-5 rounded-2xl border border-rose-200/80 bg-gradient-to-br from-white to-rose-50/30 shadow-sm relative overflow-hidden">
+                <div class="bg-white p-5 rounded-2xl border border-rose-200/80 bg-gradient-to-br from-white to-rose-50/20 shadow-sm">
                     <span class="text-[11px] font-bold text-rose-800 block">مستحق علينا (للموردين)</span>
                     <div class="mt-2 flex items-baseline gap-1.5">
                         <span id="dash-payables" class="text-2xl font-black text-rose-700 font-mono">0.00</span>
@@ -440,8 +395,129 @@
                 </div>
             </div>
 
+            <!-- EXECUTIVE WORKSPACE CARDS (Clean Clickable Hub) -->
+            <div class="space-y-3 pt-2">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-sm font-black text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-layer-group text-slate-600"></i>
+                        <span>أقسام وبيئات العمل الرئيسية (اضغط للانتقال المباشر)</span>
+                    </h2>
+                    <span class="text-xs text-slate-500">اختر البطاقة للدخول إلى مساحة العمل المتخصصة</span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Card 1: Statement -->
+                    <div onclick="switchTab('statement-view')" class="bg-white p-5 rounded-2xl border border-slate-200 hover:border-slate-900 hover:shadow-md transition cursor-pointer group flex flex-col justify-between space-y-4">
+                        <div class="flex items-start justify-between">
+                            <div class="w-12 h-12 rounded-2xl bg-teal-50 text-teal-700 flex items-center justify-center text-xl group-hover:scale-105 transition">
+                                <i class="fa-solid fa-file-invoice-dollar"></i>
+                            </div>
+                            <span class="text-xs text-slate-400 group-hover:text-slate-900 transition"><i class="fa-solid fa-arrow-left"></i></span>
+                        </div>
+                        <div>
+                            <h3 class="font-black text-sm text-slate-900">كشوف الحسابات المعتمدة</h3>
+                            <p class="text-xs text-slate-500 mt-1">طباعة رسمية، عزل الفواتير غير المسددة، وتصدير PDF/Excel للحساب.</p>
+                        </div>
+                        <div class="text-[11px] font-bold text-teal-700 pt-2 border-t border-slate-100 flex items-center justify-between">
+                            <span>فتح كشف الحساب والطباعة</span>
+                            <i class="fa-solid fa-print"></i>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Advances -->
+                    <div onclick="switchTab('advances-view')" class="bg-white p-5 rounded-2xl border border-slate-200 hover:border-slate-900 hover:shadow-md transition cursor-pointer group flex flex-col justify-between space-y-4">
+                        <div class="flex items-start justify-between">
+                            <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-xl group-hover:scale-105 transition">
+                                <i class="fa-solid fa-hand-holding-dollar"></i>
+                            </div>
+                            <span id="hub-advances-count-badge" class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-md text-[10px] font-bold">0 سلفة</span>
+                        </div>
+                        <div>
+                            <h3 class="font-black text-sm text-slate-900">الدفعات والسلف الواصلة</h3>
+                            <p class="text-xs text-slate-500 mt-1">حصر ما تم دفعه ونقداً تحت الحساب ومكان القبض دون إجراء محاسبة نهائية.</p>
+                        </div>
+                        <div class="text-[11px] font-bold text-emerald-700 pt-2 border-t border-slate-100 flex items-center justify-between">
+                            <span>سجل الدفعات والسندات</span>
+                            <i class="fa-solid fa-receipt"></i>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Master Journal -->
+                    <div onclick="switchTab('transactions-view')" class="bg-white p-5 rounded-2xl border border-slate-200 hover:border-slate-900 hover:shadow-md transition cursor-pointer group flex flex-col justify-between space-y-4">
+                        <div class="flex items-start justify-between">
+                            <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center text-xl group-hover:scale-105 transition">
+                                <i class="fa-solid fa-book-journal-whills"></i>
+                            </div>
+                            <span id="hub-tx-count-badge" class="px-2 py-0.5 bg-blue-100 text-blue-800 rounded-md text-[10px] font-bold">0 حركة</span>
+                        </div>
+                        <div>
+                            <h3 class="font-black text-sm text-slate-900">دفتر القيود واليومية العام</h3>
+                            <p class="text-xs text-slate-500 mt-1">البحث المتقدم، تعديل وحذف الفواتير، والطباعة الشاملة للسجل العام.</p>
+                        </div>
+                        <div class="text-[11px] font-bold text-blue-700 pt-2 border-t border-slate-100 flex items-center justify-between">
+                            <span>معاينة السجل المحاسبي</span>
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </div>
+                    </div>
+
+                    <!-- Card 4: Unpriced Goods -->
+                    <div onclick="switchTab('unpriced-view')" class="bg-white p-5 rounded-2xl border border-slate-200 hover:border-slate-900 hover:shadow-md transition cursor-pointer group flex flex-col justify-between space-y-4">
+                        <div class="flex items-start justify-between">
+                            <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center text-xl group-hover:scale-105 transition">
+                                <i class="fa-solid fa-clock-rotate-left"></i>
+                            </div>
+                            <span id="hub-unpriced-count-badge" class="px-2 py-0.5 bg-amber-100 text-amber-800 rounded-md text-[10px] font-bold">0 معلقة</span>
+                        </div>
+                        <div>
+                            <h3 class="font-black text-sm text-slate-900">بضائع بدون تسعير (معلقة)</h3>
+                            <p class="text-xs text-slate-500 mt-1">بضائع استُلمت كمياتها دون اتفاق على السعر، مع إمكانية التسعير لاحقاً.</p>
+                        </div>
+                        <div class="text-[11px] font-bold text-amber-700 pt-2 border-t border-slate-100 flex items-center justify-between">
+                            <span>تثبيت الأسعار والاعتماد</span>
+                            <i class="fa-solid fa-tags"></i>
+                        </div>
+                    </div>
+
+                    <!-- Card 5: Parties -->
+                    <div onclick="switchTab('parties-view')" class="bg-white p-5 rounded-2xl border border-slate-200 hover:border-slate-900 hover:shadow-md transition cursor-pointer group flex flex-col justify-between space-y-4">
+                        <div class="flex items-start justify-between">
+                            <div class="w-12 h-12 rounded-2xl bg-purple-50 text-purple-700 flex items-center justify-center text-xl group-hover:scale-105 transition">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
+                            <span id="hub-parties-count-badge" class="px-2 py-0.5 bg-purple-100 text-purple-800 rounded-md text-[10px] font-bold">0 حساب</span>
+                        </div>
+                        <div>
+                            <h3 class="font-black text-sm text-slate-900">دليل الحسابات والشركات</h3>
+                            <p class="text-xs text-slate-500 mt-1">إضافة، تعديل، وحذف العملاء والموردين ومتابعة بيانات الاتصال والعناوين.</p>
+                        </div>
+                        <div class="text-[11px] font-bold text-purple-700 pt-2 border-t border-slate-100 flex items-center justify-between">
+                            <span>إدارة بطاقات الحسابات</span>
+                            <i class="fa-solid fa-address-book"></i>
+                        </div>
+                    </div>
+
+                    <!-- Card 6: Settings & Users -->
+                    <div onclick="openSettingsModal()" class="bg-white p-5 rounded-2xl border border-slate-200 hover:border-slate-900 hover:shadow-md transition cursor-pointer group flex flex-col justify-between space-y-4">
+                        <div class="flex items-start justify-between">
+                            <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-800 flex items-center justify-center text-xl group-hover:scale-105 transition">
+                                <i class="fa-solid fa-gear"></i>
+                            </div>
+                            <span class="px-2 py-0.5 bg-slate-200 text-slate-800 rounded-md text-[10px] font-bold">إدارة المنشأة</span>
+                        </div>
+                        <div>
+                            <h3 class="font-black text-sm text-slate-900">الإعدادات والنسخ السحابي</h3>
+                            <p class="text-xs text-slate-500 mt-1">تعديل بيانات المنشأة، استرجاع النسخ السابقة، وإدارة المحاسبين والصلاحيات.</p>
+                        </div>
+                        <div class="text-[11px] font-bold text-slate-800 pt-2 border-t border-slate-100 flex items-center justify-between">
+                            <span>فتح لوحة الإعدادات</span>
+                            <i class="fa-solid fa-sliders"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Balances Summary Table -->
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mt-6">
                 <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/60">
                     <div class="flex items-center gap-2">
                         <i class="fa-solid fa-scale-balanced text-slate-600"></i>
@@ -494,11 +570,11 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">اسم الحساب / الشخص:</label>
-                        <select id="stmt-party-select" onchange="runStatementFilter()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs font-bold text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500"></select>
+                        <select id="stmt-party-select" onchange="runStatementFilter()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs font-bold text-slate-900 outline-none focus:ring-2 focus:ring-slate-900"></select>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">العملة:</label>
-                        <select id="stmt-currency-select" onchange="runStatementFilter()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs font-bold text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500">
+                        <select id="stmt-currency-select" onchange="runStatementFilter()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs font-bold text-slate-900 outline-none focus:ring-2 focus:ring-slate-900">
                             <option value="USD">دولار ($ - USD)</option>
                             <option value="SYP">ليرة سورية (SYP)</option>
                             <option value="SAR">ريال سعودي (SAR)</option>
@@ -577,7 +653,6 @@
                     </table>
                 </div>
 
-                <!-- تفاصيل ما تم دفعه وما وصل -->
                 <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                     <div class="p-3.5 bg-rose-50 border border-rose-200 rounded-xl text-rose-950 font-bold">
                         <span class="block text-[11px] text-rose-700">إجمالي ما استلمناه منه (وارد بضائع ونقد):</span>
@@ -599,7 +674,7 @@
             </div>
         </section>
 
-        <!-- ==================== TAB 3: ADVANCES & ON-ACCOUNT ==================== -->
+        <!-- ==================== TAB 3: ADVANCES ==================== -->
         <section id="advances-view" class="tab-content hidden space-y-4">
             <div class="bg-emerald-50 border border-emerald-300 p-4 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 shadow-sm">
                 <div>
@@ -637,35 +712,298 @@
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-wrap justify-between items-center gap-3">
                 <div class="relative flex-1 min-w-[260px]">
                     <i class="fa-solid fa-magnifying-glass absolute right-3 top-3 text-slate-400 text-xs"></i>
-                    <input type="text" id="master-search-input" oninput="renderMasterTable()" placeholder="بحث في السجل العام (اسم الحساب، رقم الفاتورة، البيان، طريقة الدفع)..." class="w-full pr-8 pl-3 py-2 text-xs bg-slate-50 border border-slate-300 rounded-xl text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500">
+                    <input type="text" id="master-search-input" oninput="renderMasterTable()" placeholder="بحث في السجل العام (اسم الحساب، رقم الفاتورة، البيان، طريقة الدفع)..." class="w-full pr-8 pl-3 py-2 text-xs bg-slate-50 border border-slate-300 rounded-xl text-slate-900 outline-none focus:ring-2 focus:ring-slate-900">
                 </div>
                 <div class="flex gap-2">
                     <button onclick="printStatement()" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl transition"><i class="fa-solid fa-print ml-1 text-amber-400"></i> طباعة</button>
                     <button onclick="exportAllMasterToExcel()" class="px-3.5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl transition"><i class="fa-solid fa-file-excel ml-1"></i> إكسل</button>
-                    <button onclick="openNewTransactionModal()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black rounded-xl transition shadow">+ حركة جديدة</button>
-    <!-- MODAL 6: SYSTEM SETTINGS & CLOUD BACKUP MODAL -->
+                    <button onclick="openNewTransactionModal()" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-black rounded-xl transition shadow">+ حركة جديدة</button>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <table class="w-full text-right text-xs">
+                    <thead class="bg-slate-50 text-slate-700 font-bold border-b border-slate-200">
+                        <tr>
+                            <th class="p-2.5 text-center">#</th>
+                            <th class="p-2.5">تاريخ البضاعة</th>
+                            <th class="p-2.5">اسم الحساب</th>
+                            <th class="p-2.5">نوع الحركة</th>
+                            <th class="p-2.5">رقم الفاتورة</th>
+                            <th class="p-2.5">البيان والتفاصيل</th>
+                            <th class="p-2.5 text-center">طريقة الدفع</th>
+                            <th class="p-2.5 text-center">الكمية</th>
+                            <th class="p-2.5 text-center">سعر الوحدة</th>
+                            <th class="p-2.5 text-left">المبلغ الإجمالي</th>
+                            <th class="p-2.5 text-center">حالة السداد</th>
+                            <th class="p-2.5 text-center">المُدخل</th>
+                            <th class="p-2.5 text-center">مرفق</th>
+                            <th class="p-2.5 text-center">إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="master-tbody" class="divide-y divide-slate-100"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 5: UNPRICED GOODS ==================== -->
+        <section id="unpriced-view" class="tab-content hidden space-y-4">
+            <div class="bg-amber-50 border border-amber-300 p-4 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                <div>
+                    <h2 class="text-xs sm:text-sm font-black text-amber-950"><i class="fa-solid fa-clock-rotate-left ml-1 text-amber-600"></i> البضائع المستلمة بدون تسعير (معلقة قيد الاتفاق)</h2>
+                    <p class="text-[11px] text-amber-800">بضائع استلمت كمياتها ولا تؤثر على الرصيد المالي حتى يتم الاتفاق وتثبيت السعر.</p>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <table class="w-full text-right text-xs">
+                    <thead class="bg-slate-50 text-slate-700 font-bold border-b border-slate-200">
+                        <tr>
+                            <th class="p-3 text-center">#</th>
+                            <th class="p-3">تاريخ الاستلام</th>
+                            <th class="p-3">اسم الحساب</th>
+                            <th class="p-3">رقم الإذن</th>
+                            <th class="p-3">البيان والصنف</th>
+                            <th class="p-3 text-center">الكمية</th>
+                            <th class="p-3 text-center">العملة</th>
+                            <th class="p-3 text-center">المُدخل</th>
+                            <th class="p-3 text-center">مرفق</th>
+                            <th class="p-3 text-center">تثبيت السعر</th>
+                            <th class="p-3 text-center">إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="unpriced-tbody" class="divide-y divide-slate-100"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 6: PARTIES ==================== -->
+        <section id="parties-view" class="tab-content hidden space-y-4">
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex justify-between items-center">
+                <div>
+                    <h2 class="text-xs sm:text-sm font-black text-slate-900">دليل الحسابات والشركات المعتمد</h2>
+                    <p class="text-[11px] text-slate-500">سجل العملاء والموردين لمتابعة الأرصدة وبيانات الاتصال.</p>
+                </div>
+                <button onclick="checkAdminAndOpenPartyModal()" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-black shadow transition">
+                    + إضافة حساب جديد
+                </button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="parties-grid"></div>
+        </section>
+
+    </main>
+
+    <!-- ==================== COMPLETE MODALS SUITE ==================== -->
+
+    <!-- MODAL 1: ADD/EDIT TRANSACTION -->
+    <div id="add-transaction-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white text-slate-900 w-full max-w-2xl rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-4">
+            <div class="bg-slate-950 text-white p-4 px-6 flex justify-between items-center border-b border-slate-800">
+                <h3 class="font-black text-sm text-white" id="tx-modal-title">تسجيل حركة محاسبية / فاتورة جديدة</h3>
+                <button onclick="closeModal('add-transaction-modal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-base"></i></button>
+            </div>
+            <form id="tx-entry-form" onsubmit="saveTransactionForm(event)" class="p-6 space-y-4 text-xs max-h-[80vh] overflow-y-auto">
+                <input type="hidden" id="tx-edit-id">
+                
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">اسم الحساب / الشخص *</label>
+                        <select id="tx-party-id" required class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold outline-none"></select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">نوع الحركة *</label>
+                        <select id="tx-type" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold outline-none">
+                            <option value="goods_in">↓ بضائع واردة (استلمنا منه - له)</option>
+                            <option value="goods_out">↑ بضائع صادرة (سلمناه بضاعة - عليه)</option>
+                            <option value="advance_payment">↑ سلفة / دفعة واصلة نقدية (عليه)</option>
+                            <option value="payment_in">↓ دفعة مقبوضة منه لحسابنا (له)</option>
+                            <option value="payment_out">↑ دفعة مسددة له نقد (عليه)</option>
+                            <option value="return_in">↓ مردودات مبيعات (له)</option>
+                            <option value="return_out">↑ مردودات مشتريات (عليه)</option>
+                            <option value="expense">↑ مصاريف عامة وتكاليف (عليه)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">تاريخ البضاعة الفعلي *</label>
+                        <input type="date" id="tx-goods-date" required class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">رقم الفاتورة / السند:</label>
+                        <input type="text" id="tx-inv-num" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-mono font-bold outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">طريقة الدفع:</label>
+                        <select id="tx-payment-method" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold outline-none">
+                            <option value="كاش">كاش نقدي</option>
+                            <option value="حوالة">حوالة مالية</option>
+                            <option value="شام كاك">شام كاك</option>
+                            <option value="بنك">تحويل بنكي</option>
+                            <option value="آجل">آجل على الحساب</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">مكان القبض / التسليم:</label>
+                        <input type="text" id="tx-payment-location" placeholder="مثال: المكتب، فرع الشام..." class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 outline-none">
+                    </div>
+                </div>
+
+                <!-- Quantities & Prices -->
+                <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 grid grid-cols-1 sm:grid-cols-4 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">الكمية:</label>
+                        <input type="number" step="any" id="tx-qty" value="1" oninput="calculateTxTotal()" class="w-full bg-white border border-slate-300 rounded-xl p-2 text-center font-bold font-mono outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">سعر الوحدة:</label>
+                        <input type="number" step="any" id="tx-price" value="0" oninput="calculateTxTotal()" class="w-full bg-white border border-slate-300 rounded-xl p-2 text-center font-bold font-mono outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">المبلغ الإجمالي:</label>
+                        <input type="number" step="any" id="tx-total" value="0" class="w-full bg-white border border-emerald-500 rounded-xl p-2 text-center font-black font-mono text-emerald-800 outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">العملة:</label>
+                        <select id="tx-currency" class="w-full bg-white border border-slate-300 rounded-xl p-2 font-bold outline-none">
+                            <option value="USD">دولار ($ - USD)</option>
+                            <option value="SYP">ليرة (SYP)</option>
+                            <option value="SAR">ريال (SAR)</option>
+                            <option value="TRY">ليرة (TRY)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">حالة التسعير:</label>
+                        <select id="tx-pricing-status" onchange="toggleUnpricedTxFields()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold outline-none">
+                            <option value="مسعر">مسعر متفق عليه (يدخل بالرصيد)</option>
+                            <option value="لم يتفق عليه بعد">لم يتفق عليه بعد (بضاعة معلقة لا تؤثر بالرصيد)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">حالة السداد الفعلي:</label>
+                        <select id="tx-settlement-status" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold outline-none">
+                            <option value="غير مسدد">غير مسدد (متبقي بذمة الحساب)</option>
+                            <option value="مسدد">مسدد بالكامل</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">تاريخ التسديد الفعلي (إن سُددت):</label>
+                    <input type="date" id="tx-settlement-date" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 outline-none">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">البيان والشرح وتفاصيل البضاعة أو الدفعة *</label>
+                    <textarea id="tx-desc" rows="2" required placeholder="اكتب تفاصيل الفاتورة أو سبب السلفة..." class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 outline-none"></textarea>
+                </div>
+
+                <!-- Attachments (Images & PDFs) -->
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">إرفاق صورة الفاتورة أو ملف PDF:</label>
+                    <input type="file" id="tx-file-input" accept="image/*,application/pdf" onchange="handleTxFileUpload(event)" class="w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:bg-slate-200 file:font-bold">
+                    <span id="tx-attachment-label" class="hidden text-emerald-700 font-bold mt-1 block"></span>
+                </div>
+
+                <div class="pt-3 border-t border-slate-100 flex justify-end gap-2">
+                    <button type="button" onclick="closeModal('add-transaction-modal')" class="px-4 py-2 border border-slate-300 rounded-xl font-bold">إلغاء</button>
+                    <button type="submit" class="px-6 py-2 bg-slate-900 hover:bg-slate-800 text-white font-black rounded-xl shadow transition">حفظ الحركة واعتمادها</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 2: ADD/EDIT PARTY -->
+    <div id="add-party-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white text-slate-900 w-full max-w-md rounded-3xl shadow-2xl border border-slate-200 overflow-hidden">
+            <div class="bg-slate-950 text-white p-4 px-6 flex justify-between items-center">
+                <h3 class="font-black text-sm text-white" id="party-modal-title">إضافة حساب / شركة جديدة</h3>
+                <button onclick="closeModal('add-party-modal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="savePartyForm(event)" class="p-6 space-y-3.5 text-xs">
+                <input type="hidden" id="party-edit-id">
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">اسم الشخص أو الشركة *</label>
+                    <input type="text" id="party-name" required placeholder="مثال: شركة البركة التجارية..." class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold outline-none">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">الصفة والتصنيف *</label>
+                    <select id="party-type" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold outline-none">
+                        <option value="مورد">مورد (Supplier)</option>
+                        <option value="عميل">عميل (Customer)</option>
+                        <option value="مورد وعميل">مورد وعميل معاً</option>
+                        <option value="شخص / موظف">شخص / موظف</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">رقم الهاتف:</label>
+                    <input type="text" id="party-phone" placeholder="09xxxxxxxx" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-mono outline-none">
+                </div>
+                <div class="pt-3 border-t border-slate-100 flex justify-end gap-2">
+                    <button type="button" onclick="closeModal('add-party-modal')" class="px-4 py-2 border border-slate-300 rounded-xl font-bold">إلغاء</button>
+                    <button type="submit" class="px-5 py-2 bg-slate-900 hover:bg-slate-800 text-white font-black rounded-xl shadow transition">حفظ الحساب</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 3: RESOLVE UNPRICED GOODS -->
+    <div id="resolve-price-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white text-slate-900 w-full max-w-md rounded-3xl shadow-2xl border border-slate-200 overflow-hidden">
+            <div class="bg-amber-600 text-white p-4 px-6 flex justify-between items-center">
+                <h3 class="font-black text-sm text-white">تثبيت / تعديل سعر البضاعة المعلقة</h3>
+                <button onclick="closeModal('resolve-price-modal')" class="text-amber-200 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="savePriceResolution(event)" class="p-6 space-y-4 text-xs">
+                <input type="hidden" id="resolve-tx-id">
+                <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 space-y-1">
+                    <div>الحساب: <strong id="resolve-party-name" class="text-slate-900"></strong></div>
+                    <div>الكمية المستلمة: <strong id="resolve-qty" class="text-slate-900 font-mono"></strong></div>
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">سعر الوحدة المتفق عليه:</label>
+                    <input type="number" step="any" id="resolve-unit-price" required oninput="calculateResolveTotal()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold font-mono outline-none">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">المبلغ الإجمالي المعتمد:</label>
+                    <input type="number" step="any" id="resolve-total-amount" required class="w-full bg-slate-100 border border-slate-300 rounded-xl p-2.5 font-black font-mono text-emerald-800 outline-none">
+                </div>
+                <div class="pt-3 border-t border-slate-100 flex justify-end gap-2">
+                    <button type="button" onclick="closeModal('resolve-price-modal')" class="px-4 py-2 border border-slate-300 rounded-xl font-bold">إلغاء</button>
+                    <button type="submit" class="px-5 py-2 bg-amber-600 hover:bg-amber-700 text-white font-black rounded-xl shadow transition">اعتماد وإدخال بالرصيد</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 4: ATTACHMENT VIEWER -->
+    <div id="file-viewer-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-2xl w-full p-4 overflow-hidden flex flex-col items-center">
+            <div class="w-full flex justify-between items-center mb-3">
+                <span class="font-bold text-xs sm:text-sm text-slate-800" id="file-viewer-title">معاينة المرفق</span>
+                <button onclick="closeModal('file-viewer-modal')" class="text-slate-500 hover:text-slate-800"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div id="file-viewer-content" class="w-full flex items-center justify-center p-2 bg-slate-100 rounded-xl max-h-[75vh] overflow-auto"></div>
+        </div>
+    </div>
+
+    <!-- MODAL 5: SETTINGS & DUAL CLOUD BACKUP -->
     <div id="settings-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4 overflow-y-auto">
         <div class="bg-white text-slate-900 w-full max-w-2xl rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-4">
             <div class="bg-slate-950 text-white p-4 px-6 flex justify-between items-center border-b border-slate-800">
                 <div class="flex items-center gap-2.5">
-                    <div class="w-8 h-8 rounded-lg bg-slate-800 text-emerald-400 flex items-center justify-center">
-                        <i class="fa-solid fa-gear"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-black text-sm text-white">إعدادات المنظومة والنسخ الاحتياطي السحابي</h3>
-                        <p class="text-[10px] text-slate-400 font-mono">Enterprise Management & Backup Suite</p>
-                    </div>
+                    <i class="fa-solid fa-gear text-emerald-400"></i>
+                    <h3 class="font-black text-sm text-white">إعدادات المنظومة والنسخ السحابي في Google Drive</h3>
                 </div>
                 <button onclick="closeModal('settings-modal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-base"></i></button>
             </div>
 
             <div class="p-6 space-y-6 text-xs max-h-[80vh] overflow-y-auto">
-                <!-- Section 1: Organization & In-charge Profile -->
+                <!-- Org Data -->
                 <div class="space-y-3 bg-slate-50 p-4 rounded-2xl border border-slate-200">
-                    <h4 class="font-black text-slate-900 text-xs flex items-center gap-2">
-                        <i class="fa-solid fa-building text-slate-700"></i>
-                        <span>بيانات المنشأة والمحاسب المسؤول عن الاعتماد والتواقيع</span>
-                    </h4>
+                    <h4 class="font-black text-slate-900 text-xs">بيانات المنشأة والمحاسب المسؤول عن الاعتماد:</h4>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <div>
                             <label class="block font-bold text-slate-700 mb-1">اسم المؤسسة التجاري:</label>
@@ -681,97 +1019,72 @@
                         </div>
                     </div>
                     <div class="flex justify-end">
-                        <button type="button" onclick="saveOrganizationSettings()" class="px-4 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg font-bold text-xs shadow transition">
-                            حفظ بيانات المنشأة
-                        </button>
+                        <button type="button" onclick="saveOrganizationSettings()" class="px-4 py-1.5 bg-slate-900 text-white rounded-lg font-bold text-xs shadow">حفظ بيانات المنشأة</button>
                     </div>
                 </div>
 
-                <!-- Section 2: Real Google Drive Direct Backup -->
+                <!-- Real Google Drive Dual Folder Setup -->
                 <div class="space-y-3 bg-blue-50/50 p-4 rounded-2xl border border-blue-200">
                     <div class="flex items-start justify-between gap-3">
-                        <div class="space-y-1">
+                        <div>
                             <h4 class="font-black text-slate-900 text-xs flex items-center gap-2">
                                 <i class="fa-brands fa-google-drive text-amber-500 text-sm"></i>
-                                <span>النسخ الاحتياطي الحقيقي المباشر إلى Google Drive</span>
+                                <span>النسخ المزدوج المنظم في Google Drive (Excel + Database)</span>
                             </h4>
-                            <p class="text-[11px] text-slate-600 leading-relaxed">
-                                يقوم النظام بإنشاء مجلد رئيسي باسم <strong class="text-slate-800 font-mono">منظومة_الحسابات_السحابية</strong>، ومجلد فرعي بتاريخ اليوم، وحفظ نسخة كاملة من القيود والحسابات مباشرة في درايف حسابك.
+                            <p class="text-[11px] text-slate-600 mt-1 leading-relaxed">
+                                ينشئ النظام مجلداً رئيسياً في درايفك، ومجلد تاريخ، وبداخله <strong>مجلدين فرعيين منفصلين</strong>: مجلد لنسخة Excel المحدثة ومجلد لنسخة قاعدة البيانات.
                             </p>
                         </div>
-                        <span id="drive-modal-status-badge" class="px-2.5 py-1 rounded-full text-[10px] font-black bg-blue-100 text-blue-800 shrink-0">
-                            جاهز للنسخ
-                        </span>
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-blue-100 text-blue-800 shrink-0">مزدوج منظم</span>
                     </div>
 
-                    <div class="bg-white p-3 rounded-xl border border-blue-100 text-[11px] space-y-1 font-mono text-slate-600" id="drive-sync-details-box">
-                        <div>آخر نسخة مسجلة: <strong id="drive-modal-last-time" class="text-slate-900 font-sans">لم يتم النسخ في هذه الجلسة بعد</strong></div>
-                        <div>المسار في درايف: <strong class="text-slate-800">Google Drive > منظومة_الحسابات_السحابية > نسخ_اليوم</strong></div>
+                    <div class="bg-white p-3.5 rounded-xl border border-blue-100 space-y-1.5 text-[11px] font-mono text-slate-700">
+                        <div>مسار مجلد Excel: <strong class="text-emerald-700">Google Drive > منظومة_الحسابات_السحابية > نسخ_اليوم > 01_نسخة_إكسل_Excel</strong></div>
+                        <div>مسار مجلد Database: <strong class="text-blue-700">Google Drive > منظومة_الحسابات_السحابية > نسخ_اليوم > 02_نسخة_قاعدة_البيانات_Database</strong></div>
+                        <div class="pt-1 text-slate-500 font-sans">آخر نسخة محفوظة: <strong id="drive-modal-last-time" class="text-slate-900">جاهز</strong></div>
                     </div>
 
                     <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
                         <a href="https://drive.google.com" target="_blank" class="text-blue-700 hover:underline font-bold text-[11px] flex items-center gap-1">
                             <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                            <span>فتح Google Drive للمعاينة</span>
+                            <span>فتح حساب Google Drive</span>
                         </a>
                         <button type="button" onclick="triggerGoogleDriveRealBackup()" id="btn-real-drive-backup" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-black text-xs shadow flex items-center gap-2 transition">
                             <i class="fa-solid fa-cloud-arrow-up"></i>
-                            <span>رفع نسخة جديدة إلى Google Drive الآن</span>
+                            <span>رفع النسخة المزدوجة إلى Drive الآن</span>
                         </button>
-                    </div>
-
-                    <div id="drive-api-diagnostic-alert" class="hidden p-3 bg-amber-50 border border-amber-300 rounded-xl text-[11px] text-amber-900 space-y-1">
-                        <div class="font-bold flex items-center gap-1.5"><i class="fa-solid fa-triangle-exclamation text-amber-600"></i> تنبيه صلاحية Google Drive API:</div>
-                        <p class="leading-relaxed">إذا ظهرت رسالة تطلب تفعيل Drive API، يرجى الدخول إلى لوحة Google Cloud والضغط على "Enable" لمرة واحدة لمشروعك، أو سيتم حفظ النسخة مباشرة على حاسوبك.</p>
-                        <a href="https://console.cloud.google.com/apis/library/drive.googleapis.com" target="_blank" class="inline-block font-black text-blue-700 underline pt-0.5">تفعيل Google Drive API في مشروعك</a>
                     </div>
                 </div>
 
-                <!-- Section 3: Backup & Restore (Excel & JSON) -->
+                <!-- Backup & Restore -->
                 <div class="space-y-3 bg-slate-50 p-4 rounded-2xl border border-slate-200">
-                    <h4 class="font-black text-slate-900 text-xs flex items-center gap-2">
-                        <i class="fa-solid fa-file-shield text-emerald-600"></i>
-                        <span>النسخ الشامل واسترداد البيانات (Backup & Restore)</span>
-                    </h4>
-                    <p class="text-[11px] text-slate-500">
-                        تصدير واسترجاع قاعدة البيانات الشاملة بما فيها الحسابات والقيود والمستخدمين.
-                    </p>
+                    <h4 class="font-black text-slate-900 text-xs">الاسترداد والتصدير الشامل (Backup & Restore):</h4>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                         <div class="bg-white p-3 rounded-xl border border-slate-200 space-y-2">
-                            <span class="font-bold text-slate-800 block text-xs">تصدير النسخ الاحتياطية:</span>
-                            <div class="flex flex-col gap-1.5">
-                                <button type="button" onclick="exportComprehensiveMultiSheetExcel()" class="w-full py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-lg text-xs transition flex items-center justify-center gap-1.5 shadow-sm">
-                                    <i class="fa-solid fa-file-excel"></i>
-                                    <span>تصدير إكسل شامل (كافة التبويبات)</span>
-                                </button>
-                                <button type="button" onclick="exportBackupJson()" class="w-full py-2 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-lg text-xs transition flex items-center justify-center gap-1.5 shadow-sm">
-                                    <i class="fa-solid fa-file-code"></i>
-                                    <span>تنزيل ملف النسخة الاحتياطية (JSON)</span>
-                                </button>
-                            </div>
+                            <span class="font-bold text-slate-800 block text-xs">تصدير النسخ:</span>
+                            <button type="button" onclick="exportComprehensiveMultiSheetExcel()" class="w-full py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-lg text-xs transition flex items-center justify-center gap-1.5 shadow-sm">
+                                <i class="fa-solid fa-file-excel"></i>
+                                <span>تصدير Excel شامل (كافة التبويبات)</span>
+                            </button>
+                            <button type="button" onclick="exportBackupJson()" class="w-full py-2 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-lg text-xs transition flex items-center justify-center gap-1.5 shadow-sm">
+                                <i class="fa-solid fa-file-code"></i>
+                                <span>تنزيل ملف قاعدة البيانات (JSON)</span>
+                            </button>
                         </div>
-
                         <div class="bg-white p-3 rounded-xl border border-slate-200 space-y-2">
                             <span class="font-bold text-slate-800 block text-xs">استرداد نسخة سابقة (Restore):</span>
-                            <p class="text-[10px] text-slate-400">اختر ملف نسخة احتياطية (JSON) لاسترجاع كافة القيود إلى السحابة فوراً.</p>
-                            <input type="file" id="restore-file-input" accept=".json" class="w-full text-[11px] text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-slate-100 file:text-slate-800 hover:file:bg-slate-200">
-                            <button type="button" onclick="handleRestoreBackupFile()" class="w-full py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-lg text-xs transition flex items-center justify-center gap-1.5 shadow-sm">
-                                <i class="fa-solid fa-cloud-arrow-down"></i>
-                                <span>استرجاع واعتماد النسخة في السحابة</span>
+                            <input type="file" id="restore-file-input" accept=".json" class="w-full text-[11px] text-slate-500 file:py-1 file:px-2 file:rounded-lg file:border-0 file:bg-slate-100">
+                            <button type="button" onclick="handleRestoreBackupFile()" class="w-full py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-lg text-xs transition shadow-sm">
+                                استرجاع واعتماد في السحابة
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Section 4: System & Developer Info -->
+                <!-- Developer & License -->
                 <div class="pt-3 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-slate-500">
-                    <div class="flex items-center gap-2">
-                        <span class="font-bold text-slate-800">منظومة الحسابات السحابية</span>
-                        <span class="px-2 py-0.5 rounded font-mono bg-slate-200 text-slate-700 text-[10px]">v5.0 Enterprise</span>
-                    </div>
-                    <div>
-                        تصميم وتطوير المطور: <a href="https://khaldoun.net" target="_blank" class="font-black text-slate-900 hover:text-emerald-700 underline decoration-slate-300">خلدون الحمدو (khaldoun.net)</a>
-                    </div>
+                    <div>الإصدار: <strong class="text-slate-800 font-mono">Enterprise v5.5</strong></div>
+                    <div>تصميم وتطوير: <a href="https://khaldoun.net" target="_blank" class="font-black text-slate-900 hover:text-emerald-700 underline">خلدون الحمدو (khaldoun.net)</a></div>
                 </div>
             </div>
         </div>
@@ -794,20 +1107,15 @@
             appId: "1:217820575933:web:341027e2c38d35d2c29fd4"
         };
 
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // تفعيل استمرارية البيانات أوفلاين (بدون إنترنت ومزامنة فور العودة)
-        try {
-            db.enablePersistence({ synchronizeTabs: true }).catch(() => {});
-        } catch(e) {}
+        try { db.enablePersistence({ synchronizeTabs: true }).catch(() => {}); } catch(e) {}
 
-        const STORAGE_KEY_AUTH = 'acct_sys_current_user_v50';
-        const STORAGE_KEY_DRIVE_INFO = 'acct_sys_drive_backup_meta_v50';
+        const STORAGE_KEY_AUTH = 'acct_sys_current_user_v55';
+        const STORAGE_KEY_DRIVE_INFO = 'acct_sys_drive_backup_meta_v55';
 
-        // State Machine
         window.state = {
             organization: { 
                 name: "مؤسسة الأعمال والتجارة المركزية", 
@@ -827,7 +1135,6 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             initApp();
-            setupAutoBackupInterval();
         });
 
         function initApp() {
@@ -843,42 +1150,15 @@
             showAuthGate();
         }
 
-        function setupAutoBackupInterval() {
-            // حفظ تلقائي محلي دوري للبيانات لضمان عدم فقدان أي حركة
-            setInterval(() => {
-                if (window.state.transactions.length > 0) {
-                    const backupPayload = {
-                        organization: window.state.organization,
-                        parties: window.state.parties,
-                        transactions: window.state.transactions,
-                        users: window.state.users,
-                        autoBackupTime: new Date().toISOString()
-                    };
-                    localStorage.setItem('acct_sys_local_storage_cache', JSON.stringify(backupPayload));
-                }
-            }, 5 * 60 * 1000);
-        }
-
         function startRealtimeListeners() {
-            // 1. Meta / Organization Profile
             db.collection('accounting_system').doc('meta')
                 .onSnapshot(doc => {
                     if (doc.exists) {
                         window.state.organization = { ...window.state.organization, ...doc.data() };
                         updateOrgHeaderUI();
-                    } else if (isCurrentUserAdmin()) {
-                        const defaultOrg = {
-                            name: window.state.organization.name || "مؤسسة الأعمال والتجارة المركزية",
-                            createdAt: new Date().toISOString().split('T')[0],
-                            managerName: window.state.currentUser ? window.state.currentUser.username : "المدير العام",
-                            managerPhone: "0967399557",
-                            managerEmail: window.state.currentUser ? (window.state.currentUser.email || '') : ''
-                        };
-                        db.collection('accounting_system').doc('meta').set(defaultOrg);
                     }
                 });
 
-            // 2. Parties Directory
             db.collection('accounting_parties')
                 .onSnapshot(snapshot => {
                     window.state.parties = [];
@@ -888,7 +1168,6 @@
                     renderAllViews();
                 });
 
-            // 3. Transactions / Ledger
             db.collection('accounting_transactions')
                 .orderBy('goodsDate', 'desc')
                 .onSnapshot(snapshot => {
@@ -897,17 +1176,14 @@
                         window.state.transactions.push({ id: doc.id, ...doc.data() });
                     });
                     renderAllViews();
-                    updateNextInvoiceUI();
                 });
 
-            // 4. Users & Staff
             db.collection('accounting_users')
                 .onSnapshot(snapshot => {
                     window.state.users = [];
                     snapshot.forEach(doc => {
                         window.state.users.push({ id: doc.id, ...doc.data() });
                     });
-                    renderUsersManagementGrid();
                 });
         }
 
@@ -938,7 +1214,6 @@
                     localStorage.setItem(STORAGE_KEY_AUTH, JSON.stringify(adminUser));
                     db.collection('accounting_users').doc(gUser.uid).set(adminUser, { merge: true });
 
-                    // إذا لم تكن المنشأة محددة، نضع اسم المدير الحقيقي
                     if (!window.state.organization.managerName || window.state.organization.managerName === "المدير العام") {
                         window.state.organization.managerName = realName;
                         window.state.organization.managerEmail = realEmail;
@@ -947,63 +1222,11 @@
 
                     unlockAppUI();
                     startRealtimeListeners();
-                    updateDriveBadgeUI("متصل بـ Google", true);
-                    showToast(`أهلاً بك يا ${realName}! تم توثيق الدخول وربط Google Drive بنجاح`);
-                    
-                    // تشغيل أول مزامنة تلقائية هادئة مع درايف لليوم الحالي
+                    showToast(`أهلاً بك يا ${realName}! تم تسجيل الدخول وربط Google Drive بنجاح`);
                     scheduleDriveAutoSync(3000);
                 })
                 .catch(error => {
-                    showToast('خطأ في إذن Google: ' + error.message, true);
-                });
-        }
-
-        function handleOrgSetupWithGoogle(e) {
-            e.preventDefault();
-            const orgName = document.getElementById('reg-org-name').value.trim();
-            const managerName = document.getElementById('reg-manager-name').value.trim();
-            const managerPhone = document.getElementById('reg-manager-phone').value.trim();
-            if (!orgName || !managerName) return;
-
-            const provider = new firebase.auth.GoogleAuthProvider();
-            provider.addScope('https://www.googleapis.com/auth/drive.file');
-
-            auth.signInWithPopup(provider)
-                .then(result => {
-                    const credential = result.credential;
-                    if (credential && credential.accessToken) {
-                        window.state.googleAccessToken = credential.accessToken;
-                    }
-                    const gUser = result.user;
-                    const adminUser = {
-                        id: gUser.uid,
-                        username: managerName,
-                        email: gUser.email || '',
-                        phone: managerPhone,
-                        role: 'مدير عام',
-                        isGoogleAdmin: true
-                    };
-                    const orgData = {
-                        name: orgName,
-                        createdAt: new Date().toISOString().split('T')[0],
-                        managerName: managerName,
-                        managerPhone: managerPhone,
-                        managerEmail: gUser.email || ''
-                    };
-
-                    window.state.currentUser = adminUser;
-                    window.state.organization = orgData;
-                    localStorage.setItem(STORAGE_KEY_AUTH, JSON.stringify(adminUser));
-
-                    db.collection('accounting_system').doc('meta').set(orgData);
-                    db.collection('accounting_users').doc(gUser.uid).set(adminUser, { merge: true });
-
-                    unlockAppUI();
-                    startRealtimeListeners();
-                    showToast(`تم إعداد المنشأة والربط بـ Google بنجاح!`);
-                })
-                .catch(error => {
-                    showToast('خطأ في الاتصال: ' + error.message, true);
+                    showToast('خطأ في الاتصال بـ Google: ' + error.message, true);
                 });
         }
 
@@ -1031,36 +1254,14 @@
                         localStorage.setItem(STORAGE_KEY_AUTH, JSON.stringify(matched));
                         unlockAppUI();
                         startRealtimeListeners();
-                        showToast(`أهلاً بك يا ${matched.username} (${matched.role})`);
+                        showToast(`أهلاً بك يا ${matched.username}`);
                     } else {
                         showToast('اسم المستخدم أو كلمة المرور غير صحيحة', true);
                     }
                 })
                 .catch(err => {
-                    showToast('خطأ في قاعدة البيانات: ' + err.message, true);
+                    showToast('خطأ: ' + err.message, true);
                 });
-        }
-
-        function switchAuthTab(tab) {
-            const loginBtn = document.getElementById('tab-btn-login');
-            const regBtn = document.getElementById('tab-btn-register');
-            const viewLogin = document.getElementById('view-login-box');
-            const viewRegister = document.getElementById('view-register-box');
-            const heading = document.getElementById('auth-panel-heading');
-
-            if (tab === 'login') {
-                loginBtn.className = 'py-1.5 px-3 rounded-lg font-bold transition bg-white text-slate-900 shadow-sm';
-                regBtn.className = 'py-1.5 px-3 rounded-lg font-bold transition text-slate-500 hover:text-slate-900';
-                viewLogin.classList.remove('hidden');
-                viewRegister.classList.add('hidden');
-                if (heading) heading.textContent = 'تسجيل الدخول للمنظومة';
-            } else {
-                regBtn.className = 'py-1.5 px-3 rounded-lg font-bold transition bg-white text-slate-900 shadow-sm';
-                loginBtn.className = 'py-1.5 px-3 rounded-lg font-bold transition text-slate-500 hover:text-slate-900';
-                viewRegister.classList.remove('hidden');
-                viewLogin.classList.add('hidden');
-                if (heading) heading.textContent = 'إعداد المنشأة والربط السحابي';
-            }
         }
 
         function showAuthGate() {
@@ -1097,7 +1298,7 @@
 
         function updateOrgHeaderUI() {
             const org = window.state.organization;
-            document.getElementById('header-org-title').textContent = org.name || "منظومة الحسابات السحابية";
+            document.getElementById('header-org-title').textContent = org.name || "منظومة الحسابات المركزية";
             const managerDisplay = org.managerName || (window.state.currentUser ? window.state.currentUser.username : "المدير العام");
             const phoneDisplay = org.managerPhone || "0967399557";
             
@@ -1120,10 +1321,9 @@
             if (lastMeta) {
                 try {
                     const parsed = JSON.parse(lastMeta);
-                    document.getElementById('drive-modal-last-time').textContent = `${parsed.timestamp} (ملف: ${parsed.fileName})`;
+                    document.getElementById('drive-modal-last-time').textContent = parsed.timestamp;
                 } catch(e) {}
             }
-
             openModal('settings-modal');
         }
 
@@ -1133,7 +1333,7 @@
             const managerPhone = document.getElementById('settings-manager-phone').value.trim();
 
             if (!orgName || !managerName) {
-                showToast('يرجى كتابة اسم المؤسسة واسم المسؤول', true);
+                showToast('يرجى ملء اسم المؤسسة واسم المسؤول', true);
                 return;
             }
 
@@ -1142,8 +1342,7 @@
                 name: orgName,
                 managerName: managerName,
                 managerPhone: managerPhone,
-                updatedAt: new Date().toISOString(),
-                updatedBy: window.state.currentUser ? window.state.currentUser.username : 'المدير العام'
+                updatedAt: new Date().toISOString()
             };
 
             window.state.organization = updatedOrg;
@@ -1151,15 +1350,15 @@
 
             try {
                 await db.collection('accounting_system').doc('meta').set(updatedOrg, { merge: true });
-                showToast('تم حفظ وتحديث بيانات المنشأة بنجاح');
+                showToast('تم حفظ بيانات المنشأة بنجاح');
                 scheduleDriveAutoSync(2000);
             } catch(e) {
-                showToast('تم الحفظ محلياً: ' + e.message, false);
+                showToast('تم الحفظ محلياً', false);
             }
         }
 
-        // ==================== REAL GOOGLE DRIVE SMART OVERWRITE & DAILY LOGIC ====================
-        function scheduleDriveAutoSync(delayMs = 4000) {
+        // ==================== REAL GOOGLE DRIVE DUAL FOLDER BACKUP ====================
+        function scheduleDriveAutoSync(delayMs = 3000) {
             if (!window.state.googleAccessToken) return;
             if (window.state.driveSyncTimer) clearTimeout(window.state.driveSyncTimer);
             window.state.driveSyncTimer = setTimeout(() => {
@@ -1167,397 +1366,305 @@
             }, delayMs);
         }
 
-        function updateDriveBadgeUI(text, isSuccess = true) {
-            const badge = document.getElementById('drive-header-badge');
-            const txt = document.getElementById('drive-header-text');
-            if (badge && txt) {
-                badge.classList.remove('hidden');
-                txt.textContent = text;
-                badge.className = isSuccess 
-                    ? 'hidden sm:inline-flex px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-blue-50 text-blue-700 border border-blue-200 items-center gap-1'
-                    : 'hidden sm:inline-flex px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-amber-50 text-amber-700 border border-amber-200 items-center gap-1';
-            }
-        }
-
-        async function syncToGoogleDriveDailySmart(isSilent = false) {
-            if (!window.state.googleAccessToken) {
-                if (!isSilent) {
-                    showToast('يرجى تسجيل الدخول بحساب Google لتفعيل الحفظ المباشر في Drive', true);
-                }
-                return false;
-            }
-
-            const alertDiag = document.getElementById('drive-api-diagnostic-alert');
-            const now = new Date();
-            const dateStr = now.toISOString().slice(0, 10);
-            const timeStr = now.toLocaleTimeString('ar-EG');
-            const fileName = `نسخة_اليوم_المحدثة_${dateStr}.json`;
-
-            const backupPayload = {
-                organization: window.state.organization,
-                parties: window.state.parties,
-                transactions: window.state.transactions,
-                users: window.state.users,
-                dateFolder: dateStr,
-                lastUpdated: now.toISOString(),
-                lastUpdatedTimeArabic: `${dateStr} ${timeStr}`,
-                totalTransactions: window.state.transactions.length,
-                totalParties: window.state.parties.length,
-                syncedBy: window.state.currentUser ? (window.state.currentUser.username || window.state.currentUser.email) : 'المدير العام'
-            };
-
-            const jsonString = JSON.stringify(backupPayload, null, 2);
-
-            try {
-                updateDriveBadgeUI('جاري حفظ درايف...', true);
-
-                // 1. مجلد رئيسي ثابت: منظومة_الحسابات_السحابية
-                const rootFolderId = await getOrCreateDriveFolder('منظومة_الحسابات_السحابية', null, window.state.googleAccessToken);
-                if (!rootFolderId) throw new Error('تعذر الوصول للمجلد الرئيسي في Google Drive');
-
-                // 2. مجلد اليوم الفرعي: نسخ_YYYY-MM-DD (ينشأ تلقائياً كل يوم جديد)
-                const todayFolderId = await getOrCreateDriveFolder(`نسخ_${dateStr}`, rootFolderId, window.state.googleAccessToken);
-                const targetFolderId = todayFolderId || rootFolderId;
-
-                // 3. فحص هل ملف اليوم موجود مسبقاً لاستبداله والتحديث عليه (Overwrite)
-                const existingFileId = await findDriveFileInFolder(fileName, targetFolderId, window.state.googleAccessToken);
-
-                let uploadResp;
-                if (existingFileId) {
-                    // تحديث نفس الملف دون تكرار (PATCH Overwrite)
-                    uploadResp = await fetch(`https://www.googleapis.com/upload/drive/v3/files/${existingFileId}?uploadType=media`, {
-                        method: 'PATCH',
-                        headers: new Headers({
-                            'Authorization': 'Bearer ' + window.state.googleAccessToken,
-                            'Content-Type': 'application/json'
-                        }),
-                        body: jsonString
-                    });
-                } else {
-                    // إنشاء ملف جديد لهذا اليوم لأول مرة
-                    const metadata = {
-                        name: fileName,
-                        mimeType: 'application/json',
-                        parents: [targetFolderId]
-                    };
-                    const form = new FormData();
-                    form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
-                    form.append('file', new Blob([jsonString], { type: 'application/json' }));
-
-                    uploadResp = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
-                        method: 'POST',
-                        headers: new Headers({ 'Authorization': 'Bearer ' + window.state.googleAccessToken }),
-                        body: form
-                    });
-                }
-
-                if (uploadResp.ok) {
-                    if (alertDiag) alertDiag.classList.add('hidden');
-                    const backupMeta = {
-                        fileName: fileName,
-                        folderPath: `Google Drive > منظومة_الحسابات_السحابية > نسخ_${dateStr}`,
-                        timestamp: `${dateStr} ${timeStr}`,
-                        totalTransactions: window.state.transactions.length,
-                        successInDrive: true
-                    };
-                    localStorage.setItem(STORAGE_KEY_DRIVE_INFO, JSON.stringify(backupMeta));
-                    
-                    const lastTimeEl = document.getElementById('drive-modal-last-time');
-                    if (lastTimeEl) lastTimeEl.textContent = `${backupMeta.timestamp} (ملف اليوم المحدث)`;
-
-                    updateDriveBadgeUI(`Drive: محفوظ ${timeStr}`, true);
-                    if (!isSilent) {
-                        showToast(`تم حفظ وتحديث ملف اليوم في Google Drive بنجاح: [${fileName}]`);
-                    }
-                    return true;
-                } else {
-                    const errText = await uploadResp.text();
-                    console.warn("Drive API Response Error:", errText);
-                    if (alertDiag) alertDiag.classList.remove('hidden');
-                    updateDriveBadgeUI('خطأ بمزامنة Drive', false);
-                    return false;
-                }
-            } catch(err) {
-                console.error("Drive Auto-Sync Exception:", err);
-                if (alertDiag) alertDiag.classList.remove('hidden');
-                updateDriveBadgeUI('تعذر اتصال Drive', false);
-                return false;
-            }
-        }
-
-        async function findDriveFileInFolder(fileName, folderId, accessToken) {
-            try {
-                let query = `name = '${fileName}' and '${folderId}' in parents and trashed = false`;
-                const resp = await fetch(`https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&fields=files(id,name)`, {
-                    headers: { 'Authorization': 'Bearer ' + accessToken }
-                });
-                if (resp.ok) {
-                    const data = await resp.json();
-                    if (data.files && data.files.length > 0) {
-                        return data.files[0].id;
-                    }
-                }
-            } catch(e) {}
-            return null;
-        }
-
         async function triggerGoogleDriveRealBackup() {
             const btn = document.getElementById('btn-real-drive-backup');
             const quickBtn = document.getElementById('btn-quick-drive-backup');
-            const origHtml = btn ? btn.innerHTML : '';
-            if (btn) {
-                btn.disabled = true;
-                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-white"></i> جاري الحفظ والتحديث في Drive...';
-            }
+            if (btn) btn.disabled = true;
             if (quickBtn) quickBtn.classList.add('animate-pulse');
 
             const success = await syncToGoogleDriveDailySmart(false);
 
-            if (btn) {
-                btn.disabled = false;
-                btn.innerHTML = origHtml;
-            }
+            if (btn) btn.disabled = false;
             if (quickBtn) quickBtn.classList.remove('animate-pulse');
 
-            // إذا لم يكن مسجلاً بـ Google، ننزل له نسخة محلية فورية كإجراء احتياطي
             if (!success && !window.state.googleAccessToken) {
                 exportBackupJson();
             }
         }
 
-        async function getOrCreateDriveFolder(folderName, parentId, accessToken) {
+        async function syncToGoogleDriveDailySmart(isSilent = false) {
+            if (!window.state.googleAccessToken) {
+                if (!isSilent) showToast('يرجى تسجيل الدخول بحساب Google أولاً لتفعيل الرفع لدرايف', true);
+                return false;
+            }
+
+            const now = new Date();
+            const dateStr = now.toISOString().slice(0, 10);
+            const timeStr = now.toLocaleTimeString('ar-EG');
+            const token = window.state.googleAccessToken;
+
             try {
-                let query = `name = '${folderName}' and mimeType = 'application/vnd.google-apps.folder' and trashed = false`;
-                if (parentId) query += ` and '${parentId}' in parents`;
+                const qLabel = document.getElementById('quick-drive-btn-label');
+                if (qLabel) qLabel.textContent = 'جاري رفع النسخ...';
 
-                const searchResp = await fetch(`https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&fields=files(id,name)`, {
-                    headers: { 'Authorization': 'Bearer ' + accessToken }
+                // 1. Root folder
+                const rootFolderId = await getOrCreateDriveFolder('منظومة_الحسابات_السحابية', null, token);
+                if (!rootFolderId) throw new Error('تعذر إنشاء المجلد الرئيسي');
+
+                // 2. Day folder
+                const todayFolderId = await getOrCreateDriveFolder(`نسخ_${dateStr}`, rootFolderId, token);
+
+                // 3. Two separate dedicated subfolders (Excel + Database)
+                const excelFolderId = await getOrCreateDriveFolder('01_نسخة_إكسل_Excel', todayFolderId, token);
+                const dbFolderId = await getOrCreateDriveFolder('02_نسخة_قاعدة_البيانات_Database', todayFolderId, token);
+
+                // Upload 1: JSON Database Backup
+                const dbPayload = {
+                    organization: window.state.organization,
+                    parties: window.state.parties,
+                    transactions: window.state.transactions,
+                    users: window.state.users,
+                    dateFolder: dateStr,
+                    lastUpdated: now.toISOString(),
+                    lastUpdatedArabic: `${dateStr} ${timeStr}`
+                };
+                const jsonFileName = `قاعدة_بيانات_المحاسبة_${dateStr}.json`;
+                await uploadOrUpdateDriveFile(jsonFileName, 'application/json', JSON.stringify(dbPayload, null, 2), dbFolderId, token);
+
+                // Upload 2: Real Excel Multi-Sheet Backup (.xlsx)
+                const wb = generateComprehensiveWorkbook();
+                const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
+                const excelBlob = new Blob([s2ab(wbout)], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                const excelFileName = `سجل_محاسبي_شامل_${dateStr}.xlsx`;
+                await uploadOrUpdateDriveFile(excelFileName, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', excelBlob, excelFolderId, token);
+
+                const backupMeta = {
+                    timestamp: `${dateStr} ${timeStr}`,
+                    path: `Google Drive > منظومة_الحسابات_السحابية > نسخ_${dateStr} > [مجلد Excel + مجلد Database]`
+                };
+                localStorage.setItem(STORAGE_KEY_DRIVE_INFO, JSON.stringify(backupMeta));
+
+                if (qLabel) qLabel.textContent = `Drive: محفوظ ${timeStr}`;
+                const lastTimeEl = document.getElementById('drive-modal-last-time');
+                if (lastTimeEl) lastTimeEl.textContent = `${backupMeta.timestamp} (مجلد Excel ومجلد Database)`;
+
+                if (!isSilent) {
+                    showToast(`تم حفظ النسخة المزدوجة بنجاح داخل Google Drive في مجلدي Excel و Database`);
+                }
+                return true;
+            } catch(e) {
+                console.error("Drive Backup error:", e);
+                const qLabel = document.getElementById('quick-drive-btn-label');
+                if (qLabel) qLabel.textContent = 'Drive: خطأ بالمزامنة';
+                return false;
+            }
+        }
+
+        function s2ab(s) {
+            const buf = new ArrayBuffer(s.length);
+            const view = new Uint8Array(buf);
+            for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+            return buf;
+        }
+
+        async function getOrCreateDriveFolder(folderName, parentId, token) {
+            try {
+                let q = `name = '${folderName}' and mimeType = 'application/vnd.google-apps.folder' and trashed = false`;
+                if (parentId) q += ` and '${parentId}' in parents`;
+
+                const res = await fetch(`https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(q)}&fields=files(id,name)`, {
+                    headers: { 'Authorization': 'Bearer ' + token }
                 });
-
-                if (searchResp.ok) {
-                    const searchData = await searchResp.json();
-                    if (searchData.files && searchData.files.length > 0) {
-                        return searchData.files[0].id;
-                    }
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.files && data.files.length > 0) return data.files[0].id;
                 }
 
-                // إنشاء المجلد إذا لم يكن موجوداً
-                const folderMeta = {
-                    name: folderName,
-                    mimeType: 'application/vnd.google-apps.folder'
-                };
-                if (parentId) folderMeta.parents = [parentId];
+                const meta = { name: folderName, mimeType: 'application/vnd.google-apps.folder' };
+                if (parentId) meta.parents = [parentId];
 
-                const createResp = await fetch('https://www.googleapis.com/drive/v3/files', {
+                const createRes = await fetch('https://www.googleapis.com/drive/v3/files', {
                     method: 'POST',
-                    headers: {
-                        'Authorization': 'Bearer ' + accessToken,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(folderMeta)
+                    headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+                    body: JSON.stringify(meta)
                 });
-
-                if (createResp.ok) {
-                    const created = await createResp.json();
-                    return created.id;
+                if (createRes.ok) {
+                    const d = await createRes.json();
+                    return d.id;
                 }
             } catch(e) {}
             return null;
         }
 
-        // ==================== COMPREHENSIVE MULTI-SHEET EXCEL EXPORT ====================
-        function exportComprehensiveMultiSheetExcel() {
-            if (window.state.transactions.length === 0 && window.state.parties.length === 0) {
-                showToast('لا توجد بيانات مسجلة للتصدير', true);
-                return;
-            }
+        async function uploadOrUpdateDriveFile(fileName, mimeType, content, folderId, token) {
+            try {
+                let q = `name = '${fileName}' and '${folderId}' in parents and trashed = false`;
+                const searchRes = await fetch(`https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(q)}&fields=files(id)`, {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
 
+                let existingFileId = null;
+                if (searchRes.ok) {
+                    const sData = await searchRes.json();
+                    if (sData.files && sData.files.length > 0) existingFileId = sData.files[0].id;
+                }
+
+                if (existingFileId) {
+                    // Update content
+                    await fetch(`https://www.googleapis.com/upload/drive/v3/files/${existingFileId}?uploadType=media`, {
+                        method: 'PATCH',
+                        headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': mimeType },
+                        body: content
+                    });
+                } else {
+                    // Create new multipart
+                    const metadata = { name: fileName, mimeType: mimeType, parents: [folderId] };
+                    const form = new FormData();
+                    form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+                    form.append('file', typeof content === 'string' ? new Blob([content], { type: mimeType }) : content);
+
+                    await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+                        method: 'POST',
+                        headers: { 'Authorization': 'Bearer ' + token },
+                        body: form
+                    });
+                }
+            } catch(e) {}
+        }
+
+        // ==================== EXCEL WORKBOOK GENERATOR ====================
+        function generateComprehensiveWorkbook() {
             const wb = XLSX.utils.book_new();
             const exportDate = new Date().toLocaleDateString('ar-EG');
             const managerName = window.state.organization.managerName || "المدير العام";
 
-            // 1. Sheet 1: كشف الحسابات والأرصدة
+            // Sheet 1: دليل الحسابات
             const partiesRows = [
                 ['دليل الحسابات والأرصدة الإجمالية المعتمدة'],
                 ['المؤسسة:', window.state.organization.name, 'المحاسب المسؤول:', managerName, 'تاريخ التصدير:', exportDate],
                 [],
-                ['م', 'اسم الحساب / الشركة', 'الصفة', 'الهاتف', 'العنوان', 'الرصيد الصافي (USD)', 'الرصيد الصافي (SYP)']
+                ['م', 'اسم الحساب / الشركة', 'الصفة', 'الهاتف', 'الرصيد الصافي (USD)', 'الرصيد الصافي (SYP)']
             ];
             window.state.parties.forEach((p, idx) => {
-                const balUSD = calculatePartyBalance(p.id, 'USD');
-                const balSYP = calculatePartyBalance(p.id, 'SYP');
                 partiesRows.push([
-                    idx + 1, p.name, p.type, p.phone || '', p.address || '', balUSD, balSYP
+                    idx + 1, p.name, p.type, p.phone || '', calculatePartyBalance(p.id, 'USD'), calculatePartyBalance(p.id, 'SYP')
                 ]);
             });
-            const wsParties = XLSX.utils.aoa_to_sheet(partiesRows);
-            wsParties['!views'] = [{ rightToLeft: true }];
-            XLSX.utils.book_append_sheet(wb, wsParties, "دليل الحسابات");
+            const wsP = XLSX.utils.aoa_to_sheet(partiesRows);
+            wsP['!views'] = [{ rightToLeft: true }];
+            XLSX.utils.book_append_sheet(wb, wsP, "دليل الحسابات");
 
-            // 2. Sheet 2: دفتر القيود اليومية العام
+            // Sheet 2: دفتر القيود
             const ledgerRows = [
-                ['دفتر اليومية وسجل القيود المحاسبية العام'],
-                ['المؤسسة:', window.state.organization.name, 'إجمالي الحركات:', window.state.transactions.length, 'تاريخ التصدير:', exportDate],
+                ['دفتر اليومية وسجل القيود العام'],
+                ['المؤسسة:', window.state.organization.name, 'تاريخ التصدير:', exportDate],
                 [],
-                ['م', 'تاريخ البضاعة الفعلي', 'اسم الحساب', 'نوع الحركة', 'رقم الفاتورة', 'البيان والتفاصيل', 'طريقة الدفع', 'الكمية', 'سعر الوحدة', 'المبلغ', 'العملة', 'حالة السداد', 'تاريخ السداد', 'المُدخل']
+                ['م', 'تاريخ البضاعة الفعلي', 'اسم الحساب', 'نوع الحركة', 'رقم الفاتورة', 'البيان', 'طريقة الدفع', 'الكمية', 'سعر الوحدة', 'المبلغ الإجمالي', 'العملة', 'حالة السداد', 'المُدخل']
             ];
             window.state.transactions.forEach((t, i) => {
                 ledgerRows.push([
                     i + 1, t.goodsDate, t.partyName, t.type, t.invoiceNum, t.desc,
                     t.paymentMethod || 'كاش', t.qty, t.price, t.amount, t.currency,
-                    t.settlementStatus || 'غير مسدد', t.settlementDate || '', t.createdBy || 'المدير العام'
+                    t.settlementStatus || 'غير مسدد', t.createdBy || 'المدير'
                 ]);
             });
-            const wsLedger = XLSX.utils.aoa_to_sheet(ledgerRows);
-            wsLedger['!views'] = [{ rightToLeft: true }];
-            XLSX.utils.book_append_sheet(wb, wsLedger, "سجل القيود العام");
+            const wsL = XLSX.utils.aoa_to_sheet(ledgerRows);
+            wsL['!views'] = [{ rightToLeft: true }];
+            XLSX.utils.book_append_sheet(wb, wsL, "سجل القيود العام");
 
-            // 3. Sheet 3: سجل الدفعات والسلف
-            const advances = window.state.transactions.filter(t => t.type === 'advance_payment');
+            // Sheet 3: الدفعات والسلف
             const advRows = [
                 ['سجل الدفعات والسلف النقدية تحت الحساب'],
                 ['المؤسسة:', window.state.organization.name, 'تاريخ التصدير:', exportDate],
                 [],
-                ['م', 'تاريخ الدفعة', 'المستلم / الحساب', 'رقم السند', 'طريقة الدفع', 'مكان القبض والملاحظات', 'المبلغ الواصل', 'العملة', 'سجلت بواسطة']
+                ['م', 'تاريخ الدفعة', 'المستلم / الحساب', 'رقم السند', 'طريقة الدفع', 'مكان القبض والملاحظات', 'المبلغ الواصل', 'العملة', 'المُدخل']
             ];
-            advances.forEach((a, idx) => {
+            window.state.transactions.filter(t => t.type === 'advance_payment').forEach((a, idx) => {
                 advRows.push([
                     idx + 1, a.goodsDate, a.partyName, a.invoiceNum, a.paymentMethod || 'كاش',
                     a.desc + (a.paymentLocation ? ` - ${a.paymentLocation}` : ''),
-                    a.amount, a.currency, a.createdBy || 'المدير العام'
+                    a.amount, a.currency, a.createdBy || 'المدير'
                 ]);
             });
-            const wsAdv = XLSX.utils.aoa_to_sheet(advRows);
-            wsAdv['!views'] = [{ rightToLeft: true }];
-            XLSX.utils.book_append_sheet(wb, wsAdv, "الدفعات والسلف");
+            const wsA = XLSX.utils.aoa_to_sheet(advRows);
+            wsA['!views'] = [{ rightToLeft: true }];
+            XLSX.utils.book_append_sheet(wb, wsA, "الدفعات والسلف");
 
-            // 4. Sheet 4: بضائع بدون تسعير
-            const unpriced = window.state.transactions.filter(t => t.isUnpriced || t.pricingStatus === 'لم يتفق عليه بعد');
-            const unpRows = [
-                ['سجل البضائع المستلمة بدون تسعير (معلقة قيد الاتفاق)'],
-                ['المؤسسة:', window.state.organization.name, 'تاريخ التصدير:', exportDate],
-                [],
-                ['م', 'تاريخ الاستلام', 'اسم الحساب', 'رقم الإذن', 'البيان والصنف', 'الكمية', 'العملة', 'المُدخل']
-            ];
-            unpriced.forEach((u, idx) => {
-                unpRows.push([
-                    idx + 1, u.goodsDate, u.partyName, u.invoiceNum, u.desc, u.qty, u.currency, u.createdBy || 'المدير العام'
-                ]);
-            });
-            const wsUnp = XLSX.utils.aoa_to_sheet(unpRows);
-            wsUnp['!views'] = [{ rightToLeft: true }];
-            XLSX.utils.book_append_sheet(wb, wsUnp, "بضائع غير مسعرة");
+            return wb;
+        }
 
-            // حفظ الملف الكامل
+        function exportComprehensiveMultiSheetExcel() {
+            const wb = generateComprehensiveWorkbook();
             const safeOrg = (window.state.organization.name || "منظومة_المحاسبة").replace(/\s+/g, '_');
             XLSX.writeFile(wb, `${safeOrg}_سجل_محاسبي_شامل_${new Date().toISOString().slice(0, 10)}.xlsx`);
             showToast('تم تصدير ملف Excel الشامل بكافة التبويبات بنجاح');
         }
 
-        // ==================== RESTORE BACKUP FILE ====================
-        async function handleRestoreBackupFile() {
-            const input = document.getElementById('restore-file-input');
-            const file = input.files[0];
-            if (!file) {
-                showToast('يرجى تحديد ملف النسخة الاحتياطية (JSON) أولاً', true);
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                try {
-                    const parsed = JSON.parse(e.target.result);
-                    if (!parsed.transactions || !parsed.parties) {
-                        showToast('الملف المرفوع لا يحتوي على بنية بيانات المحاسبة المعتمدة', true);
-                        return;
-                    }
-
-                    showToast('جاري استرداد البيانات وكتابتها في السحابة...');
-
-                    // 1. استرجاع المنشأة
-                    if (parsed.organization) {
-                        await db.collection('accounting_system').doc('meta').set(parsed.organization, { merge: true });
-                    }
-
-                    // 2. استرجاع الحسابات
-                    for (const p of parsed.parties) {
-                        const pid = p.id || ('p_' + Math.random().toString(36).substring(2, 9));
-                        await db.collection('accounting_parties').doc(pid).set(p, { merge: true });
-                    }
-
-                    // 3. استرجاع القيود
-                    for (const t of parsed.transactions) {
-                        const tid = t.id || ('tx_' + Math.random().toString(36).substring(2, 9));
-                        await db.collection('accounting_transactions').doc(tid).set(t, { merge: true });
-                    }
-
-                    closeModal('settings-modal');
-                    showToast(`تم استرداد (${parsed.transactions.length}) حركة و (${parsed.parties.length}) حساب بنجاح!`);
-                } catch(err) {
-                    showToast('خطأ في قراءة ملف النسخة: ' + err.message, true);
-                }
-            };
-            reader.readAsText(file);
+        // ==================== TRANSACTION HANDLING ====================
+        function openNewTransactionModal(preType = 'goods_in') {
+            document.getElementById('tx-edit-id').value = '';
+            document.getElementById('tx-modal-title').textContent = 'تسجيل حركة محاسبية / فاتورة جديدة';
+            document.getElementById('tx-goods-date').value = new Date().toISOString().split('T')[0];
+            document.getElementById('tx-inv-num').value = 'INV-' + (1001 + window.state.transactions.length);
+            document.getElementById('tx-type').value = preType;
+            document.getElementById('tx-qty').value = '1';
+            document.getElementById('tx-price').value = '0';
+            document.getElementById('tx-total').value = '0';
+            document.getElementById('tx-desc').value = '';
+            document.getElementById('tx-payment-location').value = '';
+            document.getElementById('tx-pricing-status').value = 'مسعر';
+            document.getElementById('tx-settlement-status').value = 'غير مسدد';
+            document.getElementById('tx-settlement-date').value = '';
+            window.state.tempAttachment = null;
+            document.getElementById('tx-attachment-label').classList.add('hidden');
+            
+            populatePartyDropdowns();
+            openModal('add-transaction-modal');
         }
 
-        function calculatePartyBalance(partyId, currency) {
-            let balance = 0;
-            window.state.transactions.forEach(t => {
-                if (t.partyId === partyId && t.currency === currency) {
-                    const { credit, debit } = getMovementCreditDebit(t);
-                    balance += (credit - debit);
-                }
-            });
-            return balance;
+        function calculateTxTotal() {
+            const q = parseFloat(document.getElementById('tx-qty').value) || 0;
+            const p = parseFloat(document.getElementById('tx-price').value) || 0;
+            document.getElementById('tx-total').value = (q * p).toFixed(2);
+        }
+
+        function toggleUnpricedTxFields() {
+            const st = document.getElementById('tx-pricing-status').value;
+            if (st === 'لم يتفق عليه بعد') {
+                document.getElementById('tx-price').value = '0';
+                document.getElementById('tx-total').value = '0';
+            }
+        }
+
+        function handleTxFileUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                window.state.tempAttachment = { name: file.name, type: file.type, data: evt.target.result };
+                const label = document.getElementById('tx-attachment-label');
+                label.textContent = `✓ تم إرفاق: ${file.name}`;
+                label.classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
         }
 
         async function saveTransactionForm(e) {
             e.preventDefault();
-            
             const partySelect = document.getElementById('tx-party-id');
             const descInput = document.getElementById('tx-desc');
             const dateInput = document.getElementById('tx-goods-date');
 
-            let hasError = false;
-            [partySelect, descInput, dateInput].forEach(el => {
-                if (!el.value.trim()) {
-                    el.classList.add('input-error');
-                    hasError = true;
-                } else {
-                    el.classList.remove('input-error');
-                }
-            });
-
-            if (hasError) {
-                showToast('يرجى ملء الحقول المحددة باللون الأحمر', true);
+            if (!partySelect.value || !descInput.value.trim() || !dateInput.value) {
+                showToast('يرجى ملء الحقول المطلوبة', true);
                 return;
             }
 
             const editId = document.getElementById('tx-edit-id').value;
-            const partyId = partySelect.value;
-            const party = window.state.parties.find(p => p.id === partyId);
+            const party = window.state.parties.find(p => p.id === partySelect.value);
             if (!party) return;
 
-            const pricingStatus = document.getElementById('tx-pricing-status').value;
-            const isUnpriced = (pricingStatus === 'لم يتفق عليه بعد');
+            const isUnpriced = (document.getElementById('tx-pricing-status').value === 'لم يتفق عليه بعد');
             const qty = parseFloat(document.getElementById('tx-qty').value) || 0;
             const price = isUnpriced ? 0 : (parseFloat(document.getElementById('tx-price').value) || 0);
             const amount = isUnpriced ? 0 : (parseFloat(document.getElementById('tx-total').value) || 0);
 
-            // توثيق هوية المدخل الحقيقية
-            let author = "المدير العام";
-            if (window.state.currentUser) {
-                author = window.state.currentUser.username || (window.state.currentUser.email ? window.state.currentUser.email.split('@')[0] : "المدير");
-            }
-
-            const invNum = document.getElementById('tx-inv-num').value.trim() || generateNextInvoiceNumber();
-            const curr = document.getElementById('tx-currency').value;
-            const goodsDate = dateInput.value;
+            const author = window.state.currentUser ? (window.state.currentUser.username || window.state.currentUser.email) : 'المدير العام';
 
             const txData = {
-                invoiceNum: invNum,
-                goodsDate: goodsDate,
-                partyId: partyId,
+                invoiceNum: document.getElementById('tx-inv-num').value.trim() || ('INV-' + Date.now()),
+                goodsDate: dateInput.value,
+                partyId: party.id,
                 partyName: party.name,
                 type: document.getElementById('tx-type').value,
                 desc: descInput.value.trim(),
@@ -1566,8 +1673,8 @@
                 qty: qty,
                 price: price,
                 amount: amount,
-                currency: curr,
-                pricingStatus: pricingStatus,
+                currency: document.getElementById('tx-currency').value,
+                pricingStatus: document.getElementById('tx-pricing-status').value,
                 isUnpriced: isUnpriced,
                 settlementStatus: document.getElementById('tx-settlement-status').value,
                 settlementDate: document.getElementById('tx-settlement-date').value || '',
@@ -1582,19 +1689,17 @@
             try {
                 if (editId) {
                     await db.collection('accounting_transactions').doc(editId).update(txData);
-                    showToast('تم تعديل الفاتورة بنجاح');
+                    showToast('تم تعديل الحركة بنجاح');
                 } else {
                     txData.createdBy = author;
-                    txData.systemDate = new Date().toISOString();
-                    txData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                    txData.createdAt = new Date().toISOString();
                     await db.collection('accounting_transactions').add(txData);
-                    showToast(isUnpriced ? 'تم تسجيل البضاعة كمعلقة بدون تسعير' : 'تم حفظ الفاتورة وتحديث الأرصدة');
+                    showToast('تم حفظ الفاتورة وتحديث الأرصدة');
                 }
                 closeModal('add-transaction-modal');
-                // حفظ فوري في Google Drive بعد كل حركة
                 scheduleDriveAutoSync(2000);
-            } catch (err) {
-                showToast('خطأ أثناء الحفظ: ' + err.message, true);
+            } catch(err) {
+                showToast('خطأ بالحفظ: ' + err.message, true);
             }
         }
 
@@ -1603,7 +1708,7 @@
             if (!tx) return;
 
             document.getElementById('tx-edit-id').value = tx.id;
-            document.getElementById('tx-modal-title').innerHTML = `<i class="fa-solid fa-pen-to-square ml-1"></i> تعديل الفاتورة (${tx.invoiceNum})`;
+            document.getElementById('tx-modal-title').textContent = `تعديل الفاتورة (${tx.invoiceNum})`;
 
             populatePartyDropdowns();
             document.getElementById('tx-party-id').value = tx.partyId;
@@ -1624,12 +1729,11 @@
             window.state.tempAttachment = tx.attachment || null;
             const label = document.getElementById('tx-attachment-label');
             if (tx.attachment) {
-                label.textContent = `✓ المرفق الحالي: ${tx.attachment.name}`;
+                label.textContent = `✓ المرفق: ${tx.attachment.name}`;
                 label.classList.remove('hidden');
             } else {
                 label.classList.add('hidden');
             }
-
             openModal('add-transaction-modal');
         }
 
@@ -1640,61 +1744,14 @@
             }
             try {
                 await db.collection('accounting_transactions').doc(txId).delete();
-                showToast('تم حذف الفاتورة وإعادة احتساب الأرصدة');
-                // تحديث ملف اليوم في Google Drive
+                showToast('تم حذف الحركة وإعادة موازنة الأرصدة');
                 scheduleDriveAutoSync(2000);
             } catch(e) {
                 showToast('خطأ بالحذف: ' + e.message, true);
             }
         }
 
-        function openResolvePriceModal(txId) {
-            const tx = window.state.transactions.find(t => t.id === txId);
-            if (!tx) return;
-
-            document.getElementById('resolve-tx-id').value = tx.id;
-            document.getElementById('resolve-party-name').textContent = tx.partyName;
-            document.getElementById('resolve-qty').textContent = tx.qty;
-            document.getElementById('resolve-unit-price').value = tx.price || '';
-            document.getElementById('resolve-total-amount').value = tx.amount || '0.00';
-            openModal('resolve-price-modal');
-        }
-
-        function calculateResolveTotal() {
-            const qty = parseFloat(document.getElementById('resolve-qty').textContent) || 0;
-            const price = parseFloat(document.getElementById('resolve-unit-price').value) || 0;
-            document.getElementById('resolve-total-amount').value = (qty * price).toFixed(2);
-        }
-
-        async function savePriceResolution(e) {
-            e.preventDefault();
-            const txId = document.getElementById('resolve-tx-id').value;
-            const tx = window.state.transactions.find(t => t.id === txId);
-            if (!tx) return;
-
-            const unitPrice = parseFloat(document.getElementById('resolve-unit-price').value) || 0;
-            const total = parseFloat(document.getElementById('resolve-total-amount').value) || (unitPrice * tx.qty);
-            const author = window.state.currentUser ? window.state.currentUser.username : 'أسد المصطفى';
-
-            try {
-                await db.collection('accounting_transactions').doc(txId).update({
-                    price: unitPrice,
-                    amount: total,
-                    pricingStatus: 'مسعر',
-                    isUnpriced: false,
-                    pricedBy: author,
-                    pricedAt: new Date().toISOString()
-                });
-
-                closeModal('resolve-price-modal');
-                showToast(`تم تثبيت السعر واعتماد الرصيد: ${total} ${tx.currency}`);
-                // تحديث ملف اليوم في Google Drive بعد تثبيت السعر
-                scheduleDriveAutoSync(2000);
-            } catch (err) {
-                showToast('فشل التحديث: ' + err.message, true);
-            }
-        }
-
+        // ==================== PARTIES MANAGEMENT ====================
         function checkAdminAndOpenPartyModal(partyId = null) {
             if (!isCurrentUserAdmin()) {
                 showToast('إدارة الحسابات مقتصرة على المدير العام', true);
@@ -1705,13 +1762,13 @@
                 const party = window.state.parties.find(p => p.id === partyId);
                 if (!party) return;
                 document.getElementById('party-edit-id').value = party.id;
-                document.getElementById('party-modal-title').innerHTML = '<i class="fa-solid fa-pen-to-square ml-1"></i> تعديل بيانات الحساب';
+                document.getElementById('party-modal-title').textContent = 'تعديل بيانات الحساب';
                 document.getElementById('party-name').value = party.name;
                 document.getElementById('party-type').value = party.type;
                 document.getElementById('party-phone').value = party.phone;
             } else {
                 document.getElementById('party-edit-id').value = '';
-                document.getElementById('party-modal-title').innerHTML = '<i class="fa-solid fa-user-plus ml-1 text-emerald-600"></i> إضافة حساب / مورد جديد';
+                document.getElementById('party-modal-title').textContent = 'إضافة حساب جديد';
                 document.getElementById('party-name').value = '';
                 document.getElementById('party-phone').value = '';
             }
@@ -1728,7 +1785,7 @@
                 name: name,
                 type: document.getElementById('party-type').value,
                 phone: document.getElementById('party-phone').value.trim() || '---',
-                updatedBy: window.state.currentUser ? window.state.currentUser.username : 'أسد المصطفى',
+                updatedBy: window.state.currentUser ? window.state.currentUser.username : 'المدير العام',
                 updatedAt: new Date().toISOString()
             };
 
@@ -1737,16 +1794,14 @@
                     await db.collection('accounting_parties').doc(editId).update(partyData);
                     showToast(`تم تعديل الحساب: ${name}`);
                 } else {
-                    partyData.createdBy = partyData.updatedBy;
                     partyData.createdAt = new Date().toISOString();
                     await db.collection('accounting_parties').add(partyData);
                     showToast(`تمت إضافة الحساب: ${name}`);
                 }
                 closeModal('add-party-modal');
-                // تحديث ملف اليوم في Google Drive
                 scheduleDriveAutoSync(2000);
-            } catch (err) {
-                showToast('خطأ: ' + err.message, true);
+            } catch(e) {
+                showToast('خطأ: ' + e.message, true);
             }
         }
 
@@ -1758,100 +1813,78 @@
             try {
                 await db.collection('accounting_parties').doc(partyId).delete();
                 showToast('تم حذف الحساب بنجاح');
-                // تحديث ملف اليوم في Google Drive
                 scheduleDriveAutoSync(2000);
             } catch(e) {
-                showToast('فشل حذف الحساب: ' + e.message, true);
+                showToast('خطأ: ' + e.message, true);
             }
         }
 
-        function checkAdminAndOpenUserModal(userId = null) {
-            if (!isCurrentUserAdmin()) {
-                showToast('إدارة المحاسبين مقتصرة على المدير العام', true);
-                return;
-            }
-
-            if (userId) {
-                const u = window.state.users.find(user => user.id === userId);
-                if (!u) return;
-                document.getElementById('user-edit-id').value = u.id;
-                document.getElementById('user-modal-title').innerHTML = '<i class="fa-solid fa-user-pen ml-1"></i> تعديل بيانات المحاسب';
-                document.getElementById('new-user-name').value = u.username;
-                document.getElementById('new-user-phone').value = u.phone || '';
-                document.getElementById('new-user-role').value = u.role;
-                document.getElementById('new-user-password').value = u.password || '';
-            } else {
-                document.getElementById('user-edit-id').value = '';
-                document.getElementById('user-modal-title').innerHTML = '<i class="fa-solid fa-user-shield ml-1 text-emerald-600"></i> إضافة محاسب جديد';
-                document.getElementById('new-user-name').value = '';
-                document.getElementById('new-user-phone').value = '';
-                document.getElementById('new-user-password').value = '';
-            }
-            openModal('add-user-modal');
+        // ==================== UNPRICED RESOLUTION ====================
+        function openResolvePriceModal(txId) {
+            const tx = window.state.transactions.find(t => t.id === txId);
+            if (!tx) return;
+            document.getElementById('resolve-tx-id').value = tx.id;
+            document.getElementById('resolve-party-name').textContent = tx.partyName;
+            document.getElementById('resolve-qty').textContent = tx.qty;
+            document.getElementById('resolve-unit-price').value = tx.price || '';
+            document.getElementById('resolve-total-amount').value = tx.amount || '0.00';
+            openModal('resolve-price-modal');
         }
 
-        async function saveUserForm(e) {
+        function calculateResolveTotal() {
+            const q = parseFloat(document.getElementById('resolve-qty').textContent) || 0;
+            const p = parseFloat(document.getElementById('resolve-unit-price').value) || 0;
+            document.getElementById('resolve-total-amount').value = (q * p).toFixed(2);
+        }
+
+        async function savePriceResolution(e) {
             e.preventDefault();
-            const editId = document.getElementById('user-edit-id').value;
-            const name = document.getElementById('new-user-name').value.trim();
-            const phone = document.getElementById('new-user-phone').value.trim();
-            const pass = document.getElementById('new-user-password').value.trim();
-            if (!name || !pass) return;
+            const txId = document.getElementById('resolve-tx-id').value;
+            const tx = window.state.transactions.find(t => t.id === txId);
+            if (!tx) return;
 
-            const userData = {
-                username: name,
-                usernameLower: name.toLowerCase(),
-                phone: phone,
-                role: document.getElementById('new-user-role').value,
-                password: pass,
-                updatedBy: window.state.currentUser ? window.state.currentUser.username : 'أسد المصطفى',
-                updatedAt: new Date().toISOString()
-            };
+            const unitPrice = parseFloat(document.getElementById('resolve-unit-price').value) || 0;
+            const total = parseFloat(document.getElementById('resolve-total-amount').value) || (unitPrice * tx.qty);
 
             try {
-                if (editId) {
-                    await db.collection('accounting_users').doc(editId).update(userData);
-                    showToast(`تم تعديل بيانات المحاسب: ${name}`);
-                } else {
-                    userData.createdBy = userData.updatedBy;
-                    userData.createdAt = new Date().toISOString();
-                    await db.collection('accounting_users').add(userData);
-                    showToast(`تم إضافة المحاسب: ${name}`);
-                }
-                closeModal('add-user-modal');
-            } catch (err) {
-                showToast('خطأ: ' + err.message, true);
-            }
-        }
-
-        async function deleteUser(userId) {
-            if (!isCurrentUserAdmin()) {
-                showToast('حذف الموظفين مقتصر على المدير العام', true);
-                return;
-            }
-            try {
-                await db.collection('accounting_users').doc(userId).delete();
-                showToast('تم حذف المحاسب بنجاح');
+                await db.collection('accounting_transactions').doc(txId).update({
+                    price: unitPrice,
+                    amount: total,
+                    pricingStatus: 'مسعر',
+                    isUnpriced: false,
+                    pricedAt: new Date().toISOString()
+                });
+                closeModal('resolve-price-modal');
+                showToast(`تم اعتماد السعر بنجاح: ${total} ${tx.currency}`);
+                scheduleDriveAutoSync(2000);
             } catch(e) {
-                showToast('خطأ بالحذف: ' + e.message, true);
+                showToast('خطأ: ' + e.message, true);
             }
         }
 
+        // ==================== RENDERING LOGIC ====================
         function getMovementCreditDebit(tx) {
-            let credit = 0; // له (↓ وارد: استلمنا منه بضاعة أو دفعة)
-            let debit = 0;  // عليه (↑ صادر: سلمناه بضاعة أو أعطيناه دفعة/سلفة)
-
             if (tx.isUnpriced || tx.pricingStatus === 'لم يتفق عليه بعد') {
                 return { credit: 0, debit: 0 };
             }
-
             const amt = parseFloat(tx.amount) || 0;
             if (tx.type === 'goods_in' || tx.type === 'payment_in' || tx.type === 'return_in') {
-                credit = amt;
+                return { credit: amt, debit: 0 };
             } else if (tx.type === 'goods_out' || tx.type === 'payment_out' || tx.type === 'advance_payment' || tx.type === 'return_out' || tx.type === 'expense') {
-                debit = amt;
+                return { credit: 0, debit: amt };
             }
-            return { credit, debit };
+            return { credit: 0, debit: 0 };
+        }
+
+        function calculatePartyBalance(partyId, currency) {
+            let balance = 0;
+            window.state.transactions.forEach(t => {
+                if (t.partyId === partyId && t.currency === currency) {
+                    const { credit, debit } = getMovementCreditDebit(t);
+                    balance += (credit - debit);
+                }
+            });
+            return balance;
         }
 
         function renderDashboard() {
@@ -1861,6 +1894,7 @@
             let totalInbound = 0;
             let totalOutbound = 0;
             let unpricedCount = 0;
+            const advancesCount = window.state.transactions.filter(t => t.type === 'advance_payment').length;
 
             const balances = {};
             window.state.parties.forEach(p => {
@@ -1873,15 +1907,13 @@
                     if (balances[t.partyId]) balances[t.partyId].unpriced++;
                     return;
                 }
-
                 const { credit, debit } = getMovementCreditDebit(t);
                 if (balances[t.partyId] && balances[t.partyId][t.currency] !== undefined) {
                     balances[t.partyId][t.currency] += (credit - debit);
                 }
-
                 if (t.currency === curr) {
-                    if (credit > 0) totalInbound += credit;
-                    if (debit > 0) totalOutbound += debit;
+                    totalInbound += credit;
+                    totalOutbound += debit;
                 }
             });
 
@@ -1898,15 +1930,13 @@
             document.getElementById('dash-receivables').textContent = formatMoney(receivables);
             document.getElementById('dash-payables').textContent = formatMoney(payables);
 
-            const alertBox = document.getElementById('dash-unpriced-alert');
-            const alertCount = document.getElementById('dash-unpriced-count-badge');
-            const tabBadge = document.getElementById('tab-unpriced-count');
-            if (tabBadge) tabBadge.textContent = unpricedCount;
-            if (alertCount) alertCount.textContent = unpricedCount;
-            if (alertBox) {
-                if (unpricedCount > 0) alertBox.classList.remove('hidden');
-                else alertBox.classList.add('hidden');
-            }
+            // Hub Badges
+            document.getElementById('hub-tx-count-badge').textContent = `${window.state.transactions.length} حركة`;
+            document.getElementById('hub-advances-count-badge').textContent = `${advancesCount} سلفة`;
+            document.getElementById('hub-unpriced-count-badge').textContent = `${unpricedCount} معلقة`;
+            document.getElementById('hub-parties-count-badge').textContent = `${window.state.parties.length} حساب`;
+            document.getElementById('tab-advances-count').textContent = advancesCount;
+            document.getElementById('tab-unpriced-count').textContent = unpricedCount;
 
             const tbody = document.getElementById('dash-accounts-tbody');
             if (!tbody) return;
@@ -1979,7 +2009,6 @@
                 if (fromDate && t.goodsDate < fromDate) return;
                 if (toDate && t.goodsDate > toDate) return;
 
-                // فلتر الفواتير غير المسددة
                 const isSettled = (t.settlementStatus === 'مسدد');
                 if (settlementFilter === 'unsettled' && isSettled) return;
                 if (settlementFilter === 'settled' && !isSettled) return;
@@ -1992,23 +2021,19 @@
                 }
 
                 const fileBtn = t.attachment ? 
-                    `<button onclick="viewAttachment('${t.id}')" class="text-blue-600 hover:text-blue-800 font-bold"><i class="fa-solid fa-paperclip"></i></button>` : 
-                    `-`;
+                    `<button onclick="viewAttachment('${t.id}')" class="text-blue-600 hover:text-blue-800 font-bold"><i class="fa-solid fa-paperclip"></i></button>` : `-`;
 
                 const settlementBadge = isSettled ? 
-                    `<span class="px-2 py-0.5 rounded text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300">مسدد (${t.settlementDate || 'نعم'})</span>` : 
+                    `<span class="px-2 py-0.5 rounded text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300">مسدد</span>` : 
                     `<span class="px-2 py-0.5 rounded text-[10px] font-black bg-rose-100 text-rose-800 border border-rose-300">غير مسدد</span>`;
 
                 const tr = document.createElement('tr');
                 tr.className = isUnp ? 'bg-amber-50/70' : 'hover:bg-slate-50';
                 tr.innerHTML = `
                     <td class="p-2 text-center text-slate-400 font-mono">${count++}</td>
-                    <td class="p-2 font-mono whitespace-nowrap font-bold">${escapeHtml(t.goodsDate)}</td>
+                    <td class="p-2 font-mono font-bold">${escapeHtml(t.goodsDate)}</td>
                     <td class="p-2 font-bold font-mono text-emerald-800">${escapeHtml(t.invoiceNum)}</td>
-                    <td class="p-2 font-medium">
-                        ${escapeHtml(t.desc)}
-                        ${t.paymentLocation ? `<span class="block text-[10px] text-slate-400">القبض: ${escapeHtml(t.paymentLocation)}</span>` : ''}
-                    </td>
+                    <td class="p-2 font-medium">${escapeHtml(t.desc)} ${t.paymentLocation ? `<span class="block text-[10px] text-slate-400">القبض: ${escapeHtml(t.paymentLocation)}</span>` : ''}</td>
                     <td class="p-2 text-center font-bold text-slate-600">${escapeHtml(t.paymentMethod || 'كاش')}</td>
                     <td class="p-2 text-center font-mono font-bold">${t.qty}</td>
                     <td class="p-2 text-center font-mono">${isUnp ? 'معلق' : formatMoney(t.price)}</td>
@@ -2016,7 +2041,7 @@
                     <td class="p-2 font-mono text-emerald-700 font-bold bg-emerald-50/50">${debit > 0 ? `↑ ${formatMoney(debit)}` : '-'}</td>
                     <td class="p-2 font-mono font-black text-left pl-2 bg-slate-100">${formatMoney(running)}</td>
                     <td class="p-2 text-center">${settlementBadge}</td>
-                    <td class="p-2 text-center text-slate-500 font-semibold">${escapeHtml(t.createdBy || 'أسد المصطفى')}</td>
+                    <td class="p-2 text-center text-slate-500 font-semibold">${escapeHtml(t.createdBy || 'المدير')}</td>
                     <td class="p-2 text-center no-print">${fileBtn}</td>
                     <td class="p-2 text-center no-print space-x-1 space-x-reverse">
                         <button onclick="editTransaction('${t.id}')" class="text-blue-600 hover:text-blue-800" title="تعديل"><i class="fa-solid fa-pen"></i></button>
@@ -2029,7 +2054,6 @@
             document.getElementById('stmt-total-credit').textContent = `↓ ${formatMoney(totCredit)}`;
             document.getElementById('stmt-total-debit').textContent = `↑ ${formatMoney(totDebit)}`;
             document.getElementById('stmt-final-balance').textContent = formatMoney(running) + ` ${currency}`;
-
             document.getElementById('stmt-summary-inbound').textContent = `${formatMoney(totCredit)} ${currency}`;
             document.getElementById('stmt-summary-outbound').textContent = `${formatMoney(totDebit)} ${currency}`;
 
@@ -2045,32 +2069,26 @@
 
         function renderAdvancesView() {
             const tbody = document.getElementById('advances-tbody');
-            const tabBadge = document.getElementById('tab-advances-count');
             tbody.innerHTML = '';
-
             const advances = window.state.transactions.filter(t => t.type === 'advance_payment');
-            if (tabBadge) tabBadge.textContent = advances.length;
 
             advances.forEach((t, i) => {
-                const fileBtn = t.attachment ? 
-                    `<button onclick="viewAttachment('${t.id}')" class="text-blue-600 hover:text-blue-800 font-bold"><i class="fa-solid fa-file-lines"></i></button>` : 
-                    `-`;
-
+                const fileBtn = t.attachment ? `<button onclick="viewAttachment('${t.id}')" class="text-blue-600"><i class="fa-solid fa-file-lines"></i></button>` : `-`;
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td class="p-3 text-center text-slate-400 font-mono">${i + 1}</td>
-                    <td class="p-3 font-mono font-bold text-slate-900">${escapeHtml(t.goodsDate)}</td>
-                    <td class="p-3 font-bold text-slate-800">${escapeHtml(t.partyName)}</td>
+                    <td class="p-3 font-mono font-bold">${escapeHtml(t.goodsDate)}</td>
+                    <td class="p-3 font-bold">${escapeHtml(t.partyName)}</td>
                     <td class="p-3 font-mono text-emerald-800 font-bold">${escapeHtml(t.invoiceNum)}</td>
                     <td class="p-3 font-bold text-slate-700">${escapeHtml(t.paymentMethod || 'كاش')}</td>
-                    <td class="p-3 font-medium text-slate-700">${escapeHtml(t.desc)} ${t.paymentLocation ? `(${escapeHtml(t.paymentLocation)})` : ''}</td>
+                    <td class="p-3 font-medium">${escapeHtml(t.desc)} ${t.paymentLocation ? `(${escapeHtml(t.paymentLocation)})` : ''}</td>
                     <td class="p-3 font-mono font-black text-emerald-700 text-left">↑ ${formatMoney(t.amount)}</td>
                     <td class="p-3 text-center font-bold text-slate-500">${t.currency}</td>
-                    <td class="p-3 text-center text-slate-500 font-semibold">${escapeHtml(t.createdBy || 'أسد المصطفى')}</td>
+                    <td class="p-3 text-center text-slate-500">${escapeHtml(t.createdBy || 'المدير')}</td>
                     <td class="p-3 text-center">${fileBtn}</td>
                     <td class="p-3 text-center space-x-1 space-x-reverse">
-                        <button onclick="editTransaction('${t.id}')" class="text-blue-600 hover:text-blue-800"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick="deleteTransaction('${t.id}')" class="text-rose-600 hover:text-rose-800"><i class="fa-solid fa-trash"></i></button>
+                        <button onclick="editTransaction('${t.id}')" class="text-blue-600"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="deleteTransaction('${t.id}')" class="text-rose-600"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -2088,29 +2106,27 @@
                 if (keyword && !searchStr.includes(keyword)) return;
 
                 const isUnp = (t.isUnpriced || t.pricingStatus === 'لم يتفق عليه بعد');
-                const fileBtn = t.attachment ? 
-                    `<button onclick="viewAttachment('${t.id}')" class="text-blue-600 hover:text-blue-800 font-bold"><i class="fa-solid fa-paperclip"></i></button>` : 
-                    `-`;
+                const fileBtn = t.attachment ? `<button onclick="viewAttachment('${t.id}')" class="text-blue-600"><i class="fa-solid fa-paperclip"></i></button>` : `-`;
 
                 const tr = document.createElement('tr');
                 tr.className = 'hover:bg-slate-50 transition';
                 tr.innerHTML = `
                     <td class="p-2.5 text-center text-slate-400 font-mono">${count++}</td>
-                    <td class="p-2.5 font-mono font-bold text-slate-900">${escapeHtml(t.goodsDate)}</td>
-                    <td class="p-2.5 font-bold text-slate-900">${escapeHtml(t.partyName)}</td>
+                    <td class="p-2.5 font-mono font-bold">${escapeHtml(t.goodsDate)}</td>
+                    <td class="p-2.5 font-bold">${escapeHtml(t.partyName)}</td>
                     <td class="p-2.5 text-slate-500">${escapeHtml(t.type)}</td>
                     <td class="p-2.5 font-mono font-bold text-emerald-800">${escapeHtml(t.invoiceNum)}</td>
-                    <td class="p-2.5 max-w-xs truncate text-slate-700">${escapeHtml(t.desc)}</td>
+                    <td class="p-2.5 max-w-xs truncate">${escapeHtml(t.desc)}</td>
                     <td class="p-2.5 text-center font-bold text-slate-600">${escapeHtml(t.paymentMethod || 'كاش')}</td>
                     <td class="p-2.5 text-center font-mono font-bold">${t.qty}</td>
-                    <td class="p-2.5 text-center font-mono text-slate-700">${isUnp ? 'معلق' : formatMoney(t.price)}</td>
+                    <td class="p-2.5 text-center font-mono">${isUnp ? 'معلق' : formatMoney(t.price)}</td>
                     <td class="p-2.5 text-left font-mono font-black ${isUnp ? 'text-amber-700' : 'text-emerald-700'}">${isUnp ? '0.00' : formatMoney(t.amount)}</td>
                     <td class="p-2.5 text-center">${t.settlementStatus === 'مسدد' ? '<span class="text-emerald-700 font-bold">مسدد</span>' : '<span class="text-rose-700 font-bold">غير مسدد</span>'}</td>
-                    <td class="p-2.5 text-center text-slate-500 font-semibold">${escapeHtml(t.createdBy || 'أسد المصطفى')}</td>
+                    <td class="p-2.5 text-center text-slate-500">${escapeHtml(t.createdBy || 'المدير')}</td>
                     <td class="p-2.5 text-center">${fileBtn}</td>
                     <td class="p-2.5 text-center space-x-1 space-x-reverse">
-                        <button onclick="editTransaction('${t.id}')" class="text-blue-600 hover:text-blue-800 p-1" title="تعديل"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick="deleteTransaction('${t.id}')" class="text-rose-600 hover:text-rose-800 p-1" title="حذف"><i class="fa-solid fa-trash"></i></button>
+                        <button onclick="editTransaction('${t.id}')" class="text-blue-600 p-1"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="deleteTransaction('${t.id}')" class="text-rose-600 p-1"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -2120,32 +2136,28 @@
         function renderUnpricedTable() {
             const tbody = document.getElementById('unpriced-tbody');
             tbody.innerHTML = '';
-
             const unpricedTxs = window.state.transactions.filter(t => t.isUnpriced || t.pricingStatus === 'لم يتفق عليه بعد');
 
             unpricedTxs.forEach((t, idx) => {
-                const fileBtn = t.attachment ? 
-                    `<button onclick="viewAttachment('${t.id}')" class="text-blue-600 hover:text-blue-800 font-bold"><i class="fa-solid fa-paperclip"></i></button>` : 
-                    `-`;
-
+                const fileBtn = t.attachment ? `<button onclick="viewAttachment('${t.id}')" class="text-blue-600"><i class="fa-solid fa-paperclip"></i></button>` : `-`;
                 const tr = document.createElement('tr');
                 tr.className = 'hover:bg-amber-50/40 transition';
                 tr.innerHTML = `
                     <td class="p-3 text-center font-mono text-slate-400">${idx + 1}</td>
-                    <td class="p-3 font-mono font-bold text-slate-900">${escapeHtml(t.goodsDate)}</td>
-                    <td class="p-3 font-bold text-slate-900">${escapeHtml(t.partyName)}</td>
+                    <td class="p-3 font-mono font-bold">${escapeHtml(t.goodsDate)}</td>
+                    <td class="p-3 font-bold">${escapeHtml(t.partyName)}</td>
                     <td class="p-3 font-mono text-slate-500">${escapeHtml(t.invoiceNum)}</td>
-                    <td class="p-3 font-medium text-slate-700">${escapeHtml(t.desc)}</td>
+                    <td class="p-3 font-medium">${escapeHtml(t.desc)}</td>
                     <td class="p-3 text-center font-mono font-black text-blue-700">${t.qty}</td>
                     <td class="p-3 text-center font-bold text-slate-500">${t.currency}</td>
-                    <td class="p-3 text-center text-slate-500 font-semibold">${escapeHtml(t.createdBy || 'أسد المصطفى')}</td>
+                    <td class="p-3 text-center text-slate-500">${escapeHtml(t.createdBy || 'المدير')}</td>
                     <td class="p-3 text-center">${fileBtn}</td>
                     <td class="p-3 text-center">
-                        <button onclick="openResolvePriceModal('${t.id}')" class="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-black shadow transition">تثبيت / تعديل السعر</button>
+                        <button onclick="openResolvePriceModal('${t.id}')" class="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-black shadow transition">تثبيت السعر</button>
                     </td>
                     <td class="p-3 text-center space-x-1 space-x-reverse">
-                        <button onclick="editTransaction('${t.id}')" class="text-blue-600 hover:text-blue-800 p-1"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick="deleteTransaction('${t.id}')" class="text-rose-600 hover:text-rose-800 p-1"><i class="fa-solid fa-trash"></i></button>
+                        <button onclick="editTransaction('${t.id}')" class="text-blue-600 p-1"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="deleteTransaction('${t.id}')" class="text-rose-600 p-1"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -2171,186 +2183,14 @@
                     <div class="text-xs text-slate-500 font-mono"><i class="fa-solid fa-phone text-slate-400 ml-1"></i> ${escapeHtml(p.phone)}</div>
                     <div class="pt-2 border-t border-slate-100 flex justify-between items-center">
                         <div class="space-x-2 space-x-reverse">
-                            <button onclick="checkAdminAndOpenPartyModal('${p.id}')" class="text-blue-600 hover:text-blue-800 text-xs font-bold">تعديل</button>
-                            <button onclick="deleteParty('${p.id}')" class="text-rose-600 hover:text-rose-800 text-xs font-bold">حذف</button>
+                            <button onclick="checkAdminAndOpenPartyModal('${p.id}')" class="text-blue-600 text-xs font-bold">تعديل</button>
+                            <button onclick="deleteParty('${p.id}')" class="text-rose-600 text-xs font-bold">حذف</button>
                         </div>
-                        <button onclick="viewPartyStatement('${p.id}')" class="px-3 py-1 bg-slate-900 hover:bg-black text-teal-300 rounded-xl text-xs font-bold transition">كشف الحساب</button>
+                        <button onclick="viewPartyStatement('${p.id}')" class="px-3 py-1 bg-slate-900 text-white rounded-xl text-xs font-bold transition">كشف الحساب</button>
                     </div>
                 `;
                 grid.appendChild(card);
             });
-        }
-
-        function renderUsersManagementGrid() {
-            const container = document.getElementById('users-grid');
-            if (!container) return;
-            container.innerHTML = '';
-
-            window.state.users.forEach(u => {
-                const isCurrent = window.state.currentUser && (u.username === window.state.currentUser.username);
-                const card = document.createElement('div');
-                card.className = `p-4 rounded-2xl border ${isCurrent ? 'border-emerald-500 bg-emerald-50/40' : 'bg-white border-slate-200'} shadow-sm space-y-2.5`;
-                card.innerHTML = `
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <div class="font-bold text-xs text-slate-900">${escapeHtml(u.username)} <span class="text-slate-500 font-normal">(${escapeHtml(u.role)})</span></div>
-                            <div class="text-[11px] font-mono text-slate-500">هاتف: ${escapeHtml(u.phone || '0967399557')}</div>
-                        </div>
-                        ${isCurrent ? '<span class="px-2 py-0.5 rounded text-[9px] bg-emerald-600 text-white font-black">حسابك</span>' : ''}
-                    </div>
-                    <div class="text-xs font-mono text-slate-500">كلمة المرور: <strong class="text-emerald-700">${isCurrentUserAdmin() ? escapeHtml(u.password || 'مرتبط بـ Google') : '••••••••'}</strong></div>
-                    ${isCurrentUserAdmin() && !isCurrent ? `
-                    <div class="pt-2 border-t border-slate-100 flex justify-end gap-2">
-                        <button onclick="checkAdminAndOpenUserModal('${u.id}')" class="text-blue-600 hover:text-blue-800 text-xs font-bold">تعديل</button>
-                        <button onclick="deleteUser('${u.id}')" class="text-rose-600 hover:text-rose-800 text-xs font-bold">حذف</button>
-                    </div>` : ''}
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        function viewAttachment(txId) {
-            const tx = window.state.transactions.find(t => t.id === txId);
-            if (!tx || !tx.attachment) return;
-
-            const att = tx.attachment;
-            const container = document.getElementById('file-viewer-content');
-            document.getElementById('file-viewer-title').textContent = `مرفق فاتورة: ${tx.invoiceNum} (${att.name})`;
-
-            if (att.type === 'application/pdf' || att.data.startsWith('data:application/pdf')) {
-                container.innerHTML = `<embed src="${att.data}" type="application/pdf" class="w-full h-[65vh] rounded-lg">`;
-            } else {
-                container.innerHTML = `<img src="${att.data}" alt="مرفق الفاتورة" class="max-w-full h-auto object-contain rounded-lg">`;
-            }
-
-            openModal('file-viewer-modal');
-        }
-
-        function exportBackupJson() {
-            const backupData = {
-                organization: window.state.organization,
-                parties: window.state.parties,
-                transactions: window.state.transactions,
-                users: window.state.users,
-                exportDate: new Date().toISOString()
-            };
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", `نسخة_محاسبة_شاملة_${new Date().toISOString().slice(0, 10)}.json`);
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            downloadAnchor.remove();
-            showToast('تم تحميل النسخة الاحتياطية بنجاح');
-        }
-
-        function exportStatementToExcel() {
-            const partyId = document.getElementById('stmt-party-select').value;
-            const currency = document.getElementById('stmt-currency-select').value;
-            const party = window.state.parties.find(p => p.id === partyId);
-            if (!party) return;
-
-            let txs = window.state.transactions.filter(t => t.partyId === partyId && t.currency === currency);
-            txs.sort((a, b) => new Date(a.goodsDate) - new Date(b.goodsDate));
-
-            const rows = [
-                ['كشف حساب مالي تفصيلي معتمد'],
-                ['اسم الحساب:', party.name, 'الصفة:', party.type, 'العملة:', currency],
-                ['تاريخ الإصدار:', new Date().toLocaleDateString('ar-EG'), 'المحاسب المسؤول:', 'أسد محمد المصطفى (0967399557)'],
-                [],
-                ['م', 'تاريخ البضاعة الفعلي', 'رقم الفاتورة', 'البيان وتفاصيل الدفعة', 'طريقة الدفع', 'الكمية', 'السعر', 'الحالة', 'وارد (له)', 'صادر (عليه)', 'الرصيد التراكمي', 'حالة السداد', 'المُدخل']
-            ];
-
-            let running = 0;
-            let totCredit = 0;
-            let totDebit = 0;
-
-            txs.forEach((t, i) => {
-                const { credit, debit } = getMovementCreditDebit(t);
-                const isUnp = (t.isUnpriced || t.pricingStatus === 'لم يتفق عليه بعد');
-                if (!isUnp) {
-                    running += (credit - debit);
-                    totCredit += credit;
-                    totDebit += debit;
-                }
-
-                rows.push([
-                    i + 1, t.goodsDate, t.invoiceNum, t.desc, t.paymentMethod || 'كاش', t.qty,
-                    isUnp ? 'معلق' : t.price, isUnp ? 'معلق' : 'معتمد',
-                    credit || 0, debit || 0, running, t.settlementStatus || 'غير مسدد', t.createdBy || 'أسد المصطفى'
-                ]);
-            });
-
-            rows.push([]);
-            rows.push(['المجموع العام:', '', '', '', '', '', '', '', totCredit, totDebit, running, '', '']);
-
-            const ws = XLSX.utils.aoa_to_sheet(rows);
-            ws['!views'] = [{ rightToLeft: true }];
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "كشف الحساب");
-            XLSX.writeFile(wb, `كشف_${party.name}_${currency}_${new Date().toISOString().slice(0,10)}.xlsx`);
-            showToast('تم تصدير كشف الحساب كـ Excel');
-        }
-
-        function exportAllMasterToExcel() {
-            const rows = [
-                ['دفتر اليومية وسجل القيود الشامل'],
-                ['تاريخ التصدير:', new Date().toLocaleDateString('ar-EG'), 'المحاسب المسؤول:', 'أسد محمد المصطفى (0967399557)'],
-                [],
-                ['م', 'تاريخ البضاعة', 'اسم الحساب', 'نوع الحركة', 'الفاتورة', 'البيان', 'طريقة الدفع', 'الكمية', 'السعر', 'المبلغ', 'العملة', 'حالة السداد', 'المُدخل']
-            ];
-
-            window.state.transactions.forEach((t, i) => {
-                const isUnp = (t.isUnpriced || t.pricingStatus === 'لم يتفق عليه بعد');
-                rows.push([
-                    i + 1, t.goodsDate, t.partyName, t.type, t.invoiceNum, t.desc,
-                    t.paymentMethod || 'كاش', t.qty, t.price, isUnp ? 0 : t.amount, t.currency,
-                    t.settlementStatus || 'غير مسدد', t.createdBy || 'أسد المصطفى'
-                ]);
-            });
-
-            const ws = XLSX.utils.aoa_to_sheet(rows);
-            ws['!views'] = [{ rightToLeft: true }];
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "سجل الحركات");
-            XLSX.writeFile(wb, `سجل_الحسابات_الشامل_${new Date().toISOString().slice(0,10)}.xlsx`);
-            showToast('تم تصدير السجل العام كـ Excel');
-        }
-
-        function exportFullOrganizationToExcel() {
-            exportAllMasterToExcel();
-        }
-
-        function printStatement() {
-            const area = document.getElementById('printable-statement-area');
-            if (!area) return;
-            area.classList.add('print-active-area');
-            window.print();
-            setTimeout(() => area.classList.remove('print-active-area'), 1000);
-        }
-
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('tab-btn-active');
-                btn.classList.add('text-slate-600');
-            });
-
-            const activeContent = document.getElementById(tabId);
-            const activeBtn = document.getElementById(`tab-${tabId}`);
-            if (activeContent) activeContent.classList.remove('hidden');
-            if (activeBtn) {
-                activeBtn.classList.add('tab-btn-active');
-                activeBtn.classList.remove('text-slate-600');
-            }
-
-            if (tabId === 'dashboard-view') renderDashboard();
-            if (tabId === 'statement-view') runStatementFilter();
-            if (tabId === 'advances-view') renderAdvancesView();
-            if (tabId === 'transactions-view') renderMasterTable();
-            if (tabId === 'unpriced-view') renderUnpricedTable();
-            if (tabId === 'parties-view') renderPartiesGrid();
-            if (tabId === 'users-management-view') renderUsersManagementGrid();
         }
 
         function populatePartyDropdowns() {
@@ -2378,9 +2218,146 @@
             renderMasterTable();
             renderUnpricedTable();
             renderPartiesGrid();
-            renderUsersManagementGrid();
             updateActiveUserLabels();
-            renderDriveBackupMetaUI();
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('tab-btn-active');
+                btn.classList.add('text-slate-600');
+            });
+
+            const activeContent = document.getElementById(tabId);
+            const activeBtn = document.getElementById(`tab-${tabId}`);
+            if (activeContent) activeContent.classList.remove('hidden');
+            if (activeBtn) {
+                activeBtn.classList.add('tab-btn-active');
+                activeBtn.classList.remove('text-slate-600');
+            }
+
+            if (tabId === 'dashboard-view') renderDashboard();
+            if (tabId === 'statement-view') runStatementFilter();
+            if (tabId === 'advances-view') renderAdvancesView();
+            if (tabId === 'transactions-view') renderMasterTable();
+            if (tabId === 'unpriced-view') renderUnpricedTable();
+            if (tabId === 'parties-view') renderPartiesGrid();
+        }
+
+        function viewAttachment(txId) {
+            const tx = window.state.transactions.find(t => t.id === txId);
+            if (!tx || !tx.attachment) return;
+            const att = tx.attachment;
+            const container = document.getElementById('file-viewer-content');
+            document.getElementById('file-viewer-title').textContent = `مرفق: ${att.name}`;
+
+            if (att.type === 'application/pdf' || att.data.startsWith('data:application/pdf')) {
+                container.innerHTML = `<embed src="${att.data}" type="application/pdf" class="w-full h-[65vh] rounded-lg">`;
+            } else {
+                container.innerHTML = `<img src="${att.data}" alt="المرفق" class="max-w-full h-auto object-contain rounded-lg">`;
+            }
+            openModal('file-viewer-modal');
+        }
+
+        function printStatement() {
+            const area = document.getElementById('printable-statement-area');
+            if (!area) return;
+            area.classList.add('print-active-area');
+            window.print();
+            setTimeout(() => area.classList.remove('print-active-area'), 1000);
+        }
+
+        function exportStatementToExcel() {
+            const partyId = document.getElementById('stmt-party-select').value;
+            const currency = document.getElementById('stmt-currency-select').value;
+            const party = window.state.parties.find(p => p.id === partyId);
+            if (!party) return;
+
+            let txs = window.state.transactions.filter(t => t.partyId === partyId && t.currency === currency);
+            txs.sort((a, b) => new Date(a.goodsDate) - new Date(b.goodsDate));
+
+            const rows = [
+                ['كشف حساب مالي تفصيلي معتمد'],
+                ['اسم الحساب:', party.name, 'الصفة:', party.type, 'العملة:', currency],
+                ['تاريخ الإصدار:', new Date().toLocaleDateString('ar-EG'), 'المحاسب المسؤول:', window.state.organization.managerName || 'المدير العام'],
+                [],
+                ['م', 'تاريخ البضاعة الفعلي', 'رقم الفاتورة', 'البيان', 'طريقة الدفع', 'الكمية', 'السعر', 'وارد (له)', 'صادر (عليه)', 'الرصيد التراكمي', 'حالة السداد', 'المُدخل']
+            ];
+
+            let running = 0;
+            let totCredit = 0;
+            let totDebit = 0;
+
+            txs.forEach((t, i) => {
+                const { credit, debit } = getMovementCreditDebit(t);
+                const isUnp = (t.isUnpriced || t.pricingStatus === 'لم يتفق عليه بعد');
+                if (!isUnp) {
+                    running += (credit - debit);
+                    totCredit += credit;
+                    totDebit += debit;
+                }
+                rows.push([
+                    i + 1, t.goodsDate, t.invoiceNum, t.desc, t.paymentMethod || 'كاش', t.qty,
+                    isUnp ? 'معلق' : t.price, credit || 0, debit || 0, running, t.settlementStatus || 'غير مسدد', t.createdBy || 'المدير'
+                ]);
+            });
+
+            const ws = XLSX.utils.aoa_to_sheet(rows);
+            ws['!views'] = [{ rightToLeft: true }];
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "كشف الحساب");
+            XLSX.writeFile(wb, `كشف_${party.name}_${currency}_${new Date().toISOString().slice(0,10)}.xlsx`);
+            showToast('تم تصدير كشف الحساب كـ Excel');
+        }
+
+        function exportAllMasterToExcel() {
+            exportComprehensiveMultiSheetExcel();
+        }
+
+        function exportBackupJson() {
+            const backupData = {
+                organization: window.state.organization,
+                parties: window.state.parties,
+                transactions: window.state.transactions,
+                users: window.state.users,
+                exportDate: new Date().toISOString()
+            };
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
+            const a = document.createElement('a');
+            a.setAttribute("href", dataStr);
+            a.setAttribute("download", `قاعدة_بيانات_المحاسبة_${new Date().toISOString().slice(0, 10)}.json`);
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            showToast('تم تحميل نسخة قاعدة البيانات بنجاح');
+        }
+
+        async function handleRestoreBackupFile() {
+            const input = document.getElementById('restore-file-input');
+            const file = input.files[0];
+            if (!file) {
+                showToast('يرجى تحديد ملف النسخة (JSON) أولاً', true);
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const parsed = JSON.parse(e.target.result);
+                    if (!parsed.transactions || !parsed.parties) {
+                        showToast('الملف غير مطابق لبنية المنظومة', true);
+                        return;
+                    }
+                    showToast('جاري استرداد البيانات وكتابتها في السحابة...');
+                    if (parsed.organization) await db.collection('accounting_system').doc('meta').set(parsed.organization, { merge: true });
+                    for (const p of parsed.parties) await db.collection('accounting_parties').doc(p.id).set(p, { merge: true });
+                    for (const t of parsed.transactions) await db.collection('accounting_transactions').doc(t.id).set(t, { merge: true });
+                    closeModal('settings-modal');
+                    showToast(`تم استرجاع (${parsed.transactions.length}) حركة بنجاح!`);
+                } catch(err) {
+                    showToast('خطأ بالقراءة: ' + err.message, true);
+                }
+            };
+            reader.readAsText(file);
         }
 
         function openModal(id) {
@@ -2416,7 +2393,6 @@
 
             text.textContent = msg;
             icon.className = isError ? 'fa-solid fa-triangle-exclamation text-rose-400 text-base' : 'fa-solid fa-circle-check text-emerald-400 text-base';
-
             toast.classList.remove('opacity-0', 'pointer-events-none', '-translate-y-10');
             toast.classList.add('opacity-100', 'translate-y-0');
 
